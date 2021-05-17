@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "MyProject",
+			"Path": "C:\\Users\\awohs\\Desktop\\school\\3rd\\cube\\cube\\Source\\MyProject.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "MyProjectEditor",
+			"Path": "C:\\Users\\awohs\\Desktop\\school\\3rd\\cube\\cube\\Source\\MyProjectEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}
