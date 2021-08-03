@@ -72,3 +72,15 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# Saved
+Saved/*
+
+#Intermediate
+Intermediate/*
+
+#CuboideA
+cube/Binaries/*
+cube/Saved/*
+cube/Intermediate/*
+cube/DerivedDataCache/*
