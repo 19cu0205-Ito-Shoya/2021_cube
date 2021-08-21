@@ -47,6 +47,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails|Variables")
 		int serialNum;
 
+	// 配列用の座標位置 Z
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails|Variables")
+		int mZCoordinate;
+
 	// 配列用の座標位置 X
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails|Variables")
 		int mXCoordinate;
@@ -54,10 +58,6 @@ public:
 	// 配列用の座標位置 Y
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails|Variables")
 		int mYCoordinate;
-
-	// 配列用の座標位置 Z
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails|Variables")
-		int mZCoordinate;
 
 	// マテリアルを変える
 	UFUNCTION()
