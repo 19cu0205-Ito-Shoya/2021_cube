@@ -11,7 +11,8 @@
 //				：2021/08/17		左回転90度(=右回転270度)と回転180度追加
 //				：2021/08/18		総体Cubeの回転操作追加、ガイドラインの回転操作追加
 //				：2021/08/19		Camera回転の矯正、ガイドライン回転の矯正
-//				：2021/08/20		回転の修正
+//				：2021/08/20		回転の修正、回転計算方法はQuaternionから計算に変更
+//				：2021/08/21		ガイドラインYの修正
 //---------------------------------------------------------------------------------
 
 #include "StageCube_1.h"
@@ -201,11 +202,12 @@ void AStageCube_1::BeginPlay()
 	} // end if()
 
 
-	// ==========================  Guide Line Z の生成  ==========================
+	// ==========================  Guide Line の生成  ==========================
 
 	FString pathGL = "Blueprint'/Game/BP/BP_GuideLineZ.BP_GuideLineZ_C'";
 	TSubclassOf<class AActor> bp_GuideLineZ = TSoftClassPtr<AActor>(FSoftObjectPath(*pathGL)).LoadSynchronous();	// pathにあるBPを取得
 
+	// Z Axis
 	if (bp_GuideLineZ != nullptr)
 	{
 		mGuideLineZaxis = GetWorld()->SpawnActor<AGuideLineZ>(bp_GuideLineZ);
@@ -241,8 +243,10 @@ void AStageCube_1::BeginPlay()
 		} // end if()
 	} // end if()
 
-
 	// Y Axis
+	// =================  Caution  8/21  ================
+	// ガイドライン Y のActorのRotation設定は他のガイドラインと違います、要注意です。
+	// (元々はPitchを回転すると、オイラー角の制限があった為に、こうになった)
 	if (bp_GuideLineZ != nullptr)
 	{
 		mGuideLineYaxis = GetWorld()->SpawnActor<AGuideLineZ>(bp_GuideLineZ);
@@ -252,13 +256,13 @@ void AStageCube_1::BeginPlay()
 			mGuideLineYaxis->AttachToComponent(mCubesRootComponent, AttachRules);
 			mGuideLineYaxis->SetActorRelativeLocation(FVector(0.f, 0.f, 0.f));
 			mGuideLineYaxis->SetActorScale3D(FVector(50.f, 30.f, 50.f));
-			// mGuideLineXaxis->mGuideLineMesh->SetRelativeRotation(FRotator(0.f, 0.f, 0.f));
+			mGuideLineYaxis->mGuideLineMesh->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
+			mGuideLineYaxis->SetActorRelativeRotation(FRotator(0.f, 90.f, 0.f));
 			mGuideLineYaxis->SetOwner(this);
 
 			mGuideLineYaxis->mode = 2;
 		} // end if()
 	} // end if()
-
 
 	// マウスのクリックイベント用
 	APlayerController* myPlayerController =	UGameplayStatics::GetPlayerController(GetWorld(), 0);
@@ -266,8 +270,6 @@ void AStageCube_1::BeginPlay()
 	myPlayerController->bShowMouseCursor = true;
 	myPlayerController->bEnableMouseOverEvents = true;
 	myPlayerController->bEnableClickEvents = true;
-
-
 	// for test
 	// RoatateTheCubesRight90( 1);
 	// Replace3Array();
@@ -662,36 +664,21 @@ void AStageCube_1::MoveMouseX(const float _axisValue)
 			if (mCurrentSelectedGuideLine == mGuideLineZaxis)
 			{
 				// wiil be strange when turn on other side
-				mCurrentSelectedGuideLine->mRootComponent->AddRelativeRotation(FRotator(0.f, -_axisValue * guideLineTurnningScale, 0.f));
-
+				mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, -_axisValue * guideLineTurnningScale, 0.f)));
 			} // end if
 			else if (mCurrentSelectedGuideLine == mGuideLineXaxis)
 			{
 				// wiil be strange when turn on other side
-				mCurrentSelectedGuideLine->mRootComponent->AddRelativeRotation(FRotator(0.f, 0.f, _axisValue * guideLineTurnningScale));
-
-				/*
-				// MyCombineRotators Version
-				FRotator tempR = MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, 0.f , -_axisValue * guideLineTurnningScale))  ;
-				
-				GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Silver, FString::SanitizeFloat(tempR.Roll));
-				// mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(tempR);
-				*/
+				mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, 0.f, _axisValue * guideLineTurnningScale)));
 
 			} // end if
 			else if (mCurrentSelectedGuideLine == mGuideLineYaxis)
 			{
+				// =================  Caution  8/21  ================
+				// ガイドライン Y のActorのRotation設定は他のガイドラインと違います、要注意です。
+				// (元々はPitchを回転すると、オイラー角の制限があった為に、こうになった)
 				// wiil be strange when turn on other side
-				// mCurrentSelectedGuideLine->mRootComponent->AddRelativeRotation(FRotator(-_axisValue * guideLineTurnningScale, 0.f, 0.f));
-
-				// MyCombineRotators Version
-				FRotator tempR = MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(-_axisValue * guideLineTurnningScale, 0.f, 0.f));	
-
-				mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(tempR);
-
-
-				// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Silver, FString::SanitizeFloat(tempR.Roll));
-
+				mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, 0.f, -_axisValue * guideLineTurnningScale)));
 			} // end if
 
 		} // end if
@@ -707,13 +694,13 @@ void AStageCube_1::MoveMouseX(const float _axisValue)
 		
 			mCameraTurnScaleX = AdjustCameraTurnScale(tempR.Pitch);
 
+			// Pitchが90度ならないように(オイラー角の制限)
 			if (tempR.Pitch > 85.f)
 				tempR.Pitch = 85.f;
 			else if (tempR.Pitch < -85.f)
 				tempR.Pitch = -85.f;
 
 			mSpringArm->SetRelativeRotation(tempR);
-
 
 			// Cubeを回転
 			// mCubesRootComponent->AddRelativeRotation(FRotator(0.f, -_axisValue * mCameraTurnScaleX, 0.f));
@@ -734,24 +721,20 @@ void AStageCube_1::MoveMouseY(const float _axisValue)
 		if (mCurrentSelectedGuideLine == mGuideLineZaxis)
 		{
 			// wiil be strange when turn on other side
-			mCurrentSelectedGuideLine->mRootComponent->AddRelativeRotation(FRotator(0.f, -_axisValue * guideLineTurnningScale, 0.f));
-
+			mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, -_axisValue * guideLineTurnningScale, 0.f)));
 		} // end if
 		else if (mCurrentSelectedGuideLine == mGuideLineXaxis)
 		{
 			// wiil be strange when turn on other side
-			mCurrentSelectedGuideLine->mRootComponent->AddRelativeRotation(FRotator(0.f, 0.f, _axisValue * guideLineTurnningScale));
-
+			mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, 0.f, _axisValue * guideLineTurnningScale)));
 		} // end if
 		else if (mCurrentSelectedGuideLine == mGuideLineYaxis)
 		{
+			// =================  Caution  8/21  ================
+			// ガイドライン Y のActorのRotation設定は他のガイドラインと違います、要注意です。
+			// (元々はPitchを回転すると、オイラー角の制限があった為に、こうになった)
 			// wiil be strange when turn on other side
-			// mCurrentSelectedGuideLine->mRootComponent->AddRelativeRotation(FRotator(-_axisValue * guideLineTurnningScale, 0.f, 0.f));
-
-			// MyCombineRotators Version
-			FRotator tempR = MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(-_axisValue * guideLineTurnningScale, 0.f, 0.f));
-			mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(tempR);
-
+			mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, 0.f, -_axisValue * guideLineTurnningScale)));
 		} // end if
 
 	} // end if
@@ -767,6 +750,7 @@ void AStageCube_1::MoveMouseY(const float _axisValue)
 
 		mCameraTurnScaleY = AdjustCameraTurnScale(tempR.Pitch);
 
+		// Pitchが90度ならないように(オイラー角の制限)
 		if (tempR.Pitch > 85.f)
 			tempR.Pitch = 85.f;
 		else if (tempR.Pitch < -85.f)
@@ -1079,11 +1063,14 @@ void AStageCube_1::SetGuideLinePosition()
 	{
 		FVector tempRelativeLocation = mCurrentSelectedCube->GetActorLocation() - this->GetActorLocation() ;
 
-		mGuideLineZaxis->SetActorRelativeLocation(FVector(0.f, 0.f, tempRelativeLocation.Z));
+		if (mGuideLineZaxis != NULL)
+			mGuideLineZaxis->SetActorRelativeLocation(FVector(0.f, 0.f, tempRelativeLocation.Z));
 
-		mGuideLineXaxis->SetActorRelativeLocation(FVector(tempRelativeLocation.X, 0.f, 0.f));
+		if (mGuideLineXaxis != NULL)
+			mGuideLineXaxis->SetActorRelativeLocation(FVector(tempRelativeLocation.X, 0.f, 0.f));
 
-		mGuideLineYaxis->SetActorRelativeLocation(FVector(0.f, tempRelativeLocation.Y, 0.f));
+		if (mGuideLineYaxis != NULL)
+			mGuideLineYaxis->SetActorRelativeLocation(FVector(0.f, tempRelativeLocation.Y, 0.f));
 
 		// set visibility
 		if (mGuideLineZaxis->mIsVisible == false)
@@ -1125,7 +1112,8 @@ void AStageCube_1::DeSelectCubeAndGuide(bool deSelectCube, bool deSelectGuide)
 		{
 			mCurrentSelectedCube->mIsSelected = false;
 			mCurrentSelectedCube->ChangeMaterialFunc();
-			mCurrentSelectedGuideLine = NULL;
+			mCurrentSelectedCube = NULL;
+			SetSelectingCube(false);
 		} // end if
 	} // end if
 
@@ -1135,11 +1123,14 @@ void AStageCube_1::DeSelectCubeAndGuide(bool deSelectCube, bool deSelectGuide)
 		if (mCurrentSelectedGuideLine != NULL)
 		{
 			DetachFromGuideLine();
+			SetSelectingGuideLine(false);
 			mCurrentSelectedGuideLine->mIsSelected = false;
 			mCurrentSelectedGuideLine->ChangeMaterialFunc();
 			mCurrentSelectedGuideLine = NULL;
 		} // end if
 	} // end if
+
+	ChangeAllGuideLinesVisibility(false);
 
 } // void DeSelectCubeAndGuide()
 
@@ -1197,15 +1188,15 @@ void AStageCube_1::NormalizeGuideRotation()
 		// 配列の回転
 		if (basicDegree == 90.f || basicDegree == -270.f)
 		{
-			RoatateTheCubesRight90(0);
+			RoatateTheCubesRight90(1);
 		} // end if
 		else if (basicDegree == 180.f || basicDegree == -180.f)
 		{
-			RoatateTheCubes180(0);
+			RoatateTheCubes180(1);
 		} // end if
 		else if (basicDegree == 270.f || basicDegree == -90.f)
 		{
-			RoatateTheCubesLeft90(0);
+			RoatateTheCubesLeft90(1);
 		} // end if
 
 	} // end if()
@@ -1213,28 +1204,30 @@ void AStageCube_1::NormalizeGuideRotation()
 	else if (mCurrentSelectedGuideLine == mGuideLineYaxis)
 	{
 		// 回転開始と完了の差から、基本回転するの角度を決める
-		float basicDegree = round((mCurrentSelectedGuideLine->GetActorRotation().Pitch - mStartRotateDegree.Pitch) / 90.f) * 90.f;
+		float basicDegree = round((mCurrentSelectedGuideLine->GetActorRotation().Roll - mStartRotateDegree.Roll) / 90.f) * 90.f;
 
 		// 角度確認用
 		// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Turquoise, FString::SanitizeFloat(basicDegree));
 
-		mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(FRotator(mStartRotateDegree.Pitch + basicDegree, 0.f, 0.f));
+		mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(FRotator(0.f, 90.f, mStartRotateDegree.Roll + basicDegree));
 
 		// 配列の回転
 		if (basicDegree == 90.f || basicDegree == -270.f)
 		{
-			RoatateTheCubesRight90(0);
+			RoatateTheCubesRight90(2);
 		} // end if
 		else if (basicDegree == 180.f || basicDegree == -180.f)
 		{
-			RoatateTheCubes180(0);
+			RoatateTheCubes180(2);
 		} // end if
 		else if (basicDegree == 270.f || basicDegree == -90.f)
 		{
-			RoatateTheCubesLeft90(0);
+			RoatateTheCubesLeft90(2);
 		} // end if
 
 	} // end if()
+
+	SetGuideLinePosition();
 
 } // void NormalizeGuideRotation()
 
