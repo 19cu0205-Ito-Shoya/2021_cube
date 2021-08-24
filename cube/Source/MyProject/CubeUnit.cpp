@@ -5,6 +5,7 @@
 // 作成日		：2021/08/11		単体Cubeの基本構成制作
 // 更新日		：2021/08/12		選択機能実装、マテリアル変えれる
 //				：2021/08/15		選択機能の回転用ガイドラインの処理追加
+//				：2021/08/23		選択機能のインプットイベントをStageCubeに移動した
 //-------------------------------------------------------------------
 
 #include "CubeUnit.h"
@@ -82,74 +83,6 @@ void ACubeUnit::Tick(float DeltaTime)
 
 void ACubeUnit::OnSelected(AActor* Target, FKey ButtonPressed)
 {
-	AActor* Owner1 = GetOwner();
-
-	// このCube今は未選択の時
-	if (mIsSelected == false)
-	{
-		mIsSelected = true;
-		ChangeMaterialFunc();
-
-		if (Owner1 != nullptr)
-		{
-			AStageCube_1* myStageCube = Cast< AStageCube_1>(Owner1);
-
-			// 既にCubeが選択している時
-			if (myStageCube->mCurrentSelectedCube != NULL)
-			{
-				myStageCube->mCurrentSelectedCube->mIsSelected = false;
-				myStageCube->mCurrentSelectedCube->ChangeMaterialFunc();
-
-				if (myStageCube->mCurrentSelectedGuideLine != NULL)
-				{
-					myStageCube->DetachFromGuideLine();
-					myStageCube->SetSelectingGuideLine(false);
-					myStageCube->mCurrentSelectedGuideLine->mIsSelected = false;
-					myStageCube->mCurrentSelectedGuideLine->ChangeMaterialFunc();
-					myStageCube->mCurrentSelectedGuideLine = NULL;
-				} // end if()
-
-			} // end if()
-			// Cubeが選択していない時
-			else myStageCube->ChangeAllGuideLinesVisibility(true);
-			
-
-			myStageCube->mCurrentSelectedCube = this;
-			myStageCube->SetGuideLinePosition();
-			myStageCube->SetSelectingCube(true);
-
-		} // end if()
-		
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("%s   Unit is Clicked~!"), *this->GetName()));
-
-	} // end if()
-	// このCube今は選択しているの時
-	else
-	{
-		mIsSelected = false;
-		ChangeMaterialFunc();
-
-		if (Owner1 != nullptr)
-		{
-			AStageCube_1* myStageCube = Cast< AStageCube_1>(Owner1);
-
-			if (myStageCube->mCurrentSelectedGuideLine != NULL)
-			{
-				myStageCube->DetachFromGuideLine();
-				myStageCube->SetSelectingGuideLine(false);
-				myStageCube->mCurrentSelectedGuideLine->mIsSelected = false;
-				myStageCube->mCurrentSelectedGuideLine->ChangeMaterialFunc();
-				myStageCube->mCurrentSelectedGuideLine = NULL;
-			} // end if()
-
-			myStageCube->mCurrentSelectedCube = NULL;
-			myStageCube->SetSelectingCube(false);
-			myStageCube->ChangeAllGuideLinesVisibility(false);
-		} // end if()
-
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("%s   Unit is Unclicked~!"), *this->GetName()));
-
-	} // end else
 
 } // void OnSelected
 
