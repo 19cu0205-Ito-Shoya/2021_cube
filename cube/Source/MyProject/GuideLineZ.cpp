@@ -5,6 +5,7 @@
 // 作成日		：2021/08/12		回転用ガイドラインの基本構成制作
 // 更新日		：2021/08/13		選択機能実装、マテリアル変えれる
 //				：2021/08/14		所属軸情報追加、表示非表示追加
+//				：2021/08/23		選択機能のインプットイベントをStageCubeに移動した
 //-------------------------------------------------------------------
 
 #include "GuideLineZ.h"
@@ -72,6 +73,10 @@ void AGuideLineZ::Tick(float DeltaTime)
 
 void AGuideLineZ::OnSelected(AActor* Target, FKey ButtonPressed)
 {
+
+	/*
+
+
 	AActor* Owner1 = GetOwner();
 
 	// 今は未選択の時
@@ -127,6 +132,9 @@ void AGuideLineZ::OnSelected(AActor* Target, FKey ButtonPressed)
 		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("%s   Line is Unclicked"), *this->GetName()));
 
 	} // end else
+
+
+	*/
 
 } // void OnSelected
 
