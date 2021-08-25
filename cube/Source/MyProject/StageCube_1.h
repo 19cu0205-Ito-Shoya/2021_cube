@@ -108,7 +108,7 @@ public:
 	// ガイドラインの可視性を変更
 	void ChangeAllGuideLinesVisibility(const bool isVisible);
 
-	// 
+	// ガイドラインをドラッグする時、選択していないガイドラインのを非表示
 	void ChangeUnSelecetedGuideLineVisibility();
 
 	void DeSelectCubeAndGuide( bool deSelectCube, bool deSelectGuide);

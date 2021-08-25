@@ -1336,12 +1336,6 @@ void AStageCube_1::SetGuideLinePosition()
 		if (mGuideLineYaxis != NULL)
 			mGuideLineYaxis->SetActorRelativeLocation(FVector(0.f, tempRelativeLocation.Y, 0.f));
 
-		// set visibility
-		if (mGuideLineZaxis->mIsVisible == false)
-		{
-			mGuideLineZaxis->mIsVisible = true;
-			mGuideLineZaxis->ChangeVisibilityFunc();
-		} // end if()
 	} // end if
 
 } // void SetGuideLinePosition()
