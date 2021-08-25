@@ -48,6 +48,8 @@ AStageCube_1::AStageCube_1()
 	, mStartRotateDegree(0.f,0.f,0.f)
 	, mouseTraceDistance(1000.f)
 	, mDrawDebugType(EDrawDebugTrace::None)
+	, mCubeUnitScale(FVector(1.0f))
+	, mCubeMesh1(NULL)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -121,9 +123,45 @@ void AStageCube_1::BeginPlay()
 		// *** For test position 8/12
 		int tempSerialNum = 1000;
 
+		 // GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("----  %s"), *mCubeMesh2->GetPathName()));
+
 		for (int i = 0; i <= 26; ++i, ++counter, ++yC) {
 
+
+			// Test Spawnning Diff Cube  21-08-25
+
+			/*
+
+			FTransform SpawnTransform(GetActorRotation(), GetActorLocation(), mCubeUnitScale);
+			cubeGen = Cast<ACubeUnit>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, bp_CubeUnit, SpawnTransform));
+			if (cubeGen != nullptr)
+			{
+				// Spawn -> SpawnedActor's Construct -> do something -> FinishSpawningActor -> SpawnedActor's BeginPlay
+
+
+				cubeGen->mCubeMesh->SetStaticMesh(mCubeMesh7);
+				cubeGen->mCubeMesh->SetMaterial(0, mCubeMaterial_1);
+				cubeGen->TestSet456(1);
+
+				// cubeGen->SetMeshAndMaterialOnBegin(mCubeMesh1, mCubeMaterial_1, mCubeMaterial_2, mCubeMaterial_3);
+				
+				UGameplayStatics::FinishSpawningActor(cubeGen, SpawnTransform);
+			}
+			else GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("cubeGen error!")));
+			
+			if (mCubeMesh1 == NULL)
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("MESHHHHHHHHHHH error!")));
+
+			*/
+	
+
+
+
+
+
+
 			cubeGen = GetWorld()->SpawnActor<ACubeUnit>(bp_CubeUnit);				// スポーンCube Actor
+
 
 			// 配列の位置計算
 			remainder = counter % 3;
@@ -281,7 +319,6 @@ void AStageCube_1::BeginPlay()
 	// Replace3Array();
 	// RoatateTheCubesLeft90(0);
 
-
 } // BeginPlay()
 
 
@@ -289,6 +326,10 @@ void AStageCube_1::BeginPlay()
 void AStageCube_1::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+
+	// CubeArray3D[0][0][0]->SetMeshAndMaterialOnBegin(mCubeMesh1, mCubeMaterial_1, mCubeMaterial_2, mCubeMaterial_3);
+
 
 } // Tick
 
@@ -809,6 +850,7 @@ void AStageCube_1::MouseLeftButtonPressed()
 							{
 								mStartRotateDegree = mCurrentSelectedGuideLine->GetActorRotation();
 								isDraggingGuideLine = true;
+								ChangeUnSelecetedGuideLineVisibility();
 							} // end if()
 							else isMovingCamera = true;
 						} // end if()
@@ -993,6 +1035,7 @@ void AStageCube_1::MouseLeftButtonReleased()
 		{
 			NormalizeGuideRotation();
 			isDraggingGuideLine = false;
+			ChangeUnSelecetedGuideLineVisibility();
 
 			// カーソルの移動距離が10以下なら、選択を解除
 			if (distance < minimumCursorsDisplacement)
@@ -1042,7 +1085,6 @@ void AStageCube_1::MouseLeftButtonReleased()
 
 	isMovingCamera = false;
 	isDraggingGuideLine = false;
-
 
 	// GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Orange, FString::Printf(TEXT("Left released")));
 
@@ -1325,6 +1367,30 @@ void AStageCube_1::ChangeAllGuideLinesVisibility( const bool isVisible)
 	} // end if()
 
 } // void ChangeAllGuideLinesVisibility()
+
+void AStageCube_1::ChangeUnSelecetedGuideLineVisibility()
+{
+	if (mCurrentSelectedGuideLine == NULL)
+		return;
+
+	if (mGuideLineXaxis != mCurrentSelectedGuideLine)
+	{
+		mGuideLineXaxis->mIsVisible = !mGuideLineXaxis->mIsVisible;
+		mGuideLineXaxis->ChangeVisibilityFunc();
+	} // end if()
+
+	if (mGuideLineYaxis != mCurrentSelectedGuideLine)
+	{
+		mGuideLineYaxis->mIsVisible = !mGuideLineYaxis->mIsVisible;
+		mGuideLineYaxis->ChangeVisibilityFunc();
+	} // end if()
+
+	if (mGuideLineZaxis != mCurrentSelectedGuideLine)
+	{
+		mGuideLineZaxis->mIsVisible = !mGuideLineZaxis->mIsVisible;
+		mGuideLineZaxis->ChangeVisibilityFunc();
+	} // end if()
+} // void ChangeUnSelecetedGuideLineVisibility()
 
 void AStageCube_1::DeSelectCubeAndGuide(bool deSelectCube, bool deSelectGuide)
 {
