@@ -15,6 +15,7 @@
 //				：2021/08/21		ガイドラインYの修正
 //				：2021/08/22		選択方法の修正
 //				：2021/08/23		マウスのインプットイベントをStageCubeにまとめる
+//				：2021/08/24		マウスのライントレース方法を変更
 //---------------------------------------------------------------------------------
 
 #pragma once
@@ -106,6 +107,9 @@ public:
 
 	// ガイドラインの可視性を変更
 	void ChangeAllGuideLinesVisibility(const bool isVisible);
+
+	// 
+	void ChangeUnSelecetedGuideLineVisibility();
 
 	void DeSelectCubeAndGuide( bool deSelectCube, bool deSelectGuide);
 
@@ -206,6 +210,50 @@ public:
 	// ガイドライン回転開始の角度
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
 		FRotator mStartRotateDegree;
+
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		FVector mCubeUnitScale;
+
+	// 単体Cube、それぞれのメッシュ
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh1;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh2;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh3;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh4;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh5;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh6;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh7;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh8;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh9;
+
+
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		TSubclassOf<ACubeUnit> mBpCube1;
+
+
+
+	// Default Material デフォルトマテリアル
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings")
+		UMaterial* mCubeMaterial_1;
+
+	// Chosen Material 選択されたマテリアル
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings")
+		UMaterial* mCubeMaterial_2;
+
+	// Cursor Over's Material マウスが上にいる時のマテリアル
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings")
+		UMaterial* mCubeMaterial_3;
+
 
 private:
 

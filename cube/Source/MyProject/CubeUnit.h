@@ -64,7 +64,7 @@ public:
 	UFUNCTION()
 		void ChangeMaterialFunc();
 
-private:
+public:
 	// 本体のメッシュ
 	UPROPERTY(EditAnywhere, Category = "CubeDetails|Mesh")
 		UStaticMeshComponent* mCubeMesh;
@@ -78,16 +78,27 @@ private:
 		UMaterial* mCubeMaterial_2;
 
 	// Cursor Over's Material マウスが上にいる時のマテリアル
-	UPROPERTY(EditAnywhere, Category = "GuideLineDetails|Mesh")
+	UPROPERTY(EditAnywhere, Category = "CubeDetails|Mesh")
 		UMaterial* mCubeMaterial_3;
 
 	// 保留中マテリアル
 	UPROPERTY(EditAnywhere, Category = "CubeDetails|Mesh")
 		UMaterialInstanceDynamic* mCubeMaterial_Instance;
 
+public:
+	UFUNCTION()
+		void SetMeshAndMaterialOnBegin(UStaticMesh* newMesh, UMaterial* newMaterial_1, UMaterial* newMaterial_2, UMaterial* newMaterial_3);
 
+	UFUNCTION()
+		void Test123(int x);
+
+	UFUNCTION()
+		void TestSet456(int y);
 
 private:
+
+	int testInt;
+
 	// UFUNCTION()
 	//	void ChangeMaterialMode(int index, UMaterial* newMaterial);
 
@@ -96,6 +107,15 @@ private:
 
 
 
+public:
+
+	// マウスカーソルが重ねている時
+	UFUNCTION()
+		void OnOver2(UPrimitiveComponent* Target);
+
+	// マウスカーソルがこのCubeから離れた時
+	UFUNCTION()
+		void EndOver2(UPrimitiveComponent* Target);
 
 
 };

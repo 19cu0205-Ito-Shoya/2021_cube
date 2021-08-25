@@ -25,6 +25,7 @@ ACubeUnit::ACubeUnit()
 	, mXCoordinate(0)
 	, mYCoordinate(0)
 	, mZCoordinate(0)
+	, testInt(0)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -41,7 +42,20 @@ ACubeUnit::ACubeUnit()
 	mCubeMaterial_2 = CreateDefaultSubobject<UMaterial>(TEXT("CubeMaterial2"));
 
 
-	OnClicked.AddUniqueDynamic(this, &ACubeUnit::OnSelected);
+	//OnClicked.AddUniqueDynamic(this, &ACubeUnit::OnSelected);
+
+
+	// マウスカーソルが重ねている時
+	mCubeMesh->OnBeginCursorOver.AddUniqueDynamic(this, &ACubeUnit::OnOver2);
+	mCubeMesh->OnEndCursorOver.AddUniqueDynamic(this, &ACubeUnit::EndOver2);
+	//OnBeginCursorOver.AddUniqueDynamic(this, &ACubeUnit::OnOver);
+	//OnEndCursorOver.AddUniqueDynamic(this, &ACubeUnit::EndOver);
+
+
+	// Test Spawnning Diff Cube  21-08-25
+	if (testInt == 1)
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("CubeUnit ConsTr")));
+
 
 }
 
@@ -49,8 +63,15 @@ ACubeUnit::ACubeUnit()
 void ACubeUnit::BeginPlay()
 {
 	Super::BeginPlay();
-	
 
+	if (testInt == 1)
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("CubeUnit BeginPlay")));
+
+
+	APlayerController* myPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	 myPlayerController->bEnableMouseOverEvents = true;
+	
+	
 	if (mCubeMesh != NULL)
 	{
 		// static ConstructorHelpers::FObjectFinder<UMaterial> FoundMaterial(TEXT("/Game/Material/OutLine_V.OutLine_V'"));
@@ -68,7 +89,7 @@ void ACubeUnit::BeginPlay()
 
 
 	} // end if()
-
+	
 
 } // void BeginPlay()
 
@@ -81,10 +102,103 @@ void ACubeUnit::Tick(float DeltaTime)
 } // void Tick()
 
 
+void ACubeUnit::SetMeshAndMaterialOnBegin(UStaticMesh* newMesh, UMaterial* newMaterial_1, UMaterial* newMaterial_2, UMaterial* newMaterial_3)
+{
+
+	/*
+	const ConstructorHelpers::FObjectFinder<UStaticMesh> WeaponA(TEXT("StaticMesh'/Game/Mesh/Autumn_Stage/Autumn_Cube_3.Autumn_Cube_3'"));
+
+	// check if path is valid
+	if (WeaponA.Succeeded())
+	{
+		// mesh = valid path
+		mCubeMesh->SetStaticMesh(WeaponA.Object);
+	}
+	*/
+
+	if (newMesh != NULL)
+	{
+
+
+
+		// mCubeMesh->SetStaticMesh(newMesh);
+
+		if (newMaterial_1 != NULL && newMaterial_2 != NULL && newMaterial_3 != NULL)
+		{
+			mCubeMaterial_1 = newMaterial_1;
+			mCubeMaterial_2 = newMaterial_2;
+			mCubeMaterial_3 = newMaterial_3;
+
+			mCubeMesh->SetMaterial(0, mCubeMaterial_1);
+		} // end if()
+		else GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("newMaterial is NULL!")));
+		
+		//else UE_LOG(LogTemp, Log, TEXT("newMaterial is NULL"));
+
+	} // end if()
+	else GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("newMesh is NULL!")));
+
+	// else UE_LOG(LogTemp, Log, TEXT("newMesh is NULL"));
+
+}  // void SetMeshAndMaterialOnBegin
+
+void ACubeUnit::Test123(int x)
+{
+	 GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("-----  %d"), x));
+
+}
+
+void ACubeUnit::TestSet456(int y)
+{
+	testInt = y;
+}
+
 void ACubeUnit::OnSelected(AActor* Target, FKey ButtonPressed)
 {
 
 } // void OnSelected
+
+
+
+void ACubeUnit::OnOver2(UPrimitiveComponent* Target)
+{
+	if (mCubeMesh != NULL)
+	{
+		if (mIsSelected == false)
+		{
+			if (mCubeMaterial_3 != NULL)
+			{
+				mCubeMesh->SetMaterial(0, mCubeMaterial_3);
+			} // end if()
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("CubeMaterial Loading Failed")));
+			} // end else			
+		} // end if()
+	} // end if()
+} // void OnOver()
+
+
+void ACubeUnit::EndOver2(UPrimitiveComponent* Target)
+{
+	if (mCubeMesh != NULL)
+	{
+		if (mIsSelected == false)
+		{
+			if (mCubeMaterial_1 != NULL)
+			{
+				mCubeMesh->SetMaterial(0, mCubeMaterial_1);
+			} // end if()
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("CubeMaterial Loading Failed")));
+			} // end else
+		} // end if()
+	} // end if()
+
+} // void EndOver2
+
+
 
 void ACubeUnit::ChangeMaterialFunc()
 {
