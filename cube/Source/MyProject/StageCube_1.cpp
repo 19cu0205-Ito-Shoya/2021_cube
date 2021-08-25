@@ -13,10 +13,14 @@
 //				：2021/08/19		Camera回転の矯正、ガイドライン回転の矯正
 //				：2021/08/20		回転の修正、回転計算方法はQuaternionから計算に変更
 //				：2021/08/21		ガイドラインYの修正
+//				：2021/08/22		選択方法の修正
+//				：2021/08/23		マウスのインプットイベントをStageCubeにまとめる
+//				：2021/08/24		マウスのライントレース方法を変更
 //---------------------------------------------------------------------------------
 
 #include "StageCube_1.h"
 #include "Kismet/KismetMathLibrary.h"
+
 #include "Engine.h"
 
 // コンストラクタ
@@ -33,13 +37,19 @@ AStageCube_1::AStageCube_1()
 	, isSelectingCube(false)
 	, isSelectingGuideLine(false)
 	, isDraggingGuideLine(false)
+	, mStartDraggingPosition(0.f, 0.f)
 	, isMovingCamera(false)
+	, minimumCursorsDisplacement(3.f)
 	, mCameraTurnScaleX(3.f)
 	, mCameraTurnScaleY(3.f)
 	, mMouseXvalue(0.f)
 	, mMouseYvalue(0.f)
 	, guideLineTurnningScale(5.f)
 	, mStartRotateDegree(0.f,0.f,0.f)
+	, mouseTraceDistance(1000.f)
+	, mDrawDebugType(EDrawDebugTrace::None)
+	, mCubeUnitScale(FVector(1.0f))
+	, mCubeMesh1(NULL)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -68,8 +78,6 @@ AStageCube_1::AStageCube_1()
 	// カメラにスプリングアームをアタッチ
 	mCamera->SetupAttachment(mSpringArm, USpringArmComponent::SocketName);
 
-
-	OnClicked.AddUniqueDynamic(this, &AStageCube_1::OnSelected);
 
 }
 
@@ -115,9 +123,45 @@ void AStageCube_1::BeginPlay()
 		// *** For test position 8/12
 		int tempSerialNum = 1000;
 
+		 // GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("----  %s"), *mCubeMesh2->GetPathName()));
+
 		for (int i = 0; i <= 26; ++i, ++counter, ++yC) {
 
+
+			// Test Spawnning Diff Cube  21-08-25
+
+			/*
+
+			FTransform SpawnTransform(GetActorRotation(), GetActorLocation(), mCubeUnitScale);
+			cubeGen = Cast<ACubeUnit>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, bp_CubeUnit, SpawnTransform));
+			if (cubeGen != nullptr)
+			{
+				// Spawn -> SpawnedActor's Construct -> do something -> FinishSpawningActor -> SpawnedActor's BeginPlay
+
+
+				cubeGen->mCubeMesh->SetStaticMesh(mCubeMesh7);
+				cubeGen->mCubeMesh->SetMaterial(0, mCubeMaterial_1);
+				cubeGen->TestSet456(1);
+
+				// cubeGen->SetMeshAndMaterialOnBegin(mCubeMesh1, mCubeMaterial_1, mCubeMaterial_2, mCubeMaterial_3);
+				
+				UGameplayStatics::FinishSpawningActor(cubeGen, SpawnTransform);
+			}
+			else GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("cubeGen error!")));
+			
+			if (mCubeMesh1 == NULL)
+				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("MESHHHHHHHHHHH error!")));
+
+			*/
+	
+
+
+
+
+
+
 			cubeGen = GetWorld()->SpawnActor<ACubeUnit>(bp_CubeUnit);				// スポーンCube Actor
+
 
 			// 配列の位置計算
 			remainder = counter % 3;
@@ -275,7 +319,6 @@ void AStageCube_1::BeginPlay()
 	// Replace3Array();
 	// RoatateTheCubesLeft90(0);
 
-
 } // BeginPlay()
 
 
@@ -283,6 +326,10 @@ void AStageCube_1::BeginPlay()
 void AStageCube_1::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+
+	// CubeArray3D[0][0][0]->SetMeshAndMaterialOnBegin(mCubeMesh1, mCubeMaterial_1, mCubeMaterial_2, mCubeMaterial_3);
+
 
 } // Tick
 
@@ -773,44 +820,273 @@ void AStageCube_1::MoveMouseY(const float _axisValue)
 
 void AStageCube_1::MouseLeftButtonPressed()
 {
+	// カーソルの位置を記録
+	Cast<APlayerController>(GetController())->GetMousePosition(mStartDraggingPosition.X, mStartDraggingPosition.Y);
+
 	if (isSelectingCube && isSelectingGuideLine)
 	{
-		mStartRotateDegree = mCurrentSelectedGuideLine->GetActorRotation();
-		isDraggingGuideLine = true;
+		if (isDraggingGuideLine == false)
+		{
+			// マウスカーソルの世界位置でLine Traceする、その結果を得る
+			FHitResult MouseHitResult;
+
+			// 前の方法、今とほぼ同じ
+			// Cast<APlayerController>(GetController())->GetHitResultUnderCursor(ECC_Visibility, false, MouseHitResult);
+
+			if (MouseLineTrace(MouseHitResult) && MouseHitResult.bBlockingHit)
+			{
+				// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("is Hitting %s"), *MouseHitResult.GetActor()->GetClass()->GetName()));
+
+				if (MouseHitResult.GetActor() != NULL)
+				{
+					// is guide line
+					if (MouseHitResult.GetActor()->IsA<AGuideLineZ>())
+					{
+						AGuideLineZ* hitGuideLine = Cast<AGuideLineZ>(MouseHitResult.GetActor());
+
+						if (hitGuideLine != NULL)
+						{
+							if (hitGuideLine == mCurrentSelectedGuideLine)
+							{
+								mStartRotateDegree = mCurrentSelectedGuideLine->GetActorRotation();
+								isDraggingGuideLine = true;
+								ChangeUnSelecetedGuideLineVisibility();
+							} // end if()
+							else isMovingCamera = true;
+						} // end if()
+						else isMovingCamera = true;
+					} // end if()
+					else isMovingCamera = true;
+				} // end if()
+				else isMovingCamera = true;
+				// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("is Hitting %s"), *MouseHitResult.Actor.Get()->GetFullName()));
+			} // end if()
+			else isMovingCamera = true;
+		} // end if()
 	} // end if()
 	else
 	{
 		isMovingCamera = true;
 	} // end else
 
-	 GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Orange, FString::Printf(TEXT("Left  Pressed!!")));
+	//  GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Orange, FString::Printf(TEXT("Left  Pressed!!")));
 
 } // void MouseLeftButtonPressed()
 
 
 void AStageCube_1::MouseLeftButtonReleased()
 {
-	if (isDraggingGuideLine && mCurrentSelectedGuideLine != NULL)
+	// 移動後のカーソルの位置と開始位置を計算する
+	FVector2D curCursorPosition;
+	Cast<APlayerController>(GetController())->GetMousePosition(curCursorPosition.X, curCursorPosition.Y);
+	float distance = (curCursorPosition - mStartDraggingPosition).Size();
+	// GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Emerald, FString::SanitizeFloat(distance));
+
+	// ガイドラインをドラッグしていない
+	if ( isDraggingGuideLine == false && distance < minimumCursorsDisplacement)
 	{
-		NormalizeGuideRotation();
+		// マウスカーソルの世界位置でLine Traceする、その結果を得る
+		FHitResult MouseHitResult;
 
-		// dont need
-		if (mCurrentSelectedGuideLine == mGuideLineZaxis)
+		// ========= For Debug =========
+		// Cast<APlayerController>(GetController())->GetHitResultUnderCursor(ECC_Visibility, false, MouseHitResult);
+		// TEST mouse Direction
+		/*
+		FVector Location, Direction;
+		Cast<APlayerController>(GetController())->DeprojectMousePositionToWorld(Location, Direction);
+		DrawDebugLine(GetWorld(), Location, Location + Direction * 1000.0f, FColor::Red, true);
+		*/
+
+		// マウスカーソルの世界位置でLine Traceする、その結果を得る
+		// 成功なら
+		if (MouseLineTrace(MouseHitResult) && MouseHitResult.bBlockingHit)
 		{
-			float newRot = 0.f;
-			// mCurrentSelectedGuideLine->AddActorLocalRotation(FRotator(_axisValue * guideLineTurnningScale, 0.f, 0.f));
 
+			// Test for Hit object's name
+			// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("is Hitting %s"), *MouseHitResult.GetActor()->GetClass()->GetName()));
+
+			if (MouseHitResult.GetActor() != NULL)
+			{
+				// ======================================  is cube unit   ======================================
+				// ヒットしたActorは単位Cubeなら
+				if (MouseHitResult.GetActor()->IsA<ACubeUnit>())
+				{
+					ACubeUnit* hitCube = Cast<ACubeUnit>(MouseHitResult.GetActor());
+
+					if (hitCube != NULL)
+					{
+						// このCube今は未選択の時
+						if (hitCube->mIsSelected == false)
+						{
+							hitCube->mIsSelected = true;
+							hitCube->ChangeMaterialFunc();
+
+							// 既にCubeが選択している時
+							if (mCurrentSelectedCube != NULL)
+							{
+								mCurrentSelectedCube->mIsSelected = false;
+								mCurrentSelectedCube->ChangeMaterialFunc();
+
+								if (mCurrentSelectedGuideLine != NULL)
+								{
+									DetachFromGuideLine();
+									SetSelectingGuideLine(false);
+									mCurrentSelectedGuideLine->mIsSelected = false;
+									mCurrentSelectedGuideLine->ChangeMaterialFunc();
+									mCurrentSelectedGuideLine = NULL;
+								} // end if()
+
+							} // end if()
+							// Cubeが選択していない時
+							else ChangeAllGuideLinesVisibility(true);
+
+							mCurrentSelectedCube = hitCube;
+							SetGuideLinePosition();
+							SetSelectingCube(true);
+
+							// GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("%s   Unit is Clicked~!"), *hitCube->GetName()));
+
+						} // end if()
+						// このCube今は選択しているの時
+						else
+						{
+							hitCube->mIsSelected = false;
+							hitCube->ChangeMaterialFunc();
+
+							if (mCurrentSelectedGuideLine != NULL)
+							{
+								DetachFromGuideLine();
+								SetSelectingGuideLine(false);
+								mCurrentSelectedGuideLine->mIsSelected = false;
+								mCurrentSelectedGuideLine->ChangeMaterialFunc();
+								mCurrentSelectedGuideLine = NULL;
+							} // end if()
+
+							mCurrentSelectedCube = NULL;
+							SetSelectingCube(false);
+							ChangeAllGuideLinesVisibility(false);
+
+							// GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("%s   Unit is Unclicked~!"), *hitCube->GetName()));
+
+						} // end else
+					} // end if()
+				} // end if()
+				// ======================================  is Guide line   ======================================
+				// ヒットしたActorはガイドラインなら
+				else if (MouseHitResult.GetActor()->IsA<AGuideLineZ>())
+				{
+					AGuideLineZ* hitGuideLine = Cast<AGuideLineZ>(MouseHitResult.GetActor());
+
+					if (hitGuideLine != NULL)
+					{
+						// 今は未選択の時
+						if (hitGuideLine->mIsSelected == false)
+						{
+							hitGuideLine->mIsSelected = true;
+							hitGuideLine->ChangeMaterialFunc();
+
+								// 選択しているガイドライン解除
+								if (mCurrentSelectedGuideLine != NULL)
+								{
+									mCurrentSelectedGuideLine->mIsSelected = false;
+									mCurrentSelectedGuideLine->ChangeMaterialFunc();
+
+									DetachFromGuideLine();
+								} // end if()
+
+								mCurrentSelectedGuideLine = hitGuideLine;
+
+								// ガイドラインにアタッチ
+								// mode 0 = XY-Plane(Z-axis),  1 = YZ-Plane(X-axis),  2 = XZ-Plane(Y-axis)
+								AttachToGuideLine(hitGuideLine->mode);
+								SetSelectingGuideLine(true);
+
+							// GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("%s   Line is Clicked"), *hitGuideLine->GetName()));
+
+						} // end if()
+						// 選択しているの時
+						else
+						{
+							hitGuideLine->mIsSelected = false;
+							hitGuideLine->ChangeMaterialFunc();
+
+							DetachFromGuideLine();
+							SetSelectingGuideLine(false);
+
+							mCurrentSelectedGuideLine = NULL;
+
+							// GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("%s   Line is Unclicked"), *hitGuideLine->GetName()));
+
+						} // end else
+					} // end if()
+				} // end if()
+
+
+			} // end if()
+
+			// GEngine->AddOnScreenDebugMessage(-1, 1.1f, FColor::Red, FString::Printf(TEXT("is Hitting %s"), *MouseHitResult.Actor.Get()->GetFullName()));
 		} // end if()
-
-
-		isDraggingGuideLine = false;
-	} // end if
+	} // end if()
+	// ガイドラインをドラッグしている
 	else
 	{
-		isMovingCamera = false;
+		// ガイドラインを選択しているとガイドラインをドラッグしている
+		if (isDraggingGuideLine && mCurrentSelectedGuideLine != NULL)
+		{
+			NormalizeGuideRotation();
+			isDraggingGuideLine = false;
+			ChangeUnSelecetedGuideLineVisibility();
+
+			// カーソルの移動距離が10以下なら、選択を解除
+			if (distance < minimumCursorsDisplacement)
+			{
+				// マウスカーソルの世界位置でLine Traceする、その結果を得る
+				FHitResult MouseHitResult;
+				// Cast<APlayerController>(GetController())->GetHitResultUnderCursor(ECC_Visibility, false, MouseHitResult);
+
+				if (MouseLineTrace(MouseHitResult) && MouseHitResult.bBlockingHit)
+				{
+					// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("is Hitting %s"), *MouseHitResult.GetActor()->GetClass()->GetName()));
+
+					if (MouseHitResult.GetActor() != NULL)
+					{
+						// ヒットしたActorはガイドラインなら
+						if (MouseHitResult.GetActor()->IsA<AGuideLineZ>())
+						{
+							AGuideLineZ* hitGuideLine = Cast<AGuideLineZ>(MouseHitResult.GetActor());
+
+							if (hitGuideLine != NULL)
+							{
+								if (hitGuideLine == mCurrentSelectedGuideLine)
+								{
+									hitGuideLine->mIsSelected = false;
+									hitGuideLine->ChangeMaterialFunc();
+
+									DetachFromGuideLine();
+									SetSelectingGuideLine(false);
+
+									mCurrentSelectedGuideLine = NULL;
+
+									// GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("%s   Line is Unclicked"), *hitGuideLine->GetName()));
+								} // end if()
+							} // end if()
+						} // end if()
+					} // end if()
+
+					// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("is Hitting %s"), *MouseHitResult.Actor.Get()->GetFullName()));
+				} // end if()
+			} // end if()
+		} // end if
+		else
+		{
+			isMovingCamera = false;
+		} // end else
 	} // end else
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Orange, FString::Printf(TEXT("Left released")));
+	isMovingCamera = false;
+	isDraggingGuideLine = false;
+
+	// GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Orange, FString::Printf(TEXT("Left released")));
 
 } // void MouseLeftButtonReleased()
 
@@ -866,30 +1142,21 @@ void AStageCube_1::Replace3Array()
 
 } // void Replace3Array()
 
-
-// cant active this　but doesnt need it anymore
-// change to cube unit -> get parent? -> cast and call this
-void AStageCube_1::OnSelected(AActor* Target, FKey ButtonPressed)
+// マウスカーソルからのライントレース
+bool AStageCube_1::MouseLineTrace(FHitResult& MouseHitResult)
 {
+	FVector mouseWorldLocation, mouseWorldDirection, traceEndPoint;
+	Cast<APlayerController>(GetController())->DeprojectMousePositionToWorld(mouseWorldLocation, mouseWorldDirection);
 
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("ALL Clicked! (StageCube_1)")));
+	traceEndPoint = mouseWorldLocation + (mouseWorldDirection * mouseTraceDistance);
 
+	TArray<AActor*> ignoreActors;
+	ignoreActors.Add(this);
 
-	if (mCurrentSelectedCube != NULL)
-	{
-		mCurrentSelectedCube->mIsSelected = false;
-		mCurrentSelectedCube->ChangeMaterialFunc();
+	bool isHit = UKismetSystemLibrary::LineTraceSingleByProfile(this, mouseWorldLocation, traceEndPoint, FName("MouseLineTrace"), false, ignoreActors, mDrawDebugType.GetValue(), MouseHitResult, true, FLinearColor::Green, FLinearColor::Red, 5.1f);
 
-		mCurrentSelectedCube = Cast<ACubeUnit>(Target);
-
-	} // end if()
-	else
-	{
-		mCurrentSelectedCube = Cast<ACubeUnit>(Target);
-	} // end else
-
-} // void OnSelected()
-
+	return isHit;
+} // bool MouseLineTrace()
 
 // mode 0 = XY-Plane(Z-axis),  1 = YZ-Plane(X-axis),  2 = XZ-Plane(Y-axis)
 void AStageCube_1::AttachToGuideLine( const int mode)
@@ -909,7 +1176,7 @@ void AStageCube_1::AttachToGuideLine( const int mode)
 
 		if (CubeArray3D[i][j][k] != NULL)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("===== %s"), *CubeArray3D[i][j][k]->GetName()));
+			// GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT("Current Select Cube: %s"), *CubeArray3D[i][j][k]->GetName()));
 
 			// === guide Z =====
 			if (mode == 0)
@@ -924,7 +1191,7 @@ void AStageCube_1::AttachToGuideLine( const int mode)
 							{
 								CubeArray3D[i][x][y]->AttachToActor(mGuideLineZaxis, AttachRules);
 
-								GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, FString::Printf(TEXT("Attach  %s  To GuideLineZ"), *CubeArray3D[i][x][y]->GetName()));
+								// GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, FString::Printf(TEXT("Attach  %s  To GuideLineZ"), *CubeArray3D[i][x][y]->GetName()));
 
 							} // end if()
 							else GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("mGuideLineZaxis is NULL")));
@@ -944,7 +1211,7 @@ void AStageCube_1::AttachToGuideLine( const int mode)
 							if (mGuideLineXaxis != NULL)
 							{
 								CubeArray3D[z][j][y]->AttachToActor(mGuideLineXaxis, AttachRules);
-								GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Attach  %s  To GuideLineX"), *CubeArray3D[z][j][y]->GetName()));
+								// GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Attach  %s  To GuideLineX"), *CubeArray3D[z][j][y]->GetName()));
 							} // end if()
 						} // end if()
 						else GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Detach Failed! One cube is NULL")));
@@ -963,7 +1230,7 @@ void AStageCube_1::AttachToGuideLine( const int mode)
 							if (mGuideLineYaxis != NULL)
 							{
 								CubeArray3D[z][x][k]->AttachToActor(mGuideLineYaxis, AttachRules);
-								GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Attach  %s  To GuideLineY"), *CubeArray3D[z][x][k]->GetName()));
+								// GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Attach  %s  To GuideLineY"), *CubeArray3D[z][x][k]->GetName()));
 							} // end if()
 						} // end if()
 						else GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Detach Failed! One cube is NULL")));
@@ -1003,8 +1270,7 @@ void AStageCube_1::DetachFromGuideLine()
 					{
 						CubeArray3D[i][x][y]->AttachToComponent(mCubesRootComponent, AttachRules);
 
-						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Detach  %s  From GuideLineZ"), *CubeArray3D[i][x][y]->GetName()));
-
+						// GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Detach  %s  From GuideLineZ"), *CubeArray3D[i][x][y]->GetName()));
 					} // end if()
 					else GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Detach Failed! One cube is NULL")));
 				} // end for
@@ -1022,8 +1288,7 @@ void AStageCube_1::DetachFromGuideLine()
 					if (CubeArray3D[z][j][y] != NULL)
 					{
 						CubeArray3D[z][j][y]->AttachToComponent(mCubesRootComponent, AttachRules);
-						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Detach  %s  From GuideLineX"), *CubeArray3D[z][j][y]->GetName()));
-
+						// GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Detach  %s  From GuideLineX"), *CubeArray3D[z][j][y]->GetName()));
 					} // end if()
 					else GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Detach Failed! One cube is NULL")));
 				} // end for
@@ -1041,8 +1306,7 @@ void AStageCube_1::DetachFromGuideLine()
 					if (CubeArray3D[z][x][k] != NULL)
 					{
 						CubeArray3D[z][x][k]->AttachToComponent(mCubesRootComponent, AttachRules);
-						GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Detach  %s  From GuideLineY"), *CubeArray3D[z][x][k]->GetName()));
-
+						// GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::Printf(TEXT("Detach  %s  From GuideLineY"), *CubeArray3D[z][x][k]->GetName()));
 					} // end if()
 					else GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("Detach Failed! One cube is NULL")));
 				} // end for
@@ -1072,12 +1336,6 @@ void AStageCube_1::SetGuideLinePosition()
 		if (mGuideLineYaxis != NULL)
 			mGuideLineYaxis->SetActorRelativeLocation(FVector(0.f, tempRelativeLocation.Y, 0.f));
 
-		// set visibility
-		if (mGuideLineZaxis->mIsVisible == false)
-		{
-			mGuideLineZaxis->mIsVisible = true;
-			mGuideLineZaxis->ChangeVisibilityFunc();
-		} // end if()
 	} // end if
 
 } // void SetGuideLinePosition()
@@ -1103,6 +1361,30 @@ void AStageCube_1::ChangeAllGuideLinesVisibility( const bool isVisible)
 	} // end if()
 
 } // void ChangeAllGuideLinesVisibility()
+
+void AStageCube_1::ChangeUnSelecetedGuideLineVisibility()
+{
+	if (mCurrentSelectedGuideLine == NULL)
+		return;
+
+	if (mGuideLineXaxis != mCurrentSelectedGuideLine)
+	{
+		mGuideLineXaxis->mIsVisible = !mGuideLineXaxis->mIsVisible;
+		mGuideLineXaxis->ChangeVisibilityFunc();
+	} // end if()
+
+	if (mGuideLineYaxis != mCurrentSelectedGuideLine)
+	{
+		mGuideLineYaxis->mIsVisible = !mGuideLineYaxis->mIsVisible;
+		mGuideLineYaxis->ChangeVisibilityFunc();
+	} // end if()
+
+	if (mGuideLineZaxis != mCurrentSelectedGuideLine)
+	{
+		mGuideLineZaxis->mIsVisible = !mGuideLineZaxis->mIsVisible;
+		mGuideLineZaxis->ChangeVisibilityFunc();
+	} // end if()
+} // void ChangeUnSelecetedGuideLineVisibility()
 
 void AStageCube_1::DeSelectCubeAndGuide(bool deSelectCube, bool deSelectGuide)
 {

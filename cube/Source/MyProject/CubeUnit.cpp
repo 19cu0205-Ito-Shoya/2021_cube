@@ -5,6 +5,7 @@
 // 作成日		：2021/08/11		単体Cubeの基本構成制作
 // 更新日		：2021/08/12		選択機能実装、マテリアル変えれる
 //				：2021/08/15		選択機能の回転用ガイドラインの処理追加
+//				：2021/08/23		選択機能のインプットイベントをStageCubeに移動した
 //-------------------------------------------------------------------
 
 #include "CubeUnit.h"
@@ -24,6 +25,7 @@ ACubeUnit::ACubeUnit()
 	, mXCoordinate(0)
 	, mYCoordinate(0)
 	, mZCoordinate(0)
+	, testInt(0)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -40,7 +42,20 @@ ACubeUnit::ACubeUnit()
 	mCubeMaterial_2 = CreateDefaultSubobject<UMaterial>(TEXT("CubeMaterial2"));
 
 
-	OnClicked.AddUniqueDynamic(this, &ACubeUnit::OnSelected);
+	//OnClicked.AddUniqueDynamic(this, &ACubeUnit::OnSelected);
+
+
+	// マウスカーソルが重ねている時
+	mCubeMesh->OnBeginCursorOver.AddUniqueDynamic(this, &ACubeUnit::OnOver2);
+	mCubeMesh->OnEndCursorOver.AddUniqueDynamic(this, &ACubeUnit::EndOver2);
+	//OnBeginCursorOver.AddUniqueDynamic(this, &ACubeUnit::OnOver);
+	//OnEndCursorOver.AddUniqueDynamic(this, &ACubeUnit::EndOver);
+
+
+	// Test Spawnning Diff Cube  21-08-25
+	if (testInt == 1)
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("CubeUnit ConsTr")));
+
 
 }
 
@@ -48,8 +63,15 @@ ACubeUnit::ACubeUnit()
 void ACubeUnit::BeginPlay()
 {
 	Super::BeginPlay();
-	
 
+	if (testInt == 1)
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("CubeUnit BeginPlay")));
+
+
+	APlayerController* myPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	 myPlayerController->bEnableMouseOverEvents = true;
+	
+	
 	if (mCubeMesh != NULL)
 	{
 		// static ConstructorHelpers::FObjectFinder<UMaterial> FoundMaterial(TEXT("/Game/Material/OutLine_V.OutLine_V'"));
@@ -67,7 +89,7 @@ void ACubeUnit::BeginPlay()
 
 
 	} // end if()
-
+	
 
 } // void BeginPlay()
 
@@ -80,78 +102,103 @@ void ACubeUnit::Tick(float DeltaTime)
 } // void Tick()
 
 
-void ACubeUnit::OnSelected(AActor* Target, FKey ButtonPressed)
+void ACubeUnit::SetMeshAndMaterialOnBegin(UStaticMesh* newMesh, UMaterial* newMaterial_1, UMaterial* newMaterial_2, UMaterial* newMaterial_3)
 {
-	AActor* Owner1 = GetOwner();
 
-	// このCube今は未選択の時
-	if (mIsSelected == false)
+	/*
+	const ConstructorHelpers::FObjectFinder<UStaticMesh> WeaponA(TEXT("StaticMesh'/Game/Mesh/Autumn_Stage/Autumn_Cube_3.Autumn_Cube_3'"));
+
+	// check if path is valid
+	if (WeaponA.Succeeded())
 	{
-		mIsSelected = true;
-		ChangeMaterialFunc();
+		// mesh = valid path
+		mCubeMesh->SetStaticMesh(WeaponA.Object);
+	}
+	*/
 
-		if (Owner1 != nullptr)
+	if (newMesh != NULL)
+	{
+
+
+
+		// mCubeMesh->SetStaticMesh(newMesh);
+
+		if (newMaterial_1 != NULL && newMaterial_2 != NULL && newMaterial_3 != NULL)
 		{
-			AStageCube_1* myStageCube = Cast< AStageCube_1>(Owner1);
+			mCubeMaterial_1 = newMaterial_1;
+			mCubeMaterial_2 = newMaterial_2;
+			mCubeMaterial_3 = newMaterial_3;
 
-			// 既にCubeが選択している時
-			if (myStageCube->mCurrentSelectedCube != NULL)
-			{
-				myStageCube->mCurrentSelectedCube->mIsSelected = false;
-				myStageCube->mCurrentSelectedCube->ChangeMaterialFunc();
-
-				if (myStageCube->mCurrentSelectedGuideLine != NULL)
-				{
-					myStageCube->DetachFromGuideLine();
-					myStageCube->SetSelectingGuideLine(false);
-					myStageCube->mCurrentSelectedGuideLine->mIsSelected = false;
-					myStageCube->mCurrentSelectedGuideLine->ChangeMaterialFunc();
-					myStageCube->mCurrentSelectedGuideLine = NULL;
-				} // end if()
-
-			} // end if()
-			// Cubeが選択していない時
-			else myStageCube->ChangeAllGuideLinesVisibility(true);
-			
-
-			myStageCube->mCurrentSelectedCube = this;
-			myStageCube->SetGuideLinePosition();
-			myStageCube->SetSelectingCube(true);
-
+			mCubeMesh->SetMaterial(0, mCubeMaterial_1);
 		} // end if()
+		else GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("newMaterial is NULL!")));
 		
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("%s   Unit is Clicked~!"), *this->GetName()));
+		//else UE_LOG(LogTemp, Log, TEXT("newMaterial is NULL"));
 
 	} // end if()
-	// このCube今は選択しているの時
-	else
-	{
-		mIsSelected = false;
-		ChangeMaterialFunc();
+	else GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("newMesh is NULL!")));
 
-		if (Owner1 != nullptr)
-		{
-			AStageCube_1* myStageCube = Cast< AStageCube_1>(Owner1);
+	// else UE_LOG(LogTemp, Log, TEXT("newMesh is NULL"));
 
-			if (myStageCube->mCurrentSelectedGuideLine != NULL)
-			{
-				myStageCube->DetachFromGuideLine();
-				myStageCube->SetSelectingGuideLine(false);
-				myStageCube->mCurrentSelectedGuideLine->mIsSelected = false;
-				myStageCube->mCurrentSelectedGuideLine->ChangeMaterialFunc();
-				myStageCube->mCurrentSelectedGuideLine = NULL;
-			} // end if()
+}  // void SetMeshAndMaterialOnBegin
 
-			myStageCube->mCurrentSelectedCube = NULL;
-			myStageCube->SetSelectingCube(false);
-			myStageCube->ChangeAllGuideLinesVisibility(false);
-		} // end if()
+void ACubeUnit::Test123(int x)
+{
+	 GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("-----  %d"), x));
 
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("%s   Unit is Unclicked~!"), *this->GetName()));
+}
 
-	} // end else
+void ACubeUnit::TestSet456(int y)
+{
+	testInt = y;
+}
+
+void ACubeUnit::OnSelected(AActor* Target, FKey ButtonPressed)
+{
 
 } // void OnSelected
+
+
+
+void ACubeUnit::OnOver2(UPrimitiveComponent* Target)
+{
+	if (mCubeMesh != NULL)
+	{
+		if (mIsSelected == false)
+		{
+			if (mCubeMaterial_3 != NULL)
+			{
+				mCubeMesh->SetMaterial(0, mCubeMaterial_3);
+			} // end if()
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("CubeMaterial Loading Failed")));
+			} // end else			
+		} // end if()
+	} // end if()
+} // void OnOver()
+
+
+void ACubeUnit::EndOver2(UPrimitiveComponent* Target)
+{
+	if (mCubeMesh != NULL)
+	{
+		if (mIsSelected == false)
+		{
+			if (mCubeMaterial_1 != NULL)
+			{
+				mCubeMesh->SetMaterial(0, mCubeMaterial_1);
+			} // end if()
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("CubeMaterial Loading Failed")));
+			} // end else
+		} // end if()
+	} // end if()
+
+} // void EndOver2
+
+
 
 void ACubeUnit::ChangeMaterialFunc()
 {

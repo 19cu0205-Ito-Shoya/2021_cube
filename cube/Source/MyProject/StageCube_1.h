@@ -13,6 +13,9 @@
 //				：2021/08/19		Camera回転の矯正、ガイドライン回転の矯正
 //				：2021/08/20		回転の修正、回転計算方法はQuaternionから計算に変更
 //				：2021/08/21		ガイドラインYの修正
+//				：2021/08/22		選択方法の修正
+//				：2021/08/23		マウスのインプットイベントをStageCubeにまとめる
+//				：2021/08/24		マウスのライントレース方法を変更
 //---------------------------------------------------------------------------------
 
 #pragma once
@@ -22,6 +25,7 @@
 #include "Components/SceneComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetSystemLibrary.h"							// TEnumAsByte<EDrawDebugTrace>を定義するため
 #include "CubeUnit.h"
 #include "GuideLineZ.h"
 #include "StageCube_1.generated.h"
@@ -79,7 +83,7 @@ private:
 		return FRotator( (_A.Quaternion()) * (_B.Quaternion()));
 	}; // FRotator MyCombineRotators()
 
-
+	// Cubeの配列座標位置を交換
 	void SwapCoordinate(ACubeUnit* _A, ACubeUnit* _B);
 
 	// カメラ回転スケールを調整する
@@ -88,9 +92,8 @@ private:
 	// For Debug (Debug用 + Editorで見える)ため、回転後の場所を三つのArray再配置
 	void Replace3Array();
 
-
-	UFUNCTION()
-		void OnSelected(AActor* Target, FKey ButtonPressed);
+	// マウスカーソルからのライントレース
+	bool MouseLineTrace(FHitResult& MouseHitResult);
 
 public:
 	// 単体Cubeをガイドラインにアタッチ
@@ -104,6 +107,9 @@ public:
 
 	// ガイドラインの可視性を変更
 	void ChangeAllGuideLinesVisibility(const bool isVisible);
+
+	// ガイドラインをドラッグする時、選択していないガイドラインのを非表示
+	void ChangeUnSelecetedGuideLineVisibility();
 
 	void DeSelectCubeAndGuide( bool deSelectCube, bool deSelectGuide);
 
@@ -151,6 +157,13 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GuideLine", meta = (AllowPrivateAccess = "true"))
 		float guideLineTurnningScale;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
+		float mouseTraceDistance;
+
+	// Debug Lineの表示方法
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
+		TEnumAsByte<EDrawDebugTrace::Type> mDrawDebugType;
+
 public:
 	// Nested containersのためEditorとBlueprintには表示できない
 	TArray< TArray< TArray<ACubeUnit*>>> CubeArray3D;						// 単位Cubeの集合
@@ -178,16 +191,69 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GuideLine", meta = (AllowPrivateAccess = "true"))
 		AGuideLineZ* mCurrentSelectedGuideLine;
 
+	// ガイドラインをドラッグしているか
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
 		bool isDraggingGuideLine;
+
+	// ガイドラインをドラッグ始めの位置
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
+		FVector2D mStartDraggingPosition;
 
 	// 全体Cubeの回転フラグ
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
 		bool isMovingCamera;
 
-	// 
+	// カーソルの移動量
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
+		float minimumCursorsDisplacement;
+
+	// ガイドライン回転開始の角度
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
 		FRotator mStartRotateDegree;
+
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		FVector mCubeUnitScale;
+
+	// 単体Cube、それぞれのメッシュ
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh1;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh2;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh3;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh4;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh5;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh6;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh7;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh8;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh9;
+
+
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		TSubclassOf<ACubeUnit> mBpCube1;
+
+
+
+	// Default Material デフォルトマテリアル
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings")
+		UMaterial* mCubeMaterial_1;
+
+	// Chosen Material 選択されたマテリアル
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings")
+		UMaterial* mCubeMaterial_2;
+
+	// Cursor Over's Material マウスが上にいる時のマテリアル
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings")
+		UMaterial* mCubeMaterial_3;
+
 
 private:
 
