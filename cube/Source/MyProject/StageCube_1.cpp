@@ -16,11 +16,12 @@
 //				：2021/08/22		選択方法の修正
 //				：2021/08/23		マウスのインプットイベントをStageCubeにまとめる
 //				：2021/08/24		マウスのライントレース方法を変更
+//				：2021/08/25		ガイドライン回転の時非選択のガイドラインを非表示
+//				：2021/08/26		ガイドラインの回転方向は、マウスカーソルの位置によって回転する
 //---------------------------------------------------------------------------------
 
 #include "StageCube_1.h"
 #include "Kismet/KismetMathLibrary.h"
-
 #include "Engine.h"
 
 // コンストラクタ
@@ -45,6 +46,8 @@ AStageCube_1::AStageCube_1()
 	, mMouseXvalue(0.f)
 	, mMouseYvalue(0.f)
 	, guideLineTurnningScale(5.f)
+	, guideLineTurnningScaleX(5.f)
+	, guideLineTurnningScaleY(5.f)
 	, mStartRotateDegree(0.f,0.f,0.f)
 	, mouseTraceDistance(1000.f)
 	, mDrawDebugType(EDrawDebugTrace::None)
@@ -154,9 +157,6 @@ void AStageCube_1::BeginPlay()
 
 			*/
 	
-
-
-
 
 
 
@@ -326,7 +326,6 @@ void AStageCube_1::BeginPlay()
 void AStageCube_1::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 
 	// CubeArray3D[0][0][0]->SetMeshAndMaterialOnBegin(mCubeMesh1, mCubeMaterial_1, mCubeMaterial_2, mCubeMaterial_3);
 
@@ -699,8 +698,10 @@ void AStageCube_1::RoatateTheCubes180( const int mode)
 
 } // void RoatateTheCubes180()
 
+
 void AStageCube_1::MoveMouseX(const float _axisValue)
 {
+	DecideGuideLineTurnningDirection();
 
 	// GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Emerald, FString::SanitizeFloat(_axisValue));
 
@@ -710,22 +711,18 @@ void AStageCube_1::MoveMouseX(const float _axisValue)
 		{
 			if (mCurrentSelectedGuideLine == mGuideLineZaxis)
 			{
-				// wiil be strange when turn on other side
-				mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, -_axisValue * guideLineTurnningScale, 0.f)));
+				mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, _axisValue * guideLineTurnningScaleX, 0.f)));
 			} // end if
 			else if (mCurrentSelectedGuideLine == mGuideLineXaxis)
 			{
-				// wiil be strange when turn on other side
-				mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, 0.f, _axisValue * guideLineTurnningScale)));
-
+				mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, 0.f, _axisValue * guideLineTurnningScaleX)));
 			} // end if
 			else if (mCurrentSelectedGuideLine == mGuideLineYaxis)
 			{
 				// =================  Caution  8/21  ================
 				// ガイドライン Y のActorのRotation設定は他のガイドラインと違います、要注意です。
 				// (元々はPitchを回転すると、オイラー角の制限があった為に、こうになった)
-				// wiil be strange when turn on other side
-				mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, 0.f, -_axisValue * guideLineTurnningScale)));
+				mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, 0.f, _axisValue * guideLineTurnningScaleX)));
 			} // end if
 
 		} // end if
@@ -763,25 +760,25 @@ void AStageCube_1::MoveMouseX(const float _axisValue)
 
 void AStageCube_1::MoveMouseY(const float _axisValue)
 {
+	// MoveMouseXが計算しているので、負荷を減るためコメントした
+	// DecideGuideLineTurnningDirection();
+
 	if (isDraggingGuideLine && mCurrentSelectedGuideLine != NULL)
 	{
 		if (mCurrentSelectedGuideLine == mGuideLineZaxis)
 		{
-			// wiil be strange when turn on other side
-			mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, -_axisValue * guideLineTurnningScale, 0.f)));
+			mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, _axisValue * guideLineTurnningScaleY, 0.f)));
 		} // end if
 		else if (mCurrentSelectedGuideLine == mGuideLineXaxis)
 		{
-			// wiil be strange when turn on other side
-			mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, 0.f, _axisValue * guideLineTurnningScale)));
+			mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, 0.f, _axisValue * guideLineTurnningScaleY)));
 		} // end if
 		else if (mCurrentSelectedGuideLine == mGuideLineYaxis)
 		{
 			// =================  Caution  8/21  ================
 			// ガイドライン Y のActorのRotation設定は他のガイドラインと違います、要注意です。
 			// (元々はPitchを回転すると、オイラー角の制限があった為に、こうになった)
-			// wiil be strange when turn on other side
-			mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, 0.f, -_axisValue * guideLineTurnningScale)));
+			mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, 0.f, _axisValue * guideLineTurnningScaleY)));
 		} // end if
 
 	} // end if
@@ -851,6 +848,7 @@ void AStageCube_1::MouseLeftButtonPressed()
 								mStartRotateDegree = mCurrentSelectedGuideLine->GetActorRotation();
 								isDraggingGuideLine = true;
 								ChangeUnSelecetedGuideLineVisibility();
+								ChangeCubeUnitCanChangeMat(false);
 							} // end if()
 							else isMovingCamera = true;
 						} // end if()
@@ -1021,7 +1019,6 @@ void AStageCube_1::MouseLeftButtonReleased()
 					} // end if()
 				} // end if()
 
-
 			} // end if()
 
 			// GEngine->AddOnScreenDebugMessage(-1, 1.1f, FColor::Red, FString::Printf(TEXT("is Hitting %s"), *MouseHitResult.Actor.Get()->GetFullName()));
@@ -1036,6 +1033,7 @@ void AStageCube_1::MouseLeftButtonReleased()
 			NormalizeGuideRotation();
 			isDraggingGuideLine = false;
 			ChangeUnSelecetedGuideLineVisibility();
+			ChangeCubeUnitCanChangeMat(true);
 
 			// カーソルの移動距離が10以下なら、選択を解除
 			if (distance < minimumCursorsDisplacement)
@@ -1518,3 +1516,141 @@ void AStageCube_1::ManageGuideLineRotateResultToArray()
 } // void ManageGuideLineRotateResultToArray()
 
 
+void AStageCube_1::DecideGuideLineTurnningDirection()
+{
+	if (mCurrentSelectedGuideLine == NULL)
+		return;
+
+	APlayerController* myPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (myPlayerController == NULL)
+		return;
+
+	// 画面上の位置、カーソルの位置
+	FVector2D screenLocation, mouseLocation;
+
+	myPlayerController->ProjectWorldLocationToScreen(mGuideLineYaxis->GetTransform().GetLocation(), screenLocation);
+	myPlayerController->GetMousePosition(mouseLocation.X, mouseLocation.Y);
+
+
+	float resultDegree;
+
+	FVector2D dirVector = mouseLocation - screenLocation;
+	dirVector.Normalize();
+
+	resultDegree = (float)atan2((double)(dirVector.X * 0.f + dirVector.Y * 1.f), (double)dirVector.DotProduct(dirVector, FVector2D(1, 0)));
+	resultDegree = resultDegree * 180 / PI;
+
+	// For Test
+	// GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Emerald, FString::SanitizeFloat(resultDegree));
+
+	// 第1象限
+	if (resultDegree < 0.f && resultDegree >= -90.f)
+	{
+		if (guideLineTurnningScaleX > 0.f)
+			guideLineTurnningScaleX *= -1.f;
+
+		guideLineTurnningScaleY = abs(guideLineTurnningScaleY);
+	} // end if()
+	// 第2象限
+	else if (resultDegree < -90.f && resultDegree >= -180.f)
+	{
+		if (guideLineTurnningScaleX > 0.f)
+			guideLineTurnningScaleX *= -1.f;
+		if (guideLineTurnningScaleY > 0.f)
+			guideLineTurnningScaleY *= -1.f;
+	} // end if()
+	// 第3象限
+	else if (resultDegree >= 90.f && resultDegree <= 180.f)
+	{
+		guideLineTurnningScaleX = abs(guideLineTurnningScaleX);
+
+		if (guideLineTurnningScaleY > 0.f)
+			guideLineTurnningScaleY *= -1.f;
+	} // end if()
+	// 第4象限
+	else if (resultDegree >= 0.f && resultDegree < 90.f)
+	{
+		guideLineTurnningScaleX = abs(guideLineTurnningScaleX);
+		guideLineTurnningScaleY = abs(guideLineTurnningScaleY);
+	} // end if()
+
+	// 外積によって、カメラはガイドラインのどち方向
+	 if (mGuideLineXaxis == mCurrentSelectedGuideLine)
+	 {
+		// 今のカメラ世界位置
+		FVector cameraPosition = mCamera->GetComponentLocation();
+		cameraPosition.Z = 0.f;
+
+		// ガイドラインからカメラのベクトル
+		FVector theDir = cameraPosition - mGuideLineXaxis->GetActorLocation();
+
+		FVector origV = mGuideLineXaxis->GetActorLocation();
+
+		// 標準線
+		FVector rightV =  origV  + this->GetActorRightVector()*500.f ;
+
+		// 外積
+		float result = ((rightV.X - origV.X) * (cameraPosition.Y - origV.Y) - (rightV.Y - origV.Y) * (cameraPosition.X - origV.X));
+
+		// For Test
+		// GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Purple, FString::SanitizeFloat(result));
+
+		if (result > 0.f)
+		{
+			guideLineTurnningScaleX *= -1.f;
+			guideLineTurnningScaleY *= -1.f;
+		} // end if()
+
+	 } // end if()
+	 else if (mGuideLineYaxis == mCurrentSelectedGuideLine)
+	 {
+		// 今のカメラ世界位置
+		FVector cameraPosition = mCamera->GetComponentLocation();
+		cameraPosition.Z = 0.f;
+
+		// ガイドラインからカメラのベクトル
+		FVector theDir = cameraPosition - mGuideLineYaxis->GetActorLocation();
+
+		FVector origV = mGuideLineYaxis->GetActorLocation();
+
+		// 標準線
+		FVector rightV = origV + this->GetActorForwardVector() * -500.f;
+
+		// 外積
+		float result = ((rightV.X - origV.X) * (cameraPosition.Y - origV.Y) - (rightV.Y - origV.Y) * (cameraPosition.X - origV.X));
+
+		// For Test
+		// GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Purple, FString::SanitizeFloat(result));
+
+		 if (result > 0.f)
+		 {
+			 guideLineTurnningScaleX *= -1.f;
+			 guideLineTurnningScaleY *= -1.f;
+		 } // end if()
+
+	// 	 GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan, FString::SanitizeFloat(result.Z));
+
+	 } // end if()
+	 else if (mGuideLineZaxis == mCurrentSelectedGuideLine)
+	 {
+
+		 if (mCamera->GetComponentLocation().Z > mGuideLineZaxis->GetActorLocation().Z)
+		 {
+			 guideLineTurnningScaleX *= -1.f;
+			 guideLineTurnningScaleY *= -1.f;
+		 } // end if()
+	 } // end if()
+
+}  // void DecideGuideLineTurnningDirection2()
+
+void AStageCube_1::ChangeCubeUnitCanChangeMat(bool canCgange)
+{
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			for (int k = 0; k < 3; ++k) {
+				if (CubeArray3D[i][j][k] != mCurrentSelectedCube)
+					CubeArray3D[i][j][k]->canChangeMaterial = canCgange;
+			} // end for()
+		} // end for()
+	} // end for()
+} // void ChangeCubeUnitCanChangeMat()
