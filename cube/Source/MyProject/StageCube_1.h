@@ -16,6 +16,8 @@
 //				：2021/08/22		選択方法の修正
 //				：2021/08/23		マウスのインプットイベントをStageCubeにまとめる
 //				：2021/08/24		マウスのライントレース方法を変更
+//				：2021/08/25		ガイドライン回転の時非選択のガイドラインを非表示
+//				：2021/08/26		ガイドラインの回転方向は、マウスカーソルの位置によって回転する
 //---------------------------------------------------------------------------------
 
 #pragma once
@@ -108,7 +110,7 @@ public:
 	// ガイドラインの可視性を変更
 	void ChangeAllGuideLinesVisibility(const bool isVisible);
 
-	// 
+	// ガイドラインをドラッグする時、選択していないガイドラインのを非表示
 	void ChangeUnSelecetedGuideLineVisibility();
 
 	void DeSelectCubeAndGuide( bool deSelectCube, bool deSelectGuide);
@@ -121,6 +123,11 @@ public:
 	void NormalizeGuideRotation();
 
 	void ManageGuideLineRotateResultToArray();
+
+	void DecideGuideLineTurnningDirection();
+
+	void ChangeCubeUnitCanChangeMat(bool canCgange);
+
 
 private:
 	// Rootシーンコンポーネント
@@ -157,12 +164,20 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GuideLine", meta = (AllowPrivateAccess = "true"))
 		float guideLineTurnningScale;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GuideLine", meta = (AllowPrivateAccess = "true"))
+		float guideLineTurnningScaleX;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GuideLine", meta = (AllowPrivateAccess = "true"))
+		float guideLineTurnningScaleY;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
 		float mouseTraceDistance;
 
 	// Debug Lineの表示方法
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
 		TEnumAsByte<EDrawDebugTrace::Type> mDrawDebugType;
+
+
 
 public:
 	// Nested containersのためEditorとBlueprintには表示できない

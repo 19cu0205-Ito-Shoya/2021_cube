@@ -6,6 +6,8 @@
 // 更新日		：2021/08/12		選択機能実装、マテリアル変えれる
 //				：2021/08/15		選択機能の回転用ガイドラインの処理追加
 //				：2021/08/23		選択機能のインプットイベントをStageCubeに移動した
+//				：2021/08/25		マウスカーソル重ねる時のマテリアル変更
+//				：2021/08/26		マテリアル変更できるか判断追加
 //-------------------------------------------------------------------
 
 #pragma once
@@ -59,6 +61,10 @@ public:
 	// 配列用の座標位置 Y
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails|Variables")
 		int mYCoordinate;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails|Variables")
+		bool canChangeMaterial;
+
 
 	// マテリアルを変える
 	UFUNCTION()
