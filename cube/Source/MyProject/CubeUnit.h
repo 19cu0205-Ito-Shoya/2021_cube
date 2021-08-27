@@ -70,6 +70,9 @@ public:
 	UFUNCTION()
 		void ChangeMaterialFunc();
 
+	UFUNCTION()
+		void ChangeToDefaultMaterial();
+
 public:
 	// –{‘Ì‚ÌƒƒbƒVƒ…
 	UPROPERTY(EditAnywhere, Category = "CubeDetails|Mesh")

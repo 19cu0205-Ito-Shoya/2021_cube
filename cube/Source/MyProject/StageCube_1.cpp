@@ -18,6 +18,7 @@
 //				：2021/08/24		マウスのライントレース方法を変更
 //				：2021/08/25		ガイドライン回転の時非選択のガイドラインを非表示
 //				：2021/08/26		ガイドラインの回転方向は、マウスカーソルの位置によって回転する
+//				：2021/08/27		単体Cubeがマテリアル変更できるかを追加、壁のCollision追加
 //---------------------------------------------------------------------------------
 
 #include "StageCube_1.h"
@@ -52,6 +53,12 @@ AStageCube_1::AStageCube_1()
 	, mouseTraceDistance(1000.f)
 	, mDrawDebugType(EDrawDebugTrace::None)
 	, mCubeUnitScale(FVector(1.0f))
+	, mCubeDistance(100.f)
+	, mBoxCollisionSize(FVector(170.f, 10.f, 150.f ))
+	, mFrontWallCollision(NULL)
+	, mBackWallCollision(NULL)
+	, mLeftWallCollision(NULL)
+	, mRightWallCollision(NULL)
 	, mCubeMesh1(NULL)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -66,7 +73,7 @@ AStageCube_1::AStageCube_1()
 	// スプリングアームのオブジェクトを生成
 	mSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("mSpringArm"));
 
-	// スプリングアームにRootComponentをアタッチ
+	// スプリングアームをRootComponentにアタッチ
 	mSpringArm->SetupAttachment(RootComponent);
 
 	// カメラとプレイヤーの距離
@@ -78,9 +85,28 @@ AStageCube_1::AStageCube_1()
 	// カメラを生成
 	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("mCamera"));
 
-	// カメラにスプリングアームをアタッチ
+	// カメラをスプリングアームにアタッチ
 	mCamera->SetupAttachment(mSpringArm, USpringArmComponent::SocketName);
 
+	// 前の壁のCollisionを生成
+	mFrontWallCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("FrontWallCollision"));
+	// 前の壁をRootComponentにアタッチ
+	mFrontWallCollision->SetupAttachment(RootComponent);
+
+	// 後の壁のCollisionを生成
+	mBackWallCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BackWallCollision"));
+	// 後の壁をRootComponentにアタッチ
+	mBackWallCollision->SetupAttachment(RootComponent);
+
+	// 左の壁のCollisionを生成
+	mLeftWallCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftWallCollision"));
+	// 左の壁をRootComponentにアタッチ
+	mLeftWallCollision->SetupAttachment(RootComponent);
+
+	// 右の壁のCollisionを生成
+	mRightWallCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("RightWallCollision"));
+	// 右の壁をRootComponentにアタッチ
+	mRightWallCollision->SetupAttachment(RootComponent);
 
 }
 
@@ -109,9 +135,9 @@ void AStageCube_1::BeginPlay()
 		int remainder = 0;							// 余り
 
 		// 原点の位置
-		float x1 = 100.f;
-		float y1 = -100.f;
-		float z1 = 100.f;
+		float x1 = mCubeDistance;
+		float y1 = -mCubeDistance;
+		float z1 = mCubeDistance;
 
 		// 配列用の座標位置
 		int xC = 0;		// 座標X
@@ -166,11 +192,11 @@ void AStageCube_1::BeginPlay()
 			// 配列の位置計算
 			remainder = counter % 3;
 			if (remainder == 1)
-				y1 = -100.f;
+				y1 = -mCubeDistance;
 			else if (remainder == 2)
 				y1 = 0.f;
 			else if (remainder == 0)
-				y1 = 100.f;
+				y1 = mCubeDistance;
 
 			if (cubeGen != NULL)
 			{
@@ -209,7 +235,7 @@ void AStageCube_1::BeginPlay()
 				tempArray2D.Add(tempArray1D);
 				tempArray1D.Empty();
 
-				x1 -= 100.f;
+				x1 -= mCubeDistance;
 
 				++xC;
 				yC = -1;		// forは＋1にする
@@ -223,9 +249,9 @@ void AStageCube_1::BeginPlay()
 				CubeArray3D.Add(tempArray2D);
 				tempArray2D.Empty();
 
-				z1 -= 100.f;
-				x1 = 100.f;
-				y1 = -100.f;
+				z1 -= mCubeDistance;
+				x1 = mCubeDistance;
+				y1 = -mCubeDistance;
 
 				xC = 0;
 				yC = -1;		// forは＋1にする
@@ -308,12 +334,40 @@ void AStageCube_1::BeginPlay()
 		} // end if()
 	} // end if()
 
-	// マウスのクリックイベント用
+
+	// ==========================  壁のCollisionを設置  ==========================
+
+	// 壁のCollisionタイプを設定
+	mFrontWallCollision->SetCollisionProfileName(FName("InvisibleWall"), false);
+	mBackWallCollision->SetCollisionProfileName(FName("InvisibleWall"), false);
+	mLeftWallCollision->SetCollisionProfileName(FName("InvisibleWall"), false);
+	mRightWallCollision->SetCollisionProfileName(FName("InvisibleWall"), false);
+
+	// 前後左右の壁のCollisionのサイズ、位置を設定
+	mFrontWallCollision->SetBoxExtent(mBoxCollisionSize);
+	mFrontWallCollision->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
+	mFrontWallCollision->SetRelativeLocation(FVector((1.5f* mCubeDistance + mBoxCollisionSize.Y), 0.f, (2.5f * mCubeDistance) ));
+	
+	mBackWallCollision->SetBoxExtent(mBoxCollisionSize);
+	mBackWallCollision->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
+	mBackWallCollision->SetRelativeLocation(FVector(-(1.5f * mCubeDistance + mBoxCollisionSize.Y), 0.f, (2.5f * mCubeDistance)));
+
+	mLeftWallCollision->SetBoxExtent(mBoxCollisionSize);
+	mLeftWallCollision->SetRelativeLocation(FVector(0.f, -(1.5f * mCubeDistance + mBoxCollisionSize.Y), (2.5f * mCubeDistance)));
+
+	mRightWallCollision->SetBoxExtent(mBoxCollisionSize);
+	mRightWallCollision->SetRelativeLocation(FVector(0.f, (1.5f * mCubeDistance + mBoxCollisionSize.Y), (2.5f * mCubeDistance)));
+
+
+
+	// ==========================  マウスのクリックイベント用  ==========================
 	APlayerController* myPlayerController =	UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
 	myPlayerController->bShowMouseCursor = true;
 	myPlayerController->bEnableMouseOverEvents = true;
 	myPlayerController->bEnableClickEvents = true;
+
+
 	// for test
 	// RoatateTheCubesRight90( 1);
 	// Replace3Array();
@@ -848,7 +902,7 @@ void AStageCube_1::MouseLeftButtonPressed()
 								mStartRotateDegree = mCurrentSelectedGuideLine->GetActorRotation();
 								isDraggingGuideLine = true;
 								ChangeUnSelecetedGuideLineVisibility();
-								ChangeCubeUnitCanChangeMat(false);
+								SetUnselectCubeUnitsCanChangeMat(false);
 							} // end if()
 							else isMovingCamera = true;
 						} // end if()
@@ -1033,7 +1087,7 @@ void AStageCube_1::MouseLeftButtonReleased()
 			NormalizeGuideRotation();
 			isDraggingGuideLine = false;
 			ChangeUnSelecetedGuideLineVisibility();
-			ChangeCubeUnitCanChangeMat(true);
+			SetUnselectCubeUnitsCanChangeMat(true);
 
 			// カーソルの移動距離が10以下なら、選択を解除
 			if (distance < minimumCursorsDisplacement)
@@ -1407,6 +1461,7 @@ void AStageCube_1::DeSelectCubeAndGuide(bool deSelectCube, bool deSelectGuide)
 			mCurrentSelectedGuideLine->mIsSelected = false;
 			mCurrentSelectedGuideLine->ChangeMaterialFunc();
 			mCurrentSelectedGuideLine = NULL;
+
 		} // end if
 	} // end if
 
@@ -1633,7 +1688,6 @@ void AStageCube_1::DecideGuideLineTurnningDirection()
 	 } // end if()
 	 else if (mGuideLineZaxis == mCurrentSelectedGuideLine)
 	 {
-
 		 if (mCamera->GetComponentLocation().Z > mGuideLineZaxis->GetActorLocation().Z)
 		 {
 			 guideLineTurnningScaleX *= -1.f;
@@ -1643,7 +1697,7 @@ void AStageCube_1::DecideGuideLineTurnningDirection()
 
 }  // void DecideGuideLineTurnningDirection2()
 
-void AStageCube_1::ChangeCubeUnitCanChangeMat(bool canCgange)
+void AStageCube_1::SetUnselectCubeUnitsCanChangeMat(bool canCgange)
 {
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
@@ -1653,4 +1707,22 @@ void AStageCube_1::ChangeCubeUnitCanChangeMat(bool canCgange)
 			} // end for()
 		} // end for()
 	} // end for()
-} // void ChangeCubeUnitCanChangeMat()
+} // void SetUnselectCubeUnitsCanChangeMat()
+
+void AStageCube_1::SetAllCubeUnitsCanChangeMat(bool canCgange)
+{
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			for (int k = 0; k < 3; ++k) {
+				if (CubeArray3D[i][j][k] != NULL)
+				{
+					CubeArray3D[i][j][k]->canChangeMaterial = canCgange;
+
+					if (canCgange == false)
+						CubeArray3D[i][j][k]->ChangeToDefaultMaterial();
+
+				} // end if()
+			} // end for()
+		} // end for()
+	} // end for()
+} // void SetAllCubeUnitsCanChangeMat()

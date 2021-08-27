@@ -28,7 +28,7 @@ ACubeUnit::ACubeUnit()
 	, mYCoordinate(0)
 	, mZCoordinate(0)
 	, testInt(0)
-	, canChangeMaterial(true)
+	, canChangeMaterial(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -107,7 +107,6 @@ void ACubeUnit::Tick(float DeltaTime)
 
 void ACubeUnit::SetMeshAndMaterialOnBegin(UStaticMesh* newMesh, UMaterial* newMaterial_1, UMaterial* newMaterial_2, UMaterial* newMaterial_3)
 {
-
 
 	if (newMesh != NULL)
 	{
@@ -198,7 +197,6 @@ void ACubeUnit::EndOver2(UPrimitiveComponent* Target)
 } // void EndOver2
 
 
-
 void ACubeUnit::ChangeMaterialFunc()
 {
 	if (mCubeMesh != NULL)
@@ -231,6 +229,28 @@ void ACubeUnit::ChangeMaterialFunc()
 	} // end if()
 
 } // void ChangeMaterialFunc()
+
+void ACubeUnit::ChangeToDefaultMaterial()
+{
+	if (mCubeMesh != NULL)
+	{
+		// Test for Current Material
+		// UE_LOG(LogTemp, Log, TEXT(" Fail %s"), *mCubeMesh->GetMaterial(0)->GetMaterial()->GetName());
+
+		if (mCubeMesh->GetMaterial(0)->GetMaterial() != mCubeMaterial_1) {
+
+			if (mCubeMaterial_1 != NULL)
+			{
+				mCubeMesh->SetMaterial(0, mCubeMaterial_1);
+			} // end if()
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("CubeMaterial_1 Fail Loading")));
+			} // end else
+		} // end if()
+	} // end if()
+
+} // void ChangeToDefaultMaterial()
 
 
 ACubeUnit::~ACubeUnit()
