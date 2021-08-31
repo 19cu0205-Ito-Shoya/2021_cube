@@ -16,6 +16,9 @@
 //				：2021/08/22		選択方法の修正
 //				：2021/08/23		マウスのインプットイベントをStageCubeにまとめる
 //				：2021/08/24		マウスのライントレース方法を変更
+//				：2021/08/25		ガイドライン回転の時非選択のガイドラインを非表示
+//				：2021/08/26		ガイドラインの回転方向は、マウスカーソルの位置によって回転する
+//				：2021/08/27		単体Cubeがマテリアル変更できるかを追加、壁のCollision追加
 //---------------------------------------------------------------------------------
 
 #pragma once
@@ -24,6 +27,7 @@
 #include "GameFramework/Pawn.h"
 #include "Components/SceneComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetSystemLibrary.h"							// TEnumAsByte<EDrawDebugTrace>を定義するため
 #include "CubeUnit.h"
@@ -111,16 +115,35 @@ public:
 	// ガイドラインをドラッグする時、選択していないガイドラインのを非表示
 	void ChangeUnSelecetedGuideLineVisibility();
 
-	void DeSelectCubeAndGuide( bool deSelectCube, bool deSelectGuide);
-
+	// 今選択しているガイドラインをを設定
 	void SetSelectingGuideLine(const bool isSelect);
 
+	// 今選択しているCubeを設定
 	void SetSelectingCube(const bool isSelect);
 
 	// 回転の角度を矯正する
 	void NormalizeGuideRotation();
 
 	void ManageGuideLineRotateResultToArray();
+
+	// ガイドラインの回転方向を設定
+	void DecideGuideLineTurnningDirection();
+
+	// 選択してない単体Cubeがマテリアルを変更できるかを設定
+	void SetUnselectCubeUnitsCanChangeMat(bool canCgange);
+
+
+
+public:
+	// Cubeとガイドラインの選択を解除
+	UFUNCTION(BlueprintCallable)
+		void DeSelectCubeAndGuide(bool deSelectCube, bool deSelectGuide);
+
+	// 全部の単体Cubeがマテリアルを変更できるかを設定
+	UFUNCTION(BlueprintCallable)
+		void SetAllCubeUnitsCanChangeMat(bool canCgange);
+
+
 
 private:
 	// Rootシーンコンポーネント
@@ -157,12 +180,34 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GuideLine", meta = (AllowPrivateAccess = "true"))
 		float guideLineTurnningScale;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GuideLine", meta = (AllowPrivateAccess = "true"))
+		float guideLineTurnningScaleX;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GuideLine", meta = (AllowPrivateAccess = "true"))
+		float guideLineTurnningScaleY;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
 		float mouseTraceDistance;
 
 	// Debug Lineの表示方法
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
 		TEnumAsByte<EDrawDebugTrace::Type> mDrawDebugType;
+
+	// 前の壁のCollision
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
+		UBoxComponent* mFrontWallCollision;
+
+	// 後の壁のCollision
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
+		UBoxComponent* mBackWallCollision;
+
+	// 左の壁のCollision
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
+		UBoxComponent* mLeftWallCollision;
+
+	// 右の壁のCollision
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
+		UBoxComponent* mRightWallCollision;
 
 public:
 	// Nested containersのためEditorとBlueprintには表示できない
@@ -174,6 +219,14 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CameraDetails", meta = (AllowPrivateAccess = "true"))
 		float mCameraTurnScaleY;
+
+	// need to change to EditDefaultsOnly
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
+		float mCubeDistance;
+
+	// need to change to EditDefaultsOnly
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
+		FVector mBoxCollisionSize;
 
 	// 今はCubeを選択いていますか?
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))

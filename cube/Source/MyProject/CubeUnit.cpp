@@ -6,6 +6,8 @@
 // 更新日		：2021/08/12		選択機能実装、マテリアル変えれる
 //				：2021/08/15		選択機能の回転用ガイドラインの処理追加
 //				：2021/08/23		選択機能のインプットイベントをStageCubeに移動した
+//				：2021/08/25		マウスカーソル重ねる時のマテリアル変更
+//				：2021/08/26		マテリアル変更できるか判断追加
 //-------------------------------------------------------------------
 
 #include "CubeUnit.h"
@@ -26,6 +28,7 @@ ACubeUnit::ACubeUnit()
 	, mYCoordinate(0)
 	, mZCoordinate(0)
 	, testInt(0)
+	, canChangeMaterial(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -105,21 +108,8 @@ void ACubeUnit::Tick(float DeltaTime)
 void ACubeUnit::SetMeshAndMaterialOnBegin(UStaticMesh* newMesh, UMaterial* newMaterial_1, UMaterial* newMaterial_2, UMaterial* newMaterial_3)
 {
 
-	/*
-	const ConstructorHelpers::FObjectFinder<UStaticMesh> WeaponA(TEXT("StaticMesh'/Game/Mesh/Autumn_Stage/Autumn_Cube_3.Autumn_Cube_3'"));
-
-	// check if path is valid
-	if (WeaponA.Succeeded())
-	{
-		// mesh = valid path
-		mCubeMesh->SetStaticMesh(WeaponA.Object);
-	}
-	*/
-
 	if (newMesh != NULL)
 	{
-
-
 
 		// mCubeMesh->SetStaticMesh(newMesh);
 
@@ -162,6 +152,10 @@ void ACubeUnit::OnSelected(AActor* Target, FKey ButtonPressed)
 
 void ACubeUnit::OnOver2(UPrimitiveComponent* Target)
 {
+	// マテリアル変更できない状態なら戻る
+	if (canChangeMaterial == false)
+		return;
+
 	if (mCubeMesh != NULL)
 	{
 		if (mIsSelected == false)
@@ -181,6 +175,10 @@ void ACubeUnit::OnOver2(UPrimitiveComponent* Target)
 
 void ACubeUnit::EndOver2(UPrimitiveComponent* Target)
 {
+	// マテリアル変更できない状態なら戻る
+	if (canChangeMaterial == false)
+		return;
+
 	if (mCubeMesh != NULL)
 	{
 		if (mIsSelected == false)
@@ -197,7 +195,6 @@ void ACubeUnit::EndOver2(UPrimitiveComponent* Target)
 	} // end if()
 
 } // void EndOver2
-
 
 
 void ACubeUnit::ChangeMaterialFunc()
@@ -232,6 +229,28 @@ void ACubeUnit::ChangeMaterialFunc()
 	} // end if()
 
 } // void ChangeMaterialFunc()
+
+void ACubeUnit::ChangeToDefaultMaterial()
+{
+	if (mCubeMesh != NULL)
+	{
+		// Test for Current Material
+		// UE_LOG(LogTemp, Log, TEXT(" Fail %s"), *mCubeMesh->GetMaterial(0)->GetMaterial()->GetName());
+
+		if (mCubeMesh->GetMaterial(0)->GetMaterial() != mCubeMaterial_1) {
+
+			if (mCubeMaterial_1 != NULL)
+			{
+				mCubeMesh->SetMaterial(0, mCubeMaterial_1);
+			} // end if()
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("CubeMaterial_1 Fail Loading")));
+			} // end else
+		} // end if()
+	} // end if()
+
+} // void ChangeToDefaultMaterial()
 
 
 ACubeUnit::~ACubeUnit()
