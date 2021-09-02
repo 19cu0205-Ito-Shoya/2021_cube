@@ -98,22 +98,13 @@ public:
 	UFUNCTION()
 		void SetMeshAndMaterialOnBegin(UStaticMesh* newMesh, UMaterial* newMaterial_1, UMaterial* newMaterial_2, UMaterial* newMaterial_3);
 
-	UFUNCTION()
-		void Test123(int x);
-
-	UFUNCTION()
-		void TestSet456(int y);
-
 private:
-
-	int testInt;
 
 	// UFUNCTION()
 	//	void ChangeMaterialMode(int index, UMaterial* newMaterial);
 
-	UFUNCTION()
-		void OnSelected(AActor* Target, FKey ButtonPressed);
-
+	//UFUNCTION()
+	//	void OnSelected(AActor* Target, FKey ButtonPressed);
 
 
 public:

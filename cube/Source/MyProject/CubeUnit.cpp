@@ -27,7 +27,6 @@ ACubeUnit::ACubeUnit()
 	, mXCoordinate(0)
 	, mYCoordinate(0)
 	, mZCoordinate(0)
-	, testInt(0)
 	, canChangeMaterial(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -55,21 +54,12 @@ ACubeUnit::ACubeUnit()
 	//OnEndCursorOver.AddUniqueDynamic(this, &ACubeUnit::EndOver);
 
 
-	// Test Spawnning Diff Cube  21-08-25
-	if (testInt == 1)
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("CubeUnit ConsTr")));
-
-
 }
 
 // ŽÀsŽž‚Éˆê“xŒÄ‚Î‚ê‚é
 void ACubeUnit::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (testInt == 1)
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("CubeUnit BeginPlay")));
-
 
 	APlayerController* myPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	 myPlayerController->bEnableMouseOverEvents = true;
@@ -131,23 +121,6 @@ void ACubeUnit::SetMeshAndMaterialOnBegin(UStaticMesh* newMesh, UMaterial* newMa
 	// else UE_LOG(LogTemp, Log, TEXT("newMesh is NULL"));
 
 }  // void SetMeshAndMaterialOnBegin
-
-void ACubeUnit::Test123(int x)
-{
-	 GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("-----  %d"), x));
-
-}
-
-void ACubeUnit::TestSet456(int y)
-{
-	testInt = y;
-}
-
-void ACubeUnit::OnSelected(AActor* Target, FKey ButtonPressed)
-{
-
-} // void OnSelected
-
 
 
 void ACubeUnit::OnOver2(UPrimitiveComponent* Target)
