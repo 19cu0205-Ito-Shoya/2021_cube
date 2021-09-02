@@ -60,6 +60,32 @@ AStageCube_1::AStageCube_1()
 	, mLeftWallCollision(NULL)
 	, mRightWallCollision(NULL)
 	, mCubeMesh1(NULL)
+	, mCubeMesh2(NULL)
+	, mCubeMesh3(NULL)
+	, mCubeMesh4(NULL)
+	, mCubeMesh5(NULL)
+	, mCubeMesh6(NULL)
+	, mCubeMesh7(NULL)
+	, mCubeMesh8(NULL)
+	, mCubeMesh9(NULL)
+	, mCubeMesh10(NULL)
+	, mCubeMesh11(NULL)
+	, mCubeMesh12(NULL)
+	, mCubeMesh13(NULL)
+	, mCubeMesh14(NULL)
+	, mCubeMesh15(NULL)
+	, mCubeMesh16(NULL)
+	, mCubeMesh17(NULL)
+	, mCubeMesh18(NULL)
+	, mCubeMesh19(NULL)
+	, mCubeMesh20(NULL)
+	, mCubeMesh21(NULL)
+	, mCubeMesh22(NULL)
+	, mCubeMesh23(NULL)
+	, mCubeMesh24(NULL)
+	, mCubeMesh25(NULL)
+	, mCubeMesh26(NULL)
+	, mCubeMesh27(NULL)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -154,39 +180,36 @@ void AStageCube_1::BeginPlay()
 
 		 // GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("----  %s"), *mCubeMesh2->GetPathName()));
 
+		// 単体Cubeの基本生成トランスフォーム
+		FTransform SpawnTransform(GetActorRotation(), GetActorLocation(), mCubeUnitScale);
+
+		// それぞれの単体Cube生成
 		for (int i = 0; i <= 26; ++i, ++counter, ++yC) {
 
 
 			// Test Spawnning Diff Cube  21-08-25
 
-			/*
-
-			FTransform SpawnTransform(GetActorRotation(), GetActorLocation(), mCubeUnitScale);
 			cubeGen = Cast<ACubeUnit>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, bp_CubeUnit, SpawnTransform));
 			if (cubeGen != nullptr)
 			{
+				// Flow
 				// Spawn -> SpawnedActor's Construct -> do something -> FinishSpawningActor -> SpawnedActor's BeginPlay
 
-
-				cubeGen->mCubeMesh->SetStaticMesh(mCubeMesh7);
+				// 単体Cubeのメッシュとマテリアルを設定
+				cubeGen->mCubeMesh->SetStaticMesh(GetSpecificCubeMesh(i));
 				cubeGen->mCubeMesh->SetMaterial(0, mCubeMaterial_1);
-				cubeGen->TestSet456(1);
-
+				
+				// maybe dont need  9/2
 				// cubeGen->SetMeshAndMaterialOnBegin(mCubeMesh1, mCubeMaterial_1, mCubeMaterial_2, mCubeMaterial_3);
 				
 				UGameplayStatics::FinishSpawningActor(cubeGen, SpawnTransform);
-			}
+			} // end if()
 			else GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("cubeGen error!")));
 			
-			if (mCubeMesh1 == NULL)
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("MESHHHHHHHHHHH error!")));
-
-			*/
-	
 
 
-
-			cubeGen = GetWorld()->SpawnActor<ACubeUnit>(bp_CubeUnit);				// スポーンCube Actor
+			// old one, for all cube is same mesh.
+			// cubeGen = GetWorld()->SpawnActor<ACubeUnit>(bp_CubeUnit);				// スポーンCube Actor
 
 
 			// 配列の位置計算
@@ -1709,6 +1732,7 @@ void AStageCube_1::SetUnselectCubeUnitsCanChangeMat(bool canCgange)
 	} // end for()
 } // void SetUnselectCubeUnitsCanChangeMat()
 
+
 void AStageCube_1::SetAllCubeUnitsCanChangeMat(bool canCgange)
 {
 	for (int i = 0; i < 3; ++i) {
@@ -1726,3 +1750,128 @@ void AStageCube_1::SetAllCubeUnitsCanChangeMat(bool canCgange)
 		} // end for()
 	} // end for()
 } // void SetAllCubeUnitsCanChangeMat()
+
+
+UStaticMesh* AStageCube_1::GetSpecificCubeMesh(int num)
+{
+	switch (num)
+	{
+	case 0:
+		if (mCubeMesh1 != nullptr)
+			return mCubeMesh1;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh1 is NULL"));
+	case 1:
+		if (mCubeMesh2 != nullptr)
+			return mCubeMesh2;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh2 is NULL"));
+	case 2:
+		if (mCubeMesh3 != nullptr)
+			return mCubeMesh3;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh3 is NULL"));
+	case 3:
+		if (mCubeMesh4 != nullptr)
+			return mCubeMesh4;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh4 is NULL"));
+	case 4:
+		if (mCubeMesh5 != nullptr)
+			return mCubeMesh5;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh5 is NULL"));
+	case 5:
+		if (mCubeMesh6 != nullptr)
+			return mCubeMesh6;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh6 is NULL"));
+	case 6:
+		if (mCubeMesh7 != nullptr)
+			return mCubeMesh7;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh7 is NULL"));
+	case 7:
+		if (mCubeMesh8 != nullptr)
+			return mCubeMesh8;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh8 is NULL"));
+	case 8:
+		if (mCubeMesh9 != nullptr)
+			return mCubeMesh9;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh9 is NULL"));
+	case 9:
+		if (mCubeMesh10 != nullptr)
+			return mCubeMesh10;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh10 is NULL"));
+	case 10:
+		if (mCubeMesh11 != nullptr)
+			return mCubeMesh11;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh11 is NULL"));
+	case 11:
+		if (mCubeMesh12 != nullptr)
+			return mCubeMesh12;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh12 is NULL"));
+	case 12:
+		if (mCubeMesh13 != nullptr)
+			return mCubeMesh13;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh13 is NULL"));
+	case 13:
+		if (mCubeMesh14 != nullptr)
+			return mCubeMesh14;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh14 is NULL"));
+	case 14:
+		if (mCubeMesh15 != nullptr)
+			return mCubeMesh15;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh15 is NULL"));
+	case 15:
+		if (mCubeMesh16 != nullptr)
+			return mCubeMesh16;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh16 is NULL"));
+	case 16:
+		if (mCubeMesh17 != nullptr)
+			return mCubeMesh17;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh17 is NULL"));
+	case 17:
+		if (mCubeMesh18 != nullptr)
+			return mCubeMesh18;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh18 is NULL"));
+	case 18:
+		if (mCubeMesh19 != nullptr)
+			return mCubeMesh19;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh19 is NULL"));
+	case 19:
+		if (mCubeMesh20 != nullptr)
+			return mCubeMesh20;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh20 is NULL"));
+	case 20:
+		if (mCubeMesh21 != nullptr)
+			return mCubeMesh21;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh21 is NULL"));
+	case 21:
+		if (mCubeMesh22 != nullptr)
+			return mCubeMesh22;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh22 is NULL"));
+	case 22:
+		if (mCubeMesh23 != nullptr)
+			return mCubeMesh23;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh23 is NULL"));
+	case 23:
+		if (mCubeMesh24 != nullptr)
+			return mCubeMesh24;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh24 is NULL"));
+	case 24:
+		if (mCubeMesh25 != nullptr)
+			return mCubeMesh25;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh25 is NULL"));
+	case 25:
+		if (mCubeMesh26 != nullptr)
+			return mCubeMesh26;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh26 is NULL"));
+	case 26:
+		if (mCubeMesh27 != nullptr)
+			return mCubeMesh27;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh27 is NULL"));
+
+
+	default:
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("GetSpecificCubeMesh Number: %d is error"), num));
+		return nullptr;
+
+
+	} // switch()
+
+	return nullptr;
+} // GetSpecificCubeMesh()

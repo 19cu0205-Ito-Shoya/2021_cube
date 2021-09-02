@@ -133,6 +133,7 @@ public:
 	void SetUnselectCubeUnitsCanChangeMat(bool canCgange);
 
 
+	UStaticMesh* GetSpecificCubeMesh(int num);
 
 public:
 	// Cubeとガイドラインの選択を解除
@@ -266,6 +267,7 @@ public:
 
 
 private:
+	// 単体Cubeのスケール
 	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
 		FVector mCubeUnitScale;
 
@@ -288,10 +290,42 @@ private:
 		UStaticMesh* mCubeMesh8;
 	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
 		UStaticMesh* mCubeMesh9;
-
-
 	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
-		TSubclassOf<ACubeUnit> mBpCube1;
+		UStaticMesh* mCubeMesh10;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh11;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh12;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh13;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh14;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh15;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh16;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh17;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh18;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh19;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh20;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh21;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh22;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh23;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh24;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh25;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh26;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh27;
 
 
 
