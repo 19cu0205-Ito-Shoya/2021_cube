@@ -19,6 +19,8 @@
 //				：2021/08/25		ガイドライン回転の時非選択のガイドラインを非表示
 //				：2021/08/26		ガイドラインの回転方向は、マウスカーソルの位置によって回転する
 //				：2021/08/27		単体Cubeがマテリアル変更できるかを追加、壁のCollision追加
+//				：2021/09/02		それぞれのCubeのメッシュとマテリアルを設定して生成することを追加
+//				：2021/09/03		マテリアルをマテリアルインターフェースに変更
 //---------------------------------------------------------------------------------
 
 #pragma once
@@ -328,18 +330,17 @@ private:
 		UStaticMesh* mCubeMesh27;
 
 
-
-	// Default Material デフォルトマテリアル
+	// Default Material デフォルトマテリアル (MaterialInterface)
 	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings")
-		UMaterial* mCubeMaterial_1;
+		UMaterialInterface* mCubeMatInterface_1;
 
 	// Chosen Material 選択されたマテリアル
 	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings")
-		UMaterial* mCubeMaterial_2;
+		UMaterialInterface* mCubeMatInterface_2;
 
 	// Cursor Over's Material マウスが上にいる時のマテリアル
 	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings")
-		UMaterial* mCubeMaterial_3;
+		UMaterialInterface* mCubeMatInterface_3;
 
 
 private:

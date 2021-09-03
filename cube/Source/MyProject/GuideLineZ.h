@@ -73,6 +73,20 @@ private:
 		UMaterial* mLineMaterial_3;
 
 
+public:
+	// Default Material デフォルトマテリアル (MaterialInterface)
+	UPROPERTY(EditDefaultsOnly, Category = "GuideLineDetails|Mesh")
+		UMaterialInterface* mCubeMatInterface_1;
+
+	// Chosen Material 選択されたマテリアル
+	UPROPERTY(EditDefaultsOnly, Category = "GuideLineDetails|Mesh")
+		UMaterialInterface* mCubeMatInterface_2;
+
+	// Cursor Over's Material マウスが上にいる時のマテリアル
+	UPROPERTY(EditDefaultsOnly, Category = "GuideLineDetails|Mesh")
+		UMaterialInterface* mCubeMatInterface_3;
+
+
 private:
 	UFUNCTION()
 		void OnSelected(AActor* Target, FKey ButtonPressed);

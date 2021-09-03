@@ -22,6 +22,9 @@ AGuideLineZ::AGuideLineZ()
 	, mIsSelected(false)
 	, mIsVisible(false)
 	, mode(0)
+	, mCubeMatInterface_1(NULL)
+	, mCubeMatInterface_2(NULL)
+	, mCubeMatInterface_3(NULL)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -35,8 +38,11 @@ AGuideLineZ::AGuideLineZ()
 	mGuideLineMesh->SetupAttachment(RootComponent);
 
 	mLineMaterial_1 = CreateDefaultSubobject<UMaterial>(TEXT("mLineMaterial_1"));
-
 	mLineMaterial_2 = CreateDefaultSubobject<UMaterial>(TEXT("mLineMaterial_2"));
+
+	mCubeMatInterface_1 = CreateDefaultSubobject<UMaterialInterface>(TEXT("CubeMatInterface1"));
+	mCubeMatInterface_2 = CreateDefaultSubobject<UMaterialInterface>(TEXT("CubeMatInterface2"));
+	mCubeMatInterface_3 = CreateDefaultSubobject<UMaterialInterface>(TEXT("CubeMatInterface3"));
 
 
 	OnClicked.AddUniqueDynamic(this, &AGuideLineZ::OnSelected);
