@@ -20,7 +20,7 @@
 //				：2021/08/26		ガイドラインの回転方向は、マウスカーソルの位置によって回転する
 //				：2021/08/27		単体Cubeがマテリアル変更できるかを追加、壁のCollision追加
 //				：2021/09/02		それぞれのCubeのメッシュとマテリアルを設定して生成することを追加
-//				：2021/09/03		マテリアルをマテリアルインターフェースに変更
+//				：2021/09/03		マテリアルをマテリアルインターフェースに変更、ガイドラインのデタッチ失敗した時の検査を追加
 //---------------------------------------------------------------------------------
 
 #include "StageCube_1.h"
@@ -1094,7 +1094,7 @@ void AStageCube_1::MouseLeftButtonReleased()
 			isDraggingGuideLine = false;
 			ChangeUnSelecetedGuideLineVisibility();
 
-			// カーソルの移動距離が10以下なら、選択を解除
+			// カーソルの移動距離がminimumCursorsDisplacement(3)以下なら、選択を解除
 			if (distance < minimumCursorsDisplacement)
 			{
 				// マウスカーソルの世界位置でLine Traceする、その結果を得る
@@ -1302,16 +1302,17 @@ void AStageCube_1::AttachToGuideLine( const int mode)
 	} // end if()
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("AttachToGuideLine's Seleted Cube is NULL")));
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("AttachToGuideLine's Selected Cube is NULL")));
 	} // end else
 
 } // void AttachToGuideLine()
 
+// ガイドラインからデタッチする
 void AStageCube_1::DetachFromGuideLine()
 {
 	FAttachmentTransformRules AttachRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, false);
 
-	if (mCurrentSelectedCube != NULL)
+	if (mCurrentSelectedGuideLine != NULL)
 	{
 		// i j k  will be Z X Y of the array
 		// can get the position where line to move and who to attach
@@ -1319,7 +1320,8 @@ void AStageCube_1::DetachFromGuideLine()
 		// ===== guide Z =====
 		if (mCurrentSelectedGuideLine == mGuideLineZaxis)
 		{
-			int i = mCurrentSelectedCube->mZCoordinate;
+			// ガイドラインにいる座標を取得
+			int i = mCurrentSelectedGuideLine->mCoordinate;
 
 			for (int x = 0; x < 3; ++x)
 			{
@@ -1338,7 +1340,8 @@ void AStageCube_1::DetachFromGuideLine()
 		// ===== guide X =====
 		else if (mCurrentSelectedGuideLine == mGuideLineXaxis)
 		{
-			int j = mCurrentSelectedCube->mXCoordinate;
+			// ガイドラインにいる座標を取得
+			int j = mCurrentSelectedGuideLine->mCoordinate;
 
 			for (int z = 0; z < 3; ++z)
 			{
@@ -1356,7 +1359,8 @@ void AStageCube_1::DetachFromGuideLine()
 		// ===== guide Y =====
 		else if (mCurrentSelectedGuideLine == mGuideLineYaxis)
 		{
-			int k = mCurrentSelectedCube->mYCoordinate;
+			// ガイドラインにいる座標を取得
+			int k = mCurrentSelectedGuideLine->mCoordinate;
 
 			for (int z = 0; z < 3; ++z)
 			{
@@ -1375,7 +1379,8 @@ void AStageCube_1::DetachFromGuideLine()
 	} // end if()
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("DetachFromGuideLine's Seleted Cube is NULL")));
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("DetachFromGuideLine's Selected GuideLine is NULL")));
+		CheckAllGuideLinesGetDetached();
 	} // end else
 
 } // void DetachFromGuideLine()
@@ -1387,14 +1392,20 @@ void AStageCube_1::SetGuideLinePosition()
 		FVector tempRelativeLocation = mCurrentSelectedCube->GetActorLocation() - this->GetActorLocation() ;
 
 		if (mGuideLineZaxis != NULL)
+		{
 			mGuideLineZaxis->SetActorRelativeLocation(FVector(0.f, 0.f, tempRelativeLocation.Z));
-
+			mGuideLineZaxis->mCoordinate = mCurrentSelectedCube->mZCoordinate ;
+		} // end if()
 		if (mGuideLineXaxis != NULL)
+		{
 			mGuideLineXaxis->SetActorRelativeLocation(FVector(tempRelativeLocation.X, 0.f, 0.f));
-
+			mGuideLineXaxis->mCoordinate = mCurrentSelectedCube->mXCoordinate;
+		} // end if()
 		if (mGuideLineYaxis != NULL)
+		{
 			mGuideLineYaxis->SetActorRelativeLocation(FVector(0.f, tempRelativeLocation.Y, 0.f));
-
+			mGuideLineYaxis->mCoordinate = mCurrentSelectedCube->mYCoordinate;
+		} // end if()
 	} // end if
 
 } // void SetGuideLinePosition()
@@ -1572,10 +1583,6 @@ void AStageCube_1::NormalizeGuideRotation()
 
 } // void NormalizeGuideRotation()
 
-void AStageCube_1::ManageGuideLineRotateResultToArray()
-{
-} // void ManageGuideLineRotateResultToArray()
-
 
 void AStageCube_1::DecideGuideLineTurnningDirection()
 {
@@ -1722,6 +1729,58 @@ void AStageCube_1::SetUnselectCubeUnitsCanChangeMat(bool canCgange)
 		} // end for()
 	} // end for()
 } // void SetUnselectCubeUnitsCanChangeMat()
+
+
+// 保険用 - ガイドラインのデタッチ失敗した時、検査を入る。
+void AStageCube_1::CheckAllGuideLinesGetDetached()
+{
+
+	FAttachmentTransformRules AttachRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, false);
+	TArray<AActor*> CurrentAttachedActors;
+
+	if (mGuideLineZaxis != NULL)
+	{
+		// 現在のアタッチしたアクターを取得
+		mGuideLineZaxis->GetAttachedActors(CurrentAttachedActors);
+		if (CurrentAttachedActors.Num() > 0)
+		{
+			for (AActor* AttachedCube : CurrentAttachedActors)
+			{
+				AttachedCube->AttachToComponent(mCubesRootComponent, AttachRules);
+			} // end for()
+			CurrentAttachedActors.Empty();
+		} // end if()
+	} // end if()
+
+	if (mGuideLineXaxis != NULL)
+	{
+		// 現在のアタッチしたアクターを取得
+		mGuideLineXaxis->GetAttachedActors(CurrentAttachedActors);
+		if (CurrentAttachedActors.Num() > 0)
+		{
+			for (AActor* AttachedCube : CurrentAttachedActors)
+			{
+				AttachedCube->AttachToComponent(mCubesRootComponent, AttachRules);
+			} // end for()
+			CurrentAttachedActors.Empty();
+		} // end if()
+	} // end if()
+
+	if (mGuideLineYaxis != NULL)
+	{
+		// 現在のアタッチしたアクターを取得
+		mGuideLineYaxis->GetAttachedActors(CurrentAttachedActors);
+		if (CurrentAttachedActors.Num() > 0)
+		{
+			for (AActor* AttachedCube : CurrentAttachedActors)
+			{
+				AttachedCube->AttachToComponent(mCubesRootComponent, AttachRules);
+			} // end for()
+			CurrentAttachedActors.Empty();
+		} // end if()
+	} // end if()
+
+} // void CheckAllGuideLinesGetDetached()
 
 
 void AStageCube_1::SetAllCubeUnitsCanChangeMat(bool canCgange)
