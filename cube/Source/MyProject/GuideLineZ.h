@@ -59,6 +59,10 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "GuideLineDetails")
 		int mode;
 
+	// 今の座標位置
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GuideLineDetails")
+		int mCoordinate;
+
 private:
 	// Default Material デフォルトマテリアル
 	UPROPERTY(EditAnywhere, Category = "GuideLineDetails|Mesh")

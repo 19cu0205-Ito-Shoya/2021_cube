@@ -20,7 +20,7 @@
 //				：2021/08/26		ガイドラインの回転方向は、マウスカーソルの位置によって回転する
 //				：2021/08/27		単体Cubeがマテリアル変更できるかを追加、壁のCollision追加
 //				：2021/09/02		それぞれのCubeのメッシュとマテリアルを設定して生成することを追加
-//				：2021/09/03		マテリアルをマテリアルインターフェースに変更
+//				：2021/09/03		マテリアルをマテリアルインターフェースに変更、ガイドラインのデタッチ失敗した時の検査を追加
 //---------------------------------------------------------------------------------
 
 #pragma once
@@ -126,15 +126,16 @@ public:
 	// 回転の角度を矯正する
 	void NormalizeGuideRotation();
 
-	void ManageGuideLineRotateResultToArray();
-
 	// ガイドラインの回転方向を設定
 	void DecideGuideLineTurnningDirection();
 
 	// 選択してない単体Cubeがマテリアルを変更できるかを設定
 	void SetUnselectCubeUnitsCanChangeMat(bool canCgange);
 
+	// 保険用 - ガイドラインのデタッチ失敗した時、検査を入る。
+	void CheckAllGuideLinesGetDetached();
 
+	// 単体Cubeの num(番号) のメッシュを取得
 	UStaticMesh* GetSpecificCubeMesh(int num);
 
 public:
