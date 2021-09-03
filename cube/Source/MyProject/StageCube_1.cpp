@@ -19,6 +19,8 @@
 //				：2021/08/25		ガイドライン回転の時非選択のガイドラインを非表示
 //				：2021/08/26		ガイドラインの回転方向は、マウスカーソルの位置によって回転する
 //				：2021/08/27		単体Cubeがマテリアル変更できるかを追加、壁のCollision追加
+//				：2021/09/02		それぞれのCubeのメッシュとマテリアルを設定して生成することを追加
+//				：2021/09/03		マテリアルをマテリアルインターフェースに変更
 //---------------------------------------------------------------------------------
 
 #include "StageCube_1.h"
@@ -59,33 +61,12 @@ AStageCube_1::AStageCube_1()
 	, mBackWallCollision(NULL)
 	, mLeftWallCollision(NULL)
 	, mRightWallCollision(NULL)
-	, mCubeMesh1(NULL)
-	, mCubeMesh2(NULL)
-	, mCubeMesh3(NULL)
-	, mCubeMesh4(NULL)
-	, mCubeMesh5(NULL)
-	, mCubeMesh6(NULL)
-	, mCubeMesh7(NULL)
-	, mCubeMesh8(NULL)
-	, mCubeMesh9(NULL)
-	, mCubeMesh10(NULL)
-	, mCubeMesh11(NULL)
-	, mCubeMesh12(NULL)
-	, mCubeMesh13(NULL)
-	, mCubeMesh14(NULL)
-	, mCubeMesh15(NULL)
-	, mCubeMesh16(NULL)
-	, mCubeMesh17(NULL)
-	, mCubeMesh18(NULL)
-	, mCubeMesh19(NULL)
-	, mCubeMesh20(NULL)
-	, mCubeMesh21(NULL)
-	, mCubeMesh22(NULL)
-	, mCubeMesh23(NULL)
-	, mCubeMesh24(NULL)
-	, mCubeMesh25(NULL)
-	, mCubeMesh26(NULL)
-	, mCubeMesh27(NULL)
+	, mCubeMesh1(NULL)	, mCubeMesh2(NULL)	, mCubeMesh3(NULL)	, mCubeMesh4(NULL)	, mCubeMesh5(NULL)	, mCubeMesh6(NULL)	, mCubeMesh7(NULL)	, mCubeMesh8(NULL)	, mCubeMesh9(NULL)
+	, mCubeMesh10(NULL)	, mCubeMesh11(NULL)	, mCubeMesh12(NULL)	, mCubeMesh13(NULL)	, mCubeMesh14(NULL)	, mCubeMesh15(NULL)	, mCubeMesh16(NULL)	, mCubeMesh17(NULL)	, mCubeMesh18(NULL)
+	, mCubeMesh19(NULL)	, mCubeMesh20(NULL)	, mCubeMesh21(NULL)	, mCubeMesh22(NULL)	, mCubeMesh23(NULL)	, mCubeMesh24(NULL)	, mCubeMesh25(NULL)	, mCubeMesh26(NULL)	, mCubeMesh27(NULL)
+	, mCubeMatInterface_1(NULL)
+	, mCubeMatInterface_2(NULL)
+	, mCubeMatInterface_3(NULL)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -157,8 +138,8 @@ void AStageCube_1::BeginPlay()
 
 	if (bp_CubeUnit != nullptr)
 	{
-		int counter = 1;							// 計数器
-		int remainder = 0;							// 余り
+		int counter = 1;							// 何番目Cubeの計数器
+		int remainder = 0;							// 計算用余り
 
 		// 原点の位置
 		float x1 = mCubeDistance;
@@ -183,11 +164,9 @@ void AStageCube_1::BeginPlay()
 		// 単体Cubeの基本生成トランスフォーム
 		FTransform SpawnTransform(GetActorRotation(), GetActorLocation(), mCubeUnitScale);
 
-		// それぞれの単体Cube生成
-		for (int i = 0; i <= 26; ++i, ++counter, ++yC) {
-
-
-			// Test Spawnning Diff Cube  21-08-25
+		// それぞれの単体Cubeを生成する
+		for (int i = 0; i <= 26; ++i, ++counter, ++yC) 
+		{
 
 			cubeGen = Cast<ACubeUnit>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, bp_CubeUnit, SpawnTransform));
 			if (cubeGen != nullptr)
@@ -195,22 +174,31 @@ void AStageCube_1::BeginPlay()
 				// Flow
 				// Spawn -> SpawnedActor's Construct -> do something -> FinishSpawningActor -> SpawnedActor's BeginPlay
 
-				// 単体Cubeのメッシュとマテリアルを設定
+				// 単体Cubeのメッシュを設定
 				cubeGen->mCubeMesh->SetStaticMesh(GetSpecificCubeMesh(i));
-				cubeGen->mCubeMesh->SetMaterial(0, mCubeMaterial_1);
-				
+
+				// 単体Cubeのマテリアルを設定
+				if (mCubeMatInterface_1 != NULL)
+				{
+					cubeGen->mCubeMatInterface_1 = mCubeMatInterface_1;
+					cubeGen->mCubeMesh->SetMaterial(0, mCubeMatInterface_1);
+				} // end if()
+				if (mCubeMatInterface_2 != NULL)
+					cubeGen->mCubeMatInterface_2 = mCubeMatInterface_2;
+				if (mCubeMatInterface_3 != NULL)
+					cubeGen->mCubeMatInterface_3 = mCubeMatInterface_3;
+
 				// maybe dont need  9/2
 				// cubeGen->SetMeshAndMaterialOnBegin(mCubeMesh1, mCubeMaterial_1, mCubeMaterial_2, mCubeMaterial_3);
 				
+				// 単体Cubeの生成を終了する
 				UGameplayStatics::FinishSpawningActor(cubeGen, SpawnTransform);
 			} // end if()
 			else GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("cubeGen error!")));
 			
 
-
-			// old one, for all cube is same mesh.
+			// (21-09-02) old one, for all cube is same mesh.
 			// cubeGen = GetWorld()->SpawnActor<ACubeUnit>(bp_CubeUnit);				// スポーンCube Actor
-
 
 			// 配列の位置計算
 			remainder = counter % 3;
@@ -234,7 +222,6 @@ void AStageCube_1::BeginPlay()
 				cubeGen->mZCoordinate = zC;
 
 				tempArray1D.Add(cubeGen);
-
 			} // end if()
 
 			// ===================  Debug用 + Editorで見える  =======================
@@ -403,9 +390,6 @@ void AStageCube_1::BeginPlay()
 void AStageCube_1::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	// CubeArray3D[0][0][0]->SetMeshAndMaterialOnBegin(mCubeMesh1, mCubeMaterial_1, mCubeMaterial_2, mCubeMaterial_3);
-
 
 } // Tick
 
@@ -925,24 +909,23 @@ void AStageCube_1::MouseLeftButtonPressed()
 								mStartRotateDegree = mCurrentSelectedGuideLine->GetActorRotation();
 								isDraggingGuideLine = true;
 								ChangeUnSelecetedGuideLineVisibility();
-								SetUnselectCubeUnitsCanChangeMat(false);
 							} // end if()
-							else isMovingCamera = true;
 						} // end if()
-						else isMovingCamera = true;
 					} // end if()
-					else isMovingCamera = true;
 				} // end if()
-				else isMovingCamera = true;
 				// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("is Hitting %s"), *MouseHitResult.Actor.Get()->GetFullName()));
 			} // end if()
-			else isMovingCamera = true;
 		} // end if()
+
+		if (isDraggingGuideLine == false)
+			isMovingCamera = true;
 	} // end if()
 	else
 	{
 		isMovingCamera = true;
 	} // end else
+
+	SetUnselectCubeUnitsCanChangeMat(false);
 
 	//  GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Orange, FString::Printf(TEXT("Left  Pressed!!")));
 
@@ -1005,10 +988,10 @@ void AStageCube_1::MouseLeftButtonReleased()
 								if (mCurrentSelectedGuideLine != NULL)
 								{
 									DetachFromGuideLine();
-									SetSelectingGuideLine(false);
 									mCurrentSelectedGuideLine->mIsSelected = false;
 									mCurrentSelectedGuideLine->ChangeMaterialFunc();
 									mCurrentSelectedGuideLine = NULL;
+									SetSelectingGuideLine(false);
 								} // end if()
 
 							} // end if()
@@ -1031,10 +1014,10 @@ void AStageCube_1::MouseLeftButtonReleased()
 							if (mCurrentSelectedGuideLine != NULL)
 							{
 								DetachFromGuideLine();
-								SetSelectingGuideLine(false);
 								mCurrentSelectedGuideLine->mIsSelected = false;
 								mCurrentSelectedGuideLine->ChangeMaterialFunc();
 								mCurrentSelectedGuideLine = NULL;
+								SetSelectingGuideLine(false);
 							} // end if()
 
 							mCurrentSelectedCube = NULL;
@@ -1054,7 +1037,7 @@ void AStageCube_1::MouseLeftButtonReleased()
 
 					if (hitGuideLine != NULL)
 					{
-						// 今は未選択の時
+						// ヒットしたActor今は未選択の時
 						if (hitGuideLine->mIsSelected == false)
 						{
 							hitGuideLine->mIsSelected = true;
@@ -1063,10 +1046,9 @@ void AStageCube_1::MouseLeftButtonReleased()
 								// 選択しているガイドライン解除
 								if (mCurrentSelectedGuideLine != NULL)
 								{
+									DetachFromGuideLine();
 									mCurrentSelectedGuideLine->mIsSelected = false;
 									mCurrentSelectedGuideLine->ChangeMaterialFunc();
-
-									DetachFromGuideLine();
 								} // end if()
 
 								mCurrentSelectedGuideLine = hitGuideLine;
@@ -1079,16 +1061,17 @@ void AStageCube_1::MouseLeftButtonReleased()
 							// GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("%s   Line is Clicked"), *hitGuideLine->GetName()));
 
 						} // end if()
-						// 選択しているの時
+						// ヒットしたActor今は選択しているの時
 						else
 						{
-							hitGuideLine->mIsSelected = false;
-							hitGuideLine->ChangeMaterialFunc();
-
-							DetachFromGuideLine();
-							SetSelectingGuideLine(false);
-
-							mCurrentSelectedGuideLine = NULL;
+							if (mCurrentSelectedGuideLine != NULL)
+							{
+								DetachFromGuideLine();
+								mCurrentSelectedGuideLine->mIsSelected = false;
+								mCurrentSelectedGuideLine->ChangeMaterialFunc();
+								mCurrentSelectedGuideLine = NULL;
+								SetSelectingGuideLine(false);
+							} // end if()
 
 							// GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("%s   Line is Unclicked"), *hitGuideLine->GetName()));
 
@@ -1110,7 +1093,6 @@ void AStageCube_1::MouseLeftButtonReleased()
 			NormalizeGuideRotation();
 			isDraggingGuideLine = false;
 			ChangeUnSelecetedGuideLineVisibility();
-			SetUnselectCubeUnitsCanChangeMat(true);
 
 			// カーソルの移動距離が10以下なら、選択を解除
 			if (distance < minimumCursorsDisplacement)
@@ -1134,13 +1116,14 @@ void AStageCube_1::MouseLeftButtonReleased()
 							{
 								if (hitGuideLine == mCurrentSelectedGuideLine)
 								{
-									hitGuideLine->mIsSelected = false;
-									hitGuideLine->ChangeMaterialFunc();
-
-									DetachFromGuideLine();
-									SetSelectingGuideLine(false);
-
-									mCurrentSelectedGuideLine = NULL;
+									if (mCurrentSelectedGuideLine != NULL)
+									{
+										DetachFromGuideLine();
+										mCurrentSelectedGuideLine->mIsSelected = false;
+										mCurrentSelectedGuideLine->ChangeMaterialFunc();
+										mCurrentSelectedGuideLine = NULL;
+										SetSelectingGuideLine(false);
+									} // end if()
 
 									// GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("%s   Line is Unclicked"), *hitGuideLine->GetName()));
 								} // end if()
@@ -1160,6 +1143,7 @@ void AStageCube_1::MouseLeftButtonReleased()
 
 	isMovingCamera = false;
 	isDraggingGuideLine = false;
+	SetUnselectCubeUnitsCanChangeMat(true);
 
 	// GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Orange, FString::Printf(TEXT("Left released")));
 
@@ -1463,6 +1447,18 @@ void AStageCube_1::ChangeUnSelecetedGuideLineVisibility()
 
 void AStageCube_1::DeSelectCubeAndGuide(bool deSelectCube, bool deSelectGuide)
 {
+	if (deSelectGuide == true)
+	{
+		if (mCurrentSelectedGuideLine != NULL)
+		{
+			DetachFromGuideLine();
+			mCurrentSelectedGuideLine->mIsSelected = false;
+			mCurrentSelectedGuideLine->ChangeMaterialFunc();
+			mCurrentSelectedGuideLine = NULL;
+			SetSelectingGuideLine(false);
+		} // end if()
+	} // end if
+
 	if (deSelectCube == true)
 	{
 		if (mCurrentSelectedCube != NULL)
@@ -1474,19 +1470,6 @@ void AStageCube_1::DeSelectCubeAndGuide(bool deSelectCube, bool deSelectGuide)
 		} // end if
 	} // end if
 
-
-	if (deSelectGuide == true)
-	{
-		if (mCurrentSelectedGuideLine != NULL)
-		{
-			DetachFromGuideLine();
-			SetSelectingGuideLine(false);
-			mCurrentSelectedGuideLine->mIsSelected = false;
-			mCurrentSelectedGuideLine->ChangeMaterialFunc();
-			mCurrentSelectedGuideLine = NULL;
-
-		} // end if
-	} // end if
 
 	ChangeAllGuideLinesVisibility(false);
 
@@ -1726,7 +1709,15 @@ void AStageCube_1::SetUnselectCubeUnitsCanChangeMat(bool canCgange)
 		for (int j = 0; j < 3; ++j) {
 			for (int k = 0; k < 3; ++k) {
 				if (CubeArray3D[i][j][k] != mCurrentSelectedCube)
+				{
 					CubeArray3D[i][j][k]->canChangeMaterial = canCgange;
+
+					// 今のマテリアルはマウスが上にいる時のマテリアル
+					// デフォルトに変えます
+					if ( CubeArray3D[i][j][k]->mCubeMesh->GetMaterial(0) == CubeArray3D[i][j][k]->mCubeMatInterface_3)
+						CubeArray3D[i][j][k]->ChangeToDefaultMaterial();
+
+				} // end if()
 			} // end for()
 		} // end for()
 	} // end for()

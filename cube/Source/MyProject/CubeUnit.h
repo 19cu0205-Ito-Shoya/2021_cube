@@ -8,6 +8,7 @@
 //				：2021/08/23		選択機能のインプットイベントをStageCubeに移動した
 //				：2021/08/25		マウスカーソル重ねる時のマテリアル変更
 //				：2021/08/26		マテリアル変更できるか判断追加
+//				：2021/09/03		マテリアルをマテリアルインターフェースに変更
 //-------------------------------------------------------------------
 
 #pragma once
@@ -75,24 +76,21 @@ public:
 
 public:
 	// 本体のメッシュ
-	UPROPERTY(EditAnywhere, Category = "CubeDetails|Mesh")
+	UPROPERTY(EditDefaultsOnly, Category = "CubeDetails|Mesh")
 		UStaticMeshComponent* mCubeMesh;
 
-	// Default Material デフォルトマテリアル
-	UPROPERTY(EditAnywhere, Category = "CubeDetails|Mesh")
-		UMaterial* mCubeMaterial_1;
+	// Default Material デフォルトマテリアル (MaterialInterface)
+	UPROPERTY(EditDefaultsOnly, Category = "CubeDetails|Mesh")
+		UMaterialInterface* mCubeMatInterface_1;
 
 	// Chosen Material 選択されたマテリアル
-	UPROPERTY(EditAnywhere, Category = "CubeDetails|Mesh")
-		UMaterial* mCubeMaterial_2;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeDetails|Mesh")
+		UMaterialInterface* mCubeMatInterface_2;
 
 	// Cursor Over's Material マウスが上にいる時のマテリアル
-	UPROPERTY(EditAnywhere, Category = "CubeDetails|Mesh")
-		UMaterial* mCubeMaterial_3;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeDetails|Mesh")
+		UMaterialInterface* mCubeMatInterface_3;
 
-	// 保留中マテリアル
-	UPROPERTY(EditAnywhere, Category = "CubeDetails|Mesh")
-		UMaterialInstanceDynamic* mCubeMaterial_Instance;
 
 public:
 	UFUNCTION()
