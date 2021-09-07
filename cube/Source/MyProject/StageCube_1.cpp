@@ -1594,11 +1594,13 @@ void AStageCube_1::NormalizeGuideRotation()
 } // void NormalizeGuideRotation()
 
 // 
-void AStageCube_1::CountInc_Implementation() {}
-
-void AStageCube_1::ManageGuideLineRotateResultToArray()
+void AStageCube_1::CountInc_Implementation() 
 {
-} // void ManageGuideLineRotateResultToArray()
+}
+
+// void AStageCube_1::ManageGuideLineRotateResultToArray()
+// {
+// } // void ManageGuideLineRotateResultToArray()
 
 
 void AStageCube_1::DecideGuideLineTurnningDirection()
