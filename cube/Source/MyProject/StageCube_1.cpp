@@ -1483,11 +1483,20 @@ void AStageCube_1::SetSelectingCube( const bool isSelect)
 
 void AStageCube_1::NormalizeGuideRotation()
 {
+	//　有効な回転のフラグ
+	bool isVaildRot = false;
+
 	// ===================================== ガイドライン　Z =================================
 	if (mCurrentSelectedGuideLine == mGuideLineZaxis)
 	{
 		// 回転開始と完了の差から、基本回転するの角度を決める
 		float basicDegree = round((mCurrentSelectedGuideLine->GetActorRotation().Yaw - mStartRotateDegree.Yaw) / 90.f) * 90.f;
+
+		// 有効な回転の確認 basic != 0 有効な回転
+		if (basicDegree != .0f)
+		{
+			isVaildRot = true;
+		}
 
 		// 角度確認用
 		// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Turquoise, FString::SanitizeFloat(basicDegree));
@@ -1515,6 +1524,12 @@ void AStageCube_1::NormalizeGuideRotation()
 		// 回転開始と完了の差から、基本回転するの角度を決める
 		float basicDegree = round((mCurrentSelectedGuideLine->GetActorRotation().Roll - mStartRotateDegree.Roll) / 90.f) * 90.f;
 
+		// 有効な回転の確認 basic != 0 有効な回転
+		if (basicDegree != .0f)
+		{
+			isVaildRot = true;
+		}
+
 		// 角度確認用
 		// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Turquoise, FString::SanitizeFloat(basicDegree));
 
@@ -1541,6 +1556,12 @@ void AStageCube_1::NormalizeGuideRotation()
 		// 回転開始と完了の差から、基本回転するの角度を決める
 		float basicDegree = round((mCurrentSelectedGuideLine->GetActorRotation().Roll - mStartRotateDegree.Roll) / 90.f) * 90.f;
 
+		// 有効な回転の確認 basic != 0 有効な回転
+		if (basicDegree != .0f)
+		{
+			isVaildRot = true;
+		}
+
 		// 角度確認用
 		// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Turquoise, FString::SanitizeFloat(basicDegree));
 
@@ -1564,7 +1585,16 @@ void AStageCube_1::NormalizeGuideRotation()
 
 	SetGuideLinePosition();
 
+	// 回転が有効だった場合、カウント処理を呼び出す
+	if(isVaildRot)
+	{
+		CountInc();
+	}
+
 } // void NormalizeGuideRotation()
+
+// 
+void AStageCube_1::CountInc_Implementation() {}
 
 void AStageCube_1::ManageGuideLineRotateResultToArray()
 {
