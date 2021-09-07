@@ -8,6 +8,7 @@
 //				：2021/08/23		選択機能のインプットイベントをStageCubeに移動した
 //				：2021/08/25		マウスカーソル重ねる時のマテリアル変更
 //				：2021/08/26		マテリアル変更できるか判断追加
+//				：2021/09/03		マテリアルをマテリアルインターフェースに変更
 //-------------------------------------------------------------------
 
 #include "CubeUnit.h"
@@ -18,17 +19,15 @@
 ACubeUnit::ACubeUnit()
 	: mCubeMesh(NULL)
 	, mRootComponent(NULL)
-	, mCubeMaterial_1(NULL)
-	, mCubeMaterial_2(NULL)
-	, mCubeMaterial_3(NULL)
-	, mCubeMaterial_Instance(NULL)
 	, mIsSelected(false)
 	, serialNum(0)
 	, mXCoordinate(0)
 	, mYCoordinate(0)
 	, mZCoordinate(0)
-	, testInt(0)
 	, canChangeMaterial(false)
+	, mCubeMatInterface_1(NULL)
+	, mCubeMatInterface_2(NULL)
+	, mCubeMatInterface_3(NULL)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -40,13 +39,9 @@ ACubeUnit::ACubeUnit()
 
 	mCubeMesh->SetupAttachment(RootComponent);
 
-	mCubeMaterial_1 = CreateDefaultSubobject<UMaterial>(TEXT("CubeMaterial1"));
-
-	mCubeMaterial_2 = CreateDefaultSubobject<UMaterial>(TEXT("CubeMaterial2"));
-
-
-	//OnClicked.AddUniqueDynamic(this, &ACubeUnit::OnSelected);
-
+	mCubeMatInterface_1 = CreateDefaultSubobject<UMaterialInterface>(TEXT("CubeMatInterface1"));
+	mCubeMatInterface_2 = CreateDefaultSubobject<UMaterialInterface>(TEXT("CubeMatInterface2"));
+	mCubeMatInterface_3 = CreateDefaultSubobject<UMaterialInterface>(TEXT("CubeMatInterface3"));
 
 	// マウスカーソルが重ねている時
 	mCubeMesh->OnBeginCursorOver.AddUniqueDynamic(this, &ACubeUnit::OnOver2);
@@ -54,22 +49,12 @@ ACubeUnit::ACubeUnit()
 	//OnBeginCursorOver.AddUniqueDynamic(this, &ACubeUnit::OnOver);
 	//OnEndCursorOver.AddUniqueDynamic(this, &ACubeUnit::EndOver);
 
-
-	// Test Spawnning Diff Cube  21-08-25
-	if (testInt == 1)
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("CubeUnit ConsTr")));
-
-
 }
 
 // 実行時に一度呼ばれる
 void ACubeUnit::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (testInt == 1)
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("CubeUnit BeginPlay")));
-
 
 	APlayerController* myPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	 myPlayerController->bEnableMouseOverEvents = true;
@@ -81,19 +66,17 @@ void ACubeUnit::BeginPlay()
 
 		// mCubeMesh->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 
-		if (mCubeMaterial_1 != NULL)
+		if (mCubeMatInterface_1 != NULL)
 		{
-			mCubeMesh->SetMaterial(0, mCubeMaterial_1);
+			mCubeMesh->SetMaterial(0, mCubeMatInterface_1);
 		} // end if()
 		else
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("CubeMaterial Loading Failed")));
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("CubeMaterial_1 Loading Failed")));
 		} // end else
-
 
 	} // end if()
 	
-
 } // void BeginPlay()
 
 
@@ -105,21 +88,21 @@ void ACubeUnit::Tick(float DeltaTime)
 } // void Tick()
 
 
+// dont need  0903
 void ACubeUnit::SetMeshAndMaterialOnBegin(UStaticMesh* newMesh, UMaterial* newMaterial_1, UMaterial* newMaterial_2, UMaterial* newMaterial_3)
 {
 
 	if (newMesh != NULL)
 	{
-
 		// mCubeMesh->SetStaticMesh(newMesh);
 
 		if (newMaterial_1 != NULL && newMaterial_2 != NULL && newMaterial_3 != NULL)
 		{
-			mCubeMaterial_1 = newMaterial_1;
-			mCubeMaterial_2 = newMaterial_2;
-			mCubeMaterial_3 = newMaterial_3;
+			//mCubeMaterial_1 = newMaterial_1;
+			//mCubeMaterial_2 = newMaterial_2;
+			//mCubeMaterial_3 = newMaterial_3;
 
-			mCubeMesh->SetMaterial(0, mCubeMaterial_1);
+			//mCubeMesh->SetMaterial(0, mCubeMaterial_1);
 		} // end if()
 		else GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("newMaterial is NULL!")));
 		
@@ -132,23 +115,6 @@ void ACubeUnit::SetMeshAndMaterialOnBegin(UStaticMesh* newMesh, UMaterial* newMa
 
 }  // void SetMeshAndMaterialOnBegin
 
-void ACubeUnit::Test123(int x)
-{
-	 GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("-----  %d"), x));
-
-}
-
-void ACubeUnit::TestSet456(int y)
-{
-	testInt = y;
-}
-
-void ACubeUnit::OnSelected(AActor* Target, FKey ButtonPressed)
-{
-
-} // void OnSelected
-
-
 
 void ACubeUnit::OnOver2(UPrimitiveComponent* Target)
 {
@@ -160,9 +126,9 @@ void ACubeUnit::OnOver2(UPrimitiveComponent* Target)
 	{
 		if (mIsSelected == false)
 		{
-			if (mCubeMaterial_3 != NULL)
+			if (mCubeMatInterface_3 != NULL)
 			{
-				mCubeMesh->SetMaterial(0, mCubeMaterial_3);
+				mCubeMesh->SetMaterial(0, mCubeMatInterface_3);
 			} // end if()
 			else
 			{
@@ -183,9 +149,9 @@ void ACubeUnit::EndOver2(UPrimitiveComponent* Target)
 	{
 		if (mIsSelected == false)
 		{
-			if (mCubeMaterial_1 != NULL)
+			if (mCubeMatInterface_1 != NULL)
 			{
-				mCubeMesh->SetMaterial(0, mCubeMaterial_1);
+				mCubeMesh->SetMaterial(0, mCubeMatInterface_1);
 			} // end if()
 			else
 			{
@@ -204,26 +170,26 @@ void ACubeUnit::ChangeMaterialFunc()
 		if (mIsSelected == false) {
 			// 未選択の時
 
-			if (mCubeMaterial_1 != NULL)
+			if (mCubeMatInterface_1 != NULL)
 			{
-				mCubeMesh->SetMaterial(0, mCubeMaterial_1);
+				mCubeMesh->SetMaterial(0, mCubeMatInterface_1);
 			} // end if()
 			else
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("CubeMaterial_1 Fail Loading")));
+				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("CubeMatInterface_1 Fail Loading")));
 			} // end else
 		} // end if()
 		else
 		{
 			// 選択しているの時
 
-			if (mCubeMaterial_2 != NULL)
+			if (mCubeMatInterface_2 != NULL)
 			{
-				mCubeMesh->SetMaterial(0, mCubeMaterial_2);
+				mCubeMesh->SetMaterial(0, mCubeMatInterface_2);
 			} // end if()
 			else
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("CubeMaterial_2 Fail Loading")));
+				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("CubeMatInterface_2 Fail Loading")));
 			} // end else
 		} // end else
 	} // end if()
@@ -237,15 +203,15 @@ void ACubeUnit::ChangeToDefaultMaterial()
 		// Test for Current Material
 		// UE_LOG(LogTemp, Log, TEXT(" Fail %s"), *mCubeMesh->GetMaterial(0)->GetMaterial()->GetName());
 
-		if (mCubeMesh->GetMaterial(0)->GetMaterial() != mCubeMaterial_1) {
+		if (mCubeMesh->GetMaterial(0)->GetMaterial() != mCubeMatInterface_1) {
 
-			if (mCubeMaterial_1 != NULL)
+			if (mCubeMatInterface_1 != NULL)
 			{
-				mCubeMesh->SetMaterial(0, mCubeMaterial_1);
+				mCubeMesh->SetMaterial(0, mCubeMatInterface_1);
 			} // end if()
 			else
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("CubeMaterial_1 Fail Loading")));
+				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("CubeMatInterface_1 Fail Loading")));
 			} // end else
 		} // end if()
 	} // end if()

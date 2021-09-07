@@ -1,31 +1,33 @@
 //---------------------------------------------------------------------------------
-// ƒtƒ@ƒCƒ‹		FStageCube_1.cpp
-// ŠT—v			F‘‘ÌCube‚Ìˆ—
-// ì¬Ò		F19CU0236 —Ñ‰_ô 
-// ì¬“ú		F2021/08/11		‘‘ÌCube‚ÌŠî–{\¬§ì
-// XV“ú		F2021/08/12		’P‘ÌCube¶¬‚Æ”z—ñ“ü‚èA‘I‘ğ‹@”\
-//				F2021/08/13		‰ñ“]‚Ì‚½‚ß”z—ñ‚É‚æ‚éMatrixŒvZ
-//				F2021/08/13		‰ñ“]—pƒKƒCƒhƒ‰ƒCƒ“‚Ì¶¬A‘I‘ğ‹@”\AƒAƒ^ƒbƒ`‹@”\
-//				F2021/08/14		‰ñ“]—pƒKƒCƒhƒ‰ƒCƒ“‚Ì²î•ñ’Ç‰ÁAƒfƒ^ƒbƒ`‹@”\
-//				F2021/08/16		’P‘ÌCube‚ğ‘I‘ğ‚µ‚½‚É‰ñ“]—pƒKƒCƒhƒ‰ƒCƒ“‚Ìˆ—(”z’uA‰Â‹«)
-//				F2021/08/17		¶‰ñ“]90“x(=‰E‰ñ“]270“x)‚Æ‰ñ“]180“x’Ç‰Á
-//				F2021/08/18		‘‘ÌCube‚Ì‰ñ“]‘€ì’Ç‰ÁAƒKƒCƒhƒ‰ƒCƒ“‚Ì‰ñ“]‘€ì’Ç‰Á
-//				F2021/08/19		Camera‰ñ“]‚Ì‹¸³AƒKƒCƒhƒ‰ƒCƒ“‰ñ“]‚Ì‹¸³
-//				F2021/08/20		‰ñ“]‚ÌC³A‰ñ“]ŒvZ•û–@‚ÍQuaternion‚©‚çŒvZ‚É•ÏX
-//				F2021/08/21		ƒKƒCƒhƒ‰ƒCƒ“Y‚ÌC³
-//				F2021/08/22		‘I‘ğ•û–@‚ÌC³
-//				F2021/08/23		ƒ}ƒEƒX‚ÌƒCƒ“ƒvƒbƒgƒCƒxƒ“ƒg‚ğStageCube‚É‚Ü‚Æ‚ß‚é
-//				F2021/08/24		ƒ}ƒEƒX‚Ìƒ‰ƒCƒ“ƒgƒŒ[ƒX•û–@‚ğ•ÏX
-//				F2021/08/25		ƒKƒCƒhƒ‰ƒCƒ“‰ñ“]‚Ì”ñ‘I‘ğ‚ÌƒKƒCƒhƒ‰ƒCƒ“‚ğ”ñ•\¦
-//				F2021/08/26		ƒKƒCƒhƒ‰ƒCƒ“‚Ì‰ñ“]•ûŒü‚ÍAƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ÌˆÊ’u‚É‚æ‚Á‚Ä‰ñ“]‚·‚é
-//				F2021/08/27		’P‘ÌCube‚ªƒ}ƒeƒŠƒAƒ‹•ÏX‚Å‚«‚é‚©‚ğ’Ç‰ÁA•Ç‚ÌCollision’Ç‰Á
+// ï¿½tï¿½@ï¿½Cï¿½ï¿½		ï¿½FStageCube_1.cpp
+// ï¿½Tï¿½v			ï¿½Fï¿½ï¿½ï¿½ï¿½Cubeï¿½Ìï¿½ï¿½ï¿½
+// ï¿½ì¬ï¿½ï¿½		ï¿½F19CU0236 ï¿½Ñ‰_ï¿½ï¿½ 
+// ï¿½ì¬ï¿½ï¿½		ï¿½F2021/08/11		ï¿½ï¿½ï¿½ï¿½Cubeï¿½ÌŠï¿½{ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½Xï¿½Vï¿½ï¿½		ï¿½F2021/08/12		ï¿½Pï¿½ï¿½Cubeï¿½ï¿½ï¿½ï¿½ï¿½Æ”zï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½Iï¿½ï¿½ï¿½@ï¿½\
+//				ï¿½F2021/08/13		ï¿½ï¿½]ï¿½Ì‚ï¿½ï¿½ß”zï¿½ï¿½É‚ï¿½ï¿½Matrixï¿½vï¿½Z
+//				ï¿½F2021/08/13		ï¿½ï¿½]ï¿½pï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½Aï¿½Iï¿½ï¿½ï¿½@ï¿½\ï¿½Aï¿½Aï¿½^ï¿½bï¿½`ï¿½@ï¿½\
+//				ï¿½F2021/08/14		ï¿½ï¿½]ï¿½pï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½Ç‰ï¿½ï¿½Aï¿½fï¿½^ï¿½bï¿½`ï¿½@ï¿½\
+//				ï¿½F2021/08/16		ï¿½Pï¿½ï¿½Cubeï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É‰ï¿½]ï¿½pï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½(ï¿½zï¿½uï¿½Aï¿½Âï¿½ï¿½ï¿½)
+//				ï¿½F2021/08/17		ï¿½ï¿½ï¿½ï¿½]90ï¿½x(=ï¿½Eï¿½ï¿½]270ï¿½x)ï¿½Æ‰ï¿½]180ï¿½xï¿½Ç‰ï¿½
+//				ï¿½F2021/08/18		ï¿½ï¿½ï¿½ï¿½Cubeï¿½Ì‰ï¿½]ï¿½ï¿½ï¿½ï¿½Ç‰ï¿½ï¿½Aï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Ì‰ï¿½]ï¿½ï¿½ï¿½ï¿½Ç‰ï¿½
+//				ï¿½F2021/08/19		Cameraï¿½ï¿½]ï¿½Ì‹ï¿½ï¿½ï¿½ï¿½Aï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½]ï¿½Ì‹ï¿½ï¿½ï¿½
+//				ï¿½F2021/08/20		ï¿½ï¿½]ï¿½ÌCï¿½ï¿½ï¿½Aï¿½ï¿½]ï¿½vï¿½Zï¿½ï¿½ï¿½@ï¿½ï¿½Quaternionï¿½ï¿½ï¿½ï¿½vï¿½Zï¿½É•ÏX
+//				ï¿½F2021/08/21		ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½Yï¿½ÌCï¿½ï¿½
+//				ï¿½F2021/08/22		ï¿½Iï¿½ï¿½ï¿½ï¿½@ï¿½ÌCï¿½ï¿½
+//				ï¿½F2021/08/23		ï¿½}ï¿½Eï¿½Xï¿½ÌƒCï¿½ï¿½ï¿½vï¿½bï¿½gï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½ï¿½StageCubeï¿½É‚Ü‚Æ‚ß‚ï¿½
+//				ï¿½F2021/08/24		ï¿½}ï¿½Eï¿½Xï¿½Ìƒï¿½ï¿½Cï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½Xï¿½ï¿½ï¿½@ï¿½ï¿½ÏX
+//				ï¿½F2021/08/25		ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½]ï¿½Ìï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ÌƒKï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½
+//				ï¿½F2021/08/26		ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Ì‰ï¿½]ï¿½ï¿½ï¿½ï¿½ï¿½ÍAï¿½}ï¿½Eï¿½Xï¿½Jï¿½[ï¿½\ï¿½ï¿½ï¿½ÌˆÊ’uï¿½É‚ï¿½ï¿½ï¿½Ä‰ï¿½]ï¿½ï¿½ï¿½ï¿½
+//				ï¿½F2021/08/27		ï¿½Pï¿½ï¿½Cubeï¿½ï¿½ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ÏXï¿½Å‚ï¿½ï¿½é‚©ï¿½ï¿½Ç‰ï¿½ï¿½Aï¿½Ç‚ï¿½Collisionï¿½Ç‰ï¿½
+//				ï¿½F2021/09/02		ï¿½ï¿½ï¿½ê‚¼ï¿½ï¿½ï¿½Cubeï¿½Ìƒï¿½ï¿½bï¿½Vï¿½ï¿½ï¿½Æƒ}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½İ’è‚µï¿½Äï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é‚±ï¿½Æ‚ï¿½Ç‰ï¿½
+//				ï¿½F2021/09/03		ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½^ï¿½[ï¿½tï¿½Fï¿½[ï¿½Xï¿½É•ÏXï¿½Aï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Ìƒfï¿½^ï¿½bï¿½`ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÌŒï¿½ï¿½ï¿½ï¿½ï¿½Ç‰ï¿½
 //---------------------------------------------------------------------------------
 
 #include "StageCube_1.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Engine.h"
 
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ï¿½Rï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^
 AStageCube_1::AStageCube_1()
 	: mRootComponent(NULL)
 	, mCubesRootComponent(NULL)
@@ -59,7 +61,12 @@ AStageCube_1::AStageCube_1()
 	, mBackWallCollision(NULL)
 	, mLeftWallCollision(NULL)
 	, mRightWallCollision(NULL)
-	, mCubeMesh1(NULL)
+	, mCubeMesh1(NULL)	, mCubeMesh2(NULL)	, mCubeMesh3(NULL)	, mCubeMesh4(NULL)	, mCubeMesh5(NULL)	, mCubeMesh6(NULL)	, mCubeMesh7(NULL)	, mCubeMesh8(NULL)	, mCubeMesh9(NULL)
+	, mCubeMesh10(NULL)	, mCubeMesh11(NULL)	, mCubeMesh12(NULL)	, mCubeMesh13(NULL)	, mCubeMesh14(NULL)	, mCubeMesh15(NULL)	, mCubeMesh16(NULL)	, mCubeMesh17(NULL)	, mCubeMesh18(NULL)
+	, mCubeMesh19(NULL)	, mCubeMesh20(NULL)	, mCubeMesh21(NULL)	, mCubeMesh22(NULL)	, mCubeMesh23(NULL)	, mCubeMesh24(NULL)	, mCubeMesh25(NULL)	, mCubeMesh26(NULL)	, mCubeMesh27(NULL)
+	, mCubeMatInterface_1(NULL)
+	, mCubeMatInterface_2(NULL)
+	, mCubeMatInterface_3(NULL)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -70,52 +77,52 @@ AStageCube_1::AStageCube_1()
 	mCubesRootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("MyCubesRootSceneComponent"));
 	mCubesRootComponent->SetupAttachment(RootComponent);
 
-	// ƒXƒvƒŠƒ“ƒOƒA[ƒ€‚ÌƒIƒuƒWƒFƒNƒg‚ğ¶¬
+	// ï¿½Xï¿½vï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½Aï¿½[ï¿½ï¿½ï¿½ÌƒIï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ğ¶ï¿½
 	mSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("mSpringArm"));
 
-	// ƒXƒvƒŠƒ“ƒOƒA[ƒ€‚ğRootComponent‚ÉƒAƒ^ƒbƒ`
+	// ï¿½Xï¿½vï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½Aï¿½[ï¿½ï¿½ï¿½ï¿½RootComponentï¿½ÉƒAï¿½^ï¿½bï¿½`
 	mSpringArm->SetupAttachment(RootComponent);
 
-	// ƒJƒƒ‰‚ÆƒvƒŒƒCƒ„[‚Ì‹——£
+	// ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½Æƒvï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ì‹ï¿½ï¿½ï¿½
 	mSpringArm->TargetArmLength = 800.f;
 
-	// ƒJƒƒ‰‚ÌqƒŠƒWƒ‡ƒ“ƒeƒXƒg‚ğs‚¤‚©‚ğİ’è
+	// ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½Ìqï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½eï¿½Xï¿½gï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ’ï¿½
 	mSpringArm->bDoCollisionTest = false;
 
-	// ƒJƒƒ‰‚ğ¶¬
+	// ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ğ¶ï¿½
 	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("mCamera"));
 
-	// ƒJƒƒ‰‚ğƒXƒvƒŠƒ“ƒOƒA[ƒ€‚ÉƒAƒ^ƒbƒ`
+	// ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½vï¿½ï¿½ï¿½ï¿½ï¿½Oï¿½Aï¿½[ï¿½ï¿½ï¿½ÉƒAï¿½^ï¿½bï¿½`
 	mCamera->SetupAttachment(mSpringArm, USpringArmComponent::SocketName);
 
-	// ‘O‚Ì•Ç‚ÌCollision‚ğ¶¬
+	// ï¿½Oï¿½Ì•Ç‚ï¿½Collisionï¿½ğ¶ï¿½
 	mFrontWallCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("FrontWallCollision"));
-	// ‘O‚Ì•Ç‚ğRootComponent‚ÉƒAƒ^ƒbƒ`
+	// ï¿½Oï¿½Ì•Ç‚ï¿½RootComponentï¿½ÉƒAï¿½^ï¿½bï¿½`
 	mFrontWallCollision->SetupAttachment(RootComponent);
 
-	// Œã‚Ì•Ç‚ÌCollision‚ğ¶¬
+	// ï¿½ï¿½Ì•Ç‚ï¿½Collisionï¿½ğ¶ï¿½
 	mBackWallCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BackWallCollision"));
-	// Œã‚Ì•Ç‚ğRootComponent‚ÉƒAƒ^ƒbƒ`
+	// ï¿½ï¿½Ì•Ç‚ï¿½RootComponentï¿½ÉƒAï¿½^ï¿½bï¿½`
 	mBackWallCollision->SetupAttachment(RootComponent);
 
-	// ¶‚Ì•Ç‚ÌCollision‚ğ¶¬
+	// ï¿½ï¿½ï¿½Ì•Ç‚ï¿½Collisionï¿½ğ¶ï¿½
 	mLeftWallCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftWallCollision"));
-	// ¶‚Ì•Ç‚ğRootComponent‚ÉƒAƒ^ƒbƒ`
+	// ï¿½ï¿½ï¿½Ì•Ç‚ï¿½RootComponentï¿½ÉƒAï¿½^ï¿½bï¿½`
 	mLeftWallCollision->SetupAttachment(RootComponent);
 
-	// ‰E‚Ì•Ç‚ÌCollision‚ğ¶¬
+	// ï¿½Eï¿½Ì•Ç‚ï¿½Collisionï¿½ğ¶ï¿½
 	mRightWallCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("RightWallCollision"));
-	// ‰E‚Ì•Ç‚ğRootComponent‚ÉƒAƒ^ƒbƒ`
+	// ï¿½Eï¿½Ì•Ç‚ï¿½RootComponentï¿½ÉƒAï¿½^ï¿½bï¿½`
 	mRightWallCollision->SetupAttachment(RootComponent);
 
 }
 
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ï¿½fï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^
 AStageCube_1::~AStageCube_1()
 {
 }
 
-// Às‚Éˆê“xŒÄ‚Î‚ê‚é
+// ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½Éˆï¿½xï¿½Ä‚Î‚ï¿½ï¿½
 void AStageCube_1::BeginPlay()
 {
 	Super::BeginPlay();
@@ -125,71 +132,75 @@ void AStageCube_1::BeginPlay()
 	// FAttachmentTransformRules AttachRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
 	FAttachmentTransformRules AttachRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
 
-	// ================================ Cube ‚Ì¶¬  ================================
+	// ================================ Cube ï¿½Ìï¿½ï¿½ï¿½  ================================
 
-	bp_CubeUnit = TSoftClassPtr<AActor>(FSoftObjectPath(*path)).LoadSynchronous();	// path‚É‚ ‚éBP‚ğæ“¾
+	bp_CubeUnit = TSoftClassPtr<AActor>(FSoftObjectPath(*path)).LoadSynchronous();	// pathï¿½É‚ï¿½ï¿½ï¿½BPï¿½ï¿½ï¿½æ“¾
 
 	if (bp_CubeUnit != nullptr)
 	{
-		int counter = 1;							// Œv”Ší
-		int remainder = 0;							// —]‚è
+		int counter = 1;							// ï¿½ï¿½ï¿½Ô–ï¿½Cubeï¿½ÌŒvï¿½ï¿½ï¿½ï¿½
+		int remainder = 0;							// ï¿½vï¿½Zï¿½pï¿½]ï¿½ï¿½
 
-		// Œ´“_‚ÌˆÊ’u
+		// ï¿½ï¿½ï¿½_ï¿½ÌˆÊ’u
 		float x1 = mCubeDistance;
 		float y1 = -mCubeDistance;
 		float z1 = mCubeDistance;
 
-		// ”z—ñ—p‚ÌÀ•WˆÊ’u
-		int xC = 0;		// À•WX
-		int yC = 0;		// À•WY
-		int zC = 0;		// À•WZ
+		// ï¿½zï¿½ï¿½pï¿½Ìï¿½ï¿½Wï¿½Ê’u
+		int xC = 0;		// ï¿½ï¿½ï¿½WX
+		int yC = 0;		// ï¿½ï¿½ï¿½WY
+		int zC = 0;		// ï¿½ï¿½ï¿½WZ
 
-		ACubeUnit* cubeGen;								// Cube Actor¶¬—p
+		ACubeUnit* cubeGen;								// Cube Actorï¿½ï¿½ï¿½ï¿½ï¿½p
 
-		TArray< TArray<ACubeUnit*>> tempArray2D;		// ‰¼•Û‘¶—p2D Array
-		TArray<ACubeUnit*> tempArray1D;					// ‰¼•Û‘¶—pArray 
+		TArray< TArray<ACubeUnit*>> tempArray2D;		// ï¿½ï¿½ï¿½Û‘ï¿½ï¿½p2D Array
+		TArray<ACubeUnit*> tempArray1D;					// ï¿½ï¿½ï¿½Û‘ï¿½ï¿½pArray 
 
 		// *** For test position 8/12
 		int tempSerialNum = 1000;
 
 		 // GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("----  %s"), *mCubeMesh2->GetPathName()));
 
-		for (int i = 0; i <= 26; ++i, ++counter, ++yC) {
+		// ï¿½Pï¿½ï¿½Cubeï¿½ÌŠï¿½{ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½tï¿½Hï¿½[ï¿½ï¿½
+		FTransform SpawnTransform(GetActorRotation(), GetActorLocation(), mCubeUnitScale);
 
+		// ï¿½ï¿½ï¿½ê‚¼ï¿½ï¿½Ì’Pï¿½ï¿½Cubeï¿½ğ¶ï¿½ï¿½ï¿½ï¿½ï¿½
+		for (int i = 0; i <= 26; ++i, ++counter, ++yC) 
+		{
 
-			// Test Spawnning Diff Cube  21-08-25
-
-			/*
-
-			FTransform SpawnTransform(GetActorRotation(), GetActorLocation(), mCubeUnitScale);
 			cubeGen = Cast<ACubeUnit>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, bp_CubeUnit, SpawnTransform));
 			if (cubeGen != nullptr)
 			{
+				// Flow
 				// Spawn -> SpawnedActor's Construct -> do something -> FinishSpawningActor -> SpawnedActor's BeginPlay
 
+				// ï¿½Pï¿½ï¿½Cubeï¿½Ìƒï¿½ï¿½bï¿½Vï¿½ï¿½ï¿½ï¿½İ’ï¿½
+				cubeGen->mCubeMesh->SetStaticMesh(GetSpecificCubeMesh(i));
 
-				cubeGen->mCubeMesh->SetStaticMesh(mCubeMesh7);
-				cubeGen->mCubeMesh->SetMaterial(0, mCubeMaterial_1);
-				cubeGen->TestSet456(1);
+				// ï¿½Pï¿½ï¿½Cubeï¿½Ìƒ}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½İ’ï¿½
+				if (mCubeMatInterface_1 != NULL)
+				{
+					cubeGen->mCubeMatInterface_1 = mCubeMatInterface_1;
+					cubeGen->mCubeMesh->SetMaterial(0, mCubeMatInterface_1);
+				} // end if()
+				if (mCubeMatInterface_2 != NULL)
+					cubeGen->mCubeMatInterface_2 = mCubeMatInterface_2;
+				if (mCubeMatInterface_3 != NULL)
+					cubeGen->mCubeMatInterface_3 = mCubeMatInterface_3;
 
+				// maybe dont need  9/2
 				// cubeGen->SetMeshAndMaterialOnBegin(mCubeMesh1, mCubeMaterial_1, mCubeMaterial_2, mCubeMaterial_3);
 				
+				// ï¿½Pï¿½ï¿½Cubeï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				UGameplayStatics::FinishSpawningActor(cubeGen, SpawnTransform);
-			}
+			} // end if()
 			else GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("cubeGen error!")));
 			
-			if (mCubeMesh1 == NULL)
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("MESHHHHHHHHHHH error!")));
 
-			*/
-	
+			// (21-09-02) old one, for all cube is same mesh.
+			// cubeGen = GetWorld()->SpawnActor<ACubeUnit>(bp_CubeUnit);				// ï¿½Xï¿½|ï¿½[ï¿½ï¿½Cube Actor
 
-
-
-			cubeGen = GetWorld()->SpawnActor<ACubeUnit>(bp_CubeUnit);				// ƒXƒ|[ƒ“Cube Actor
-
-
-			// ”z—ñ‚ÌˆÊ’uŒvZ
+			// ï¿½zï¿½ï¿½ÌˆÊ’uï¿½vï¿½Z
 			remainder = counter % 3;
 			if (remainder == 1)
 				y1 = -mCubeDistance;
@@ -211,10 +222,9 @@ void AStageCube_1::BeginPlay()
 				cubeGen->mZCoordinate = zC;
 
 				tempArray1D.Add(cubeGen);
-
 			} // end if()
 
-			// ===================  Debug—p + Editor‚ÅŒ©‚¦‚é  =======================
+			// ===================  Debugï¿½p + Editorï¿½ÅŒï¿½ï¿½ï¿½ï¿½ï¿½  =======================
 				if (counter < 10)
 				{
 					d1Cube.Add(cubeGen);
@@ -229,7 +239,7 @@ void AStageCube_1::BeginPlay()
 				} // end else
 			// ======================================================================
 
-			// Ÿ‚Ìs
+			// ï¿½ï¿½ï¿½Ìs
 			if (counter % 3 == 0 )
 			{
 				tempArray2D.Add(tempArray1D);
@@ -238,12 +248,12 @@ void AStageCube_1::BeginPlay()
 				x1 -= mCubeDistance;
 
 				++xC;
-				yC = -1;		// for‚Í{1‚É‚·‚é
+				yC = -1;		// forï¿½Í{1ï¿½É‚ï¿½ï¿½ï¿½
 
 				// *** For test position 8/12
 				tempSerialNum += 7;
 			}  // end if()
-			// Ÿ‚ÌŠK‘w
+			// ï¿½ï¿½ï¿½ÌŠKï¿½w
 			if (counter % 9 == 0)
 			{
 				CubeArray3D.Add(tempArray2D);
@@ -254,7 +264,7 @@ void AStageCube_1::BeginPlay()
 				y1 = -mCubeDistance;
 
 				xC = 0;
-				yC = -1;		// for‚Í{1‚É‚·‚é
+				yC = -1;		// forï¿½Í{1ï¿½É‚ï¿½ï¿½ï¿½
 				++zC;
 
 				// *** For test position 8/12
@@ -272,10 +282,10 @@ void AStageCube_1::BeginPlay()
 	} // end if()
 
 
-	// ==========================  Guide Line ‚Ì¶¬  ==========================
+	// ==========================  Guide Line ï¿½Ìï¿½ï¿½ï¿½  ==========================
 
 	FString pathGL = "Blueprint'/Game/BP/BP_GuideLineZ.BP_GuideLineZ_C'";
-	TSubclassOf<class AActor> bp_GuideLineZ = TSoftClassPtr<AActor>(FSoftObjectPath(*pathGL)).LoadSynchronous();	// path‚É‚ ‚éBP‚ğæ“¾
+	TSubclassOf<class AActor> bp_GuideLineZ = TSoftClassPtr<AActor>(FSoftObjectPath(*pathGL)).LoadSynchronous();	// pathï¿½É‚ï¿½ï¿½ï¿½BPï¿½ï¿½ï¿½æ“¾
 
 	// Z Axis
 	if (bp_GuideLineZ != nullptr)
@@ -315,8 +325,8 @@ void AStageCube_1::BeginPlay()
 
 	// Y Axis
 	// =================  Caution  8/21  ================
-	// ƒKƒCƒhƒ‰ƒCƒ“ Y ‚ÌActor‚ÌRotationİ’è‚Í‘¼‚ÌƒKƒCƒhƒ‰ƒCƒ“‚Æˆá‚¢‚Ü‚·A—v’ˆÓ‚Å‚·B
-	// (Œ³X‚ÍPitch‚ğ‰ñ“]‚·‚é‚ÆAƒIƒCƒ‰[Šp‚Ì§ŒÀ‚ª‚ ‚Á‚½ˆ×‚ÉA‚±‚¤‚É‚È‚Á‚½)
+	// ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ Y ï¿½ï¿½Actorï¿½ï¿½Rotationï¿½İ’ï¿½Í‘ï¿½ï¿½ÌƒKï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Æˆá‚¢ï¿½Ü‚ï¿½ï¿½Aï¿½vï¿½ï¿½ï¿½Ó‚Å‚ï¿½ï¿½B
+	// (ï¿½ï¿½ï¿½Xï¿½ï¿½Pitchï¿½ï¿½ï¿½ï¿½]ï¿½ï¿½ï¿½ï¿½ÆAï¿½Iï¿½Cï¿½ï¿½ï¿½[ï¿½pï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×‚ÉAï¿½ï¿½ï¿½ï¿½ï¿½É‚È‚ï¿½ï¿½ï¿½)
 	if (bp_GuideLineZ != nullptr)
 	{
 		mGuideLineYaxis = GetWorld()->SpawnActor<AGuideLineZ>(bp_GuideLineZ);
@@ -335,15 +345,15 @@ void AStageCube_1::BeginPlay()
 	} // end if()
 
 
-	// ==========================  •Ç‚ÌCollision‚ğİ’u  ==========================
+	// ==========================  ï¿½Ç‚ï¿½Collisionï¿½ï¿½İ’u  ==========================
 
-	// •Ç‚ÌCollisionƒ^ƒCƒv‚ğİ’è
+	// ï¿½Ç‚ï¿½Collisionï¿½^ï¿½Cï¿½vï¿½ï¿½İ’ï¿½
 	mFrontWallCollision->SetCollisionProfileName(FName("InvisibleWall"), false);
 	mBackWallCollision->SetCollisionProfileName(FName("InvisibleWall"), false);
 	mLeftWallCollision->SetCollisionProfileName(FName("InvisibleWall"), false);
 	mRightWallCollision->SetCollisionProfileName(FName("InvisibleWall"), false);
 
-	// ‘OŒã¶‰E‚Ì•Ç‚ÌCollision‚ÌƒTƒCƒYAˆÊ’u‚ğİ’è
+	// ï¿½Oï¿½ã¶ï¿½Eï¿½Ì•Ç‚ï¿½Collisionï¿½ÌƒTï¿½Cï¿½Yï¿½Aï¿½Ê’uï¿½ï¿½İ’ï¿½
 	mFrontWallCollision->SetBoxExtent(mBoxCollisionSize);
 	mFrontWallCollision->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
 	mFrontWallCollision->SetRelativeLocation(FVector((1.5f* mCubeDistance + mBoxCollisionSize.Y), 0.f, (2.5f * mCubeDistance) ));
@@ -360,7 +370,7 @@ void AStageCube_1::BeginPlay()
 
 
 
-	// ==========================  ƒ}ƒEƒX‚ÌƒNƒŠƒbƒNƒCƒxƒ“ƒg—p  ==========================
+	// ==========================  ï¿½}ï¿½Eï¿½Xï¿½ÌƒNï¿½ï¿½ï¿½bï¿½Nï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½p  ==========================
 	APlayerController* myPlayerController =	UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
 	myPlayerController->bShowMouseCursor = true;
@@ -376,17 +386,14 @@ void AStageCube_1::BeginPlay()
 } // BeginPlay()
 
 
-// –ˆƒtƒŒ[ƒ€ŒÄ‚Î‚ê‚é
+// ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Ä‚Î‚ï¿½ï¿½
 void AStageCube_1::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// CubeArray3D[0][0][0]->SetMeshAndMaterialOnBegin(mCubeMesh1, mCubeMaterial_1, mCubeMaterial_2, mCubeMaterial_3);
-
-
 } // Tick
 
-// Še“ü—ÍŠÖŒWƒƒ\ƒbƒh‚Æ‚ÌƒoƒCƒ“ƒhˆ—
+// ï¿½eï¿½ï¿½ï¿½ÍŠÖŒWï¿½ï¿½ï¿½\ï¿½bï¿½hï¿½Æ‚Ìƒoï¿½Cï¿½ï¿½ï¿½hï¿½ï¿½ï¿½ï¿½
 void AStageCube_1::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -408,7 +415,7 @@ void AStageCube_1::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 
 // **NOTE 8/13, 8/15 fixed Y axis**
-// ‰E‰ñ“]90“xA²‚Ì‰ñ“]•ûŒü—vŠm”F
+// ï¿½Eï¿½ï¿½]90ï¿½xï¿½Aï¿½ï¿½ï¿½Ì‰ï¿½]ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½mï¿½F
 // mode 0 = XY-Plane(Z-axis),  1 = YZ-Plane(X-axis),  2 = XZ-Plane(Y-axis)
 // 3D Array [Z][X][Y]
 //         Dep Row Col
@@ -420,7 +427,7 @@ void AStageCube_1::RoatateTheCubesRight90( int mode)
 
 	if (mode == 0)
 	{
-		// 8/13)) ‘I‘ğ‚³‚ê‚½cube‚ÌˆÊ’uæ“¾
+		// 8/13)) ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ê‚½cubeï¿½ÌˆÊ’uï¿½æ“¾
 		int tempZ = 0;
 		if (mCurrentSelectedCube != NULL)
 			tempZ = mCurrentSelectedCube->mZCoordinate;
@@ -429,7 +436,7 @@ void AStageCube_1::RoatateTheCubesRight90( int mode)
 			return;
 		} // end else
 
-		// å‘ÎŠpü“]’us—ñ Transposed Matrix
+		// ï¿½ï¿½ÎŠpï¿½ï¿½ï¿½]ï¿½uï¿½sï¿½ï¿½ Transposed Matrix
 		for (int i = 0; i < totalCol; ++i) {
 			for (int j = 0; j < i; ++j) {
 				Swap(CubeArray3D[tempZ][i][j], CubeArray3D[tempZ][j][i]);
@@ -437,7 +444,7 @@ void AStageCube_1::RoatateTheCubesRight90( int mode)
 			} // end for()
 		} // end for()
 
-		// ¶‰E‚’¼üŒğŠ·
+		// ï¿½ï¿½ï¿½Eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		for (int i = 0; i < totalCol / 2; ++i) {
 			for (int j = 0; j < totalCol; ++j) {
 				Swap(CubeArray3D[tempZ][j][i], CubeArray3D[tempZ][j][totalCol - i - 1]);
@@ -448,7 +455,7 @@ void AStageCube_1::RoatateTheCubesRight90( int mode)
 	} // end if()
 	else if (mode == 1)
 	{
-		// ‘I‘ğ‚³‚ê‚½cube‚ÌˆÊ’uæ“¾
+		// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ê‚½cubeï¿½ÌˆÊ’uï¿½æ“¾
 		int tempX = 0;
 		if (mCurrentSelectedCube != NULL)
 			tempX = mCurrentSelectedCube->mXCoordinate;
@@ -457,7 +464,7 @@ void AStageCube_1::RoatateTheCubesRight90( int mode)
 			return;
 		} // end else
 
-		// å‘ÎŠpü“]’us—ñ Transposed Matrix
+		// ï¿½ï¿½ÎŠpï¿½ï¿½ï¿½]ï¿½uï¿½sï¿½ï¿½ Transposed Matrix
 		for (int i = 0; i < totalCol; ++i) {
 			for (int j = 0; j < i; ++j) {
 				Swap(CubeArray3D[i][tempX][j], CubeArray3D[j][tempX][i]);
@@ -465,7 +472,7 @@ void AStageCube_1::RoatateTheCubesRight90( int mode)
 			} // end for()
 		} // end for()
 
-		// ¶‰E‚’¼üŒğŠ·
+		// ï¿½ï¿½ï¿½Eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		for (int i = 0; i < totalCol / 2; ++i) {
 			for (int j = 0; j < totalCol; ++j) {
 				Swap(CubeArray3D[j][tempX][i], CubeArray3D[j][tempX][totalCol - i - 1]);
@@ -476,7 +483,7 @@ void AStageCube_1::RoatateTheCubesRight90( int mode)
 	} // end if()
 	else if (mode == 2)
 	{
-		// ‘I‘ğ‚³‚ê‚½cube‚ÌˆÊ’uæ“¾
+		// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ê‚½cubeï¿½ÌˆÊ’uï¿½æ“¾
 		int tempY = 0;
 		if (mCurrentSelectedCube != NULL)
 			tempY = mCurrentSelectedCube->mYCoordinate;
@@ -485,7 +492,7 @@ void AStageCube_1::RoatateTheCubesRight90( int mode)
 			return;
 		} // end else
 
-		// å‘ÎŠpü“]’us—ñ Transposed Matrix
+		// ï¿½ï¿½ÎŠpï¿½ï¿½ï¿½]ï¿½uï¿½sï¿½ï¿½ Transposed Matrix
 		for (int i = 0; i < totalCol; ++i) {
 			for (int j = 0; j < i; ++j) {
 				Swap(CubeArray3D[i][j][tempY], CubeArray3D[j][i][tempY]);
@@ -493,7 +500,7 @@ void AStageCube_1::RoatateTheCubesRight90( int mode)
 			} // end for()
 		} // end for()
 
-		// ¶‰E‚’¼üŒğŠ·
+		// ï¿½ï¿½ï¿½Eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		for (int i = 0; i < totalCol / 2; ++i) {
 			for (int j = 0; j < totalCol; ++j) {
 				Swap(CubeArray3D[j][i][tempY], CubeArray3D[j][totalCol - i - 1][tempY]);
@@ -507,14 +514,14 @@ void AStageCube_1::RoatateTheCubesRight90( int mode)
 		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("RoatateTheCubesRight90's mode error!")));
 	} // end else
 
-	// Debug—p@editor‚ÅŠm”F—p
+	// Debugï¿½pï¿½@editorï¿½ÅŠmï¿½Fï¿½p
 	Replace3Array();
 
 } // void RoatateTheCubesRight90()
 
 
 /*
-==================================  ŒŸØ—p  ==================================
+==================================  ï¿½ï¿½ï¿½Ø—p  ==================================
 // mode1 sample
 if test, need to delete else return;
 
@@ -540,11 +547,11 @@ if test, need to delete else return;
 		} // end for()
 
 
-==================================  ŒŸØ—p  ==================================
+==================================  ï¿½ï¿½ï¿½Ø—p  ==================================
 */
 
 
-// ¶‰ñ“]90“x(=‰E‰ñ“]270“x)
+// ï¿½ï¿½ï¿½ï¿½]90ï¿½x(=ï¿½Eï¿½ï¿½]270ï¿½x)
 // mode 0 = XY-Plane(Z-axis),  1 = YZ-Plane(X-axis),  2 = XZ-Plane(Y-axis)
 // 3D Array [Z][X][Y]
 //         Dep Row Col
@@ -555,7 +562,7 @@ void AStageCube_1::RoatateTheCubesLeft90( const int mode)
 
 	if (mode == 0)
 	{
-		// ‘I‘ğ‚³‚ê‚½cube‚ÌˆÊ’uæ“¾
+		// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ê‚½cubeï¿½ÌˆÊ’uï¿½æ“¾
 		int tempZ = 0;
 		if (mCurrentSelectedCube != NULL)
 			tempZ = mCurrentSelectedCube->mZCoordinate;
@@ -564,7 +571,7 @@ void AStageCube_1::RoatateTheCubesLeft90( const int mode)
 			return;
 		} // end else
 
-		// å‘ÎŠpü“]’us—ñ Transposed Matrix
+		// ï¿½ï¿½ÎŠpï¿½ï¿½ï¿½]ï¿½uï¿½sï¿½ï¿½ Transposed Matrix
 		for (int i = 0; i < totalCol; ++i) {
 			for (int j = 0; j < i; ++j) {
 				Swap(CubeArray3D[tempZ][i][j], CubeArray3D[tempZ][j][i]);
@@ -572,7 +579,7 @@ void AStageCube_1::RoatateTheCubesLeft90( const int mode)
 			} // end for()
 		} // end for()
 
-		// ã‰º…•½ŒğŠ·
+		// ï¿½ã‰ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		for (int i = 0; i < totalCol / 2; ++i) {
 			for (int j = 0; j < totalCol; ++j) {
 				Swap(CubeArray3D[tempZ][i][j], CubeArray3D[tempZ][totalCol - i - 1][j]);
@@ -583,7 +590,7 @@ void AStageCube_1::RoatateTheCubesLeft90( const int mode)
 	} // end if()
 	else if (mode == 1)
 	{
-		// ‘I‘ğ‚³‚ê‚½cube‚ÌˆÊ’uæ“¾
+		// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ê‚½cubeï¿½ÌˆÊ’uï¿½æ“¾
 		int tempX = 0;
 		if (mCurrentSelectedCube != NULL)
 			tempX = mCurrentSelectedCube->mXCoordinate;
@@ -592,7 +599,7 @@ void AStageCube_1::RoatateTheCubesLeft90( const int mode)
 			return;
 		} // end else
 		
-		// å‘ÎŠpü“]’us—ñ Transposed Matrix
+		// ï¿½ï¿½ÎŠpï¿½ï¿½ï¿½]ï¿½uï¿½sï¿½ï¿½ Transposed Matrix
 		for (int i = 0; i < totalCol; ++i) {
 			for (int j = 0; j < i; ++j) {
 				Swap(CubeArray3D[i][tempX][j], CubeArray3D[j][tempX][i]);
@@ -600,7 +607,7 @@ void AStageCube_1::RoatateTheCubesLeft90( const int mode)
 			} // end for()
 		} // end for()
 
-		// ã‰º…•½ŒğŠ·
+		// ï¿½ã‰ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		for (int i = 0; i < totalCol / 2; ++i) {
 			for (int j = 0; j < totalCol; ++j) {
 				Swap(CubeArray3D[i][tempX][j], CubeArray3D[totalCol - i - 1][tempX][j]);
@@ -611,7 +618,7 @@ void AStageCube_1::RoatateTheCubesLeft90( const int mode)
 	} // end if()
 	else if (mode == 2)
 	{
-		// ‘I‘ğ‚³‚ê‚½cube‚ÌˆÊ’uæ“¾
+		// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ê‚½cubeï¿½ÌˆÊ’uï¿½æ“¾
 		int tempY = 0;
 		if (mCurrentSelectedCube != NULL)
 			tempY = mCurrentSelectedCube->mYCoordinate;
@@ -620,7 +627,7 @@ void AStageCube_1::RoatateTheCubesLeft90( const int mode)
 			return;
 		} // end else
 
-		// å‘ÎŠpü“]’us—ñ Transposed Matrix
+		// ï¿½ï¿½ÎŠpï¿½ï¿½ï¿½]ï¿½uï¿½sï¿½ï¿½ Transposed Matrix
 		for (int i = 0; i < totalCol; ++i) {
 			for (int j = 0; j < i; ++j) {
 				Swap(CubeArray3D[i][j][tempY], CubeArray3D[j][i][tempY]);
@@ -628,7 +635,7 @@ void AStageCube_1::RoatateTheCubesLeft90( const int mode)
 			} // end for()
 		} // end for()
 
-		// ã‰º…•½ŒğŠ·
+		// ï¿½ã‰ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		for (int i = 0; i < totalCol / 2; ++i) {
 			for (int j = 0; j < totalCol; ++j) {
 				Swap(CubeArray3D[i][j][tempY], CubeArray3D[totalCol - i - 1][j][tempY]);
@@ -642,13 +649,13 @@ void AStageCube_1::RoatateTheCubesLeft90( const int mode)
 		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("RoatateTheCubesLeft90's mode error!")));
 	} // end else
 
-	// Debug—p@editor‚ÅŠm”F—p
+	// Debugï¿½pï¿½@editorï¿½ÅŠmï¿½Fï¿½p
 	Replace3Array();
 
 } // void RoatateTheCubesLeft90()
 
 
-// ‰ñ“]180“x
+// ï¿½ï¿½]180ï¿½x
 // mode 0 = XY-Plane(Z-axis),  1 = YZ-Plane(X-axis),  2 = XZ-Plane(Y-axis)
 // 3D Array [Z][X][Y]
 //         Dep Row Col
@@ -669,7 +676,7 @@ void AStageCube_1::RoatateTheCubes180( const int mode)
 			return;
 		} // end else
 
-		// ã‰º…•½ŒğŠ·
+		// ï¿½ã‰ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		for (int i = 0; i < totalCol / 2; ++i) {
 			for (int j = 0; j < totalCol; ++j) {
 				Swap(CubeArray3D[tempZ][i][j], CubeArray3D[tempZ][totalCol - i - 1][j]);
@@ -677,7 +684,7 @@ void AStageCube_1::RoatateTheCubes180( const int mode)
 			} // end for()
 		} // end for()
 
-		// ¶‰E‚’¼üŒğŠ·
+		// ï¿½ï¿½ï¿½Eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		for (int i = 0; i < totalCol / 2; ++i) {
 			for (int j = 0; j < totalCol; ++j) {
 				Swap(CubeArray3D[tempZ][j][i], CubeArray3D[tempZ][j][totalCol - i - 1]);
@@ -688,7 +695,7 @@ void AStageCube_1::RoatateTheCubes180( const int mode)
 	} // end if()
 	else if (mode == 1)
 	{
-		// ‘I‘ğ‚³‚ê‚½cube‚ÌˆÊ’uæ“¾
+		// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ê‚½cubeï¿½ÌˆÊ’uï¿½æ“¾
 		int tempX = 0;
 		if (mCurrentSelectedCube != NULL)
 			tempX = mCurrentSelectedCube->mXCoordinate;
@@ -697,7 +704,7 @@ void AStageCube_1::RoatateTheCubes180( const int mode)
 			return;
 		} // end else
 
-		// ã‰º…•½ŒğŠ·
+		// ï¿½ã‰ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		for (int i = 0; i < totalCol / 2; ++i) {
 			for (int j = 0; j < totalCol; ++j) {
 				Swap(CubeArray3D[i][tempX][j], CubeArray3D[totalCol - i - 1][tempX][j]);
@@ -705,7 +712,7 @@ void AStageCube_1::RoatateTheCubes180( const int mode)
 			} // end for()
 		} // end for()
 
-		// ¶‰E‚’¼üŒğŠ·
+		// ï¿½ï¿½ï¿½Eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		for (int i = 0; i < totalCol / 2; ++i) {
 			for (int j = 0; j < totalCol; ++j) {
 				Swap(CubeArray3D[j][tempX][i], CubeArray3D[j][tempX][totalCol - i - 1]);
@@ -716,7 +723,7 @@ void AStageCube_1::RoatateTheCubes180( const int mode)
 	} // end if()
 	else if (mode == 2)
 	{
-		// ‘I‘ğ‚³‚ê‚½cube‚ÌˆÊ’uæ“¾
+		// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ê‚½cubeï¿½ÌˆÊ’uï¿½æ“¾
 		int tempY = 0;
 		if (mCurrentSelectedCube != NULL)
 			tempY = mCurrentSelectedCube->mYCoordinate;
@@ -725,7 +732,7 @@ void AStageCube_1::RoatateTheCubes180( const int mode)
 			return;
 		} // end else
 
-		// ã‰º…•½ŒğŠ·
+		// ï¿½ã‰ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		for (int i = 0; i < totalCol / 2; ++i) {
 			for (int j = 0; j < totalCol; ++j) {
 				Swap(CubeArray3D[i][j][tempY], CubeArray3D[totalCol - i - 1][j][tempY]);
@@ -733,7 +740,7 @@ void AStageCube_1::RoatateTheCubes180( const int mode)
 			} // end for()
 		} // end for()
 
-		// ¶‰E‚’¼üŒğŠ·
+		// ï¿½ï¿½ï¿½Eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		for (int i = 0; i < totalCol / 2; ++i) {
 			for (int j = 0; j < totalCol; ++j) {
 				Swap(CubeArray3D[j][i][tempY], CubeArray3D[j][totalCol - i - 1][tempY]);
@@ -747,7 +754,7 @@ void AStageCube_1::RoatateTheCubes180( const int mode)
 		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("RoatateTheCubesLeft90's mode error!")));
 	} // end else
 
-	// Debug—p@editor‚ÅŠm”F—p
+	// Debugï¿½pï¿½@editorï¿½ÅŠmï¿½Fï¿½p
 	Replace3Array();
 
 } // void RoatateTheCubes180()
@@ -774,8 +781,8 @@ void AStageCube_1::MoveMouseX(const float _axisValue)
 			else if (mCurrentSelectedGuideLine == mGuideLineYaxis)
 			{
 				// =================  Caution  8/21  ================
-				// ƒKƒCƒhƒ‰ƒCƒ“ Y ‚ÌActor‚ÌRotationİ’è‚Í‘¼‚ÌƒKƒCƒhƒ‰ƒCƒ“‚Æˆá‚¢‚Ü‚·A—v’ˆÓ‚Å‚·B
-				// (Œ³X‚ÍPitch‚ğ‰ñ“]‚·‚é‚ÆAƒIƒCƒ‰[Šp‚Ì§ŒÀ‚ª‚ ‚Á‚½ˆ×‚ÉA‚±‚¤‚É‚È‚Á‚½)
+				// ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ Y ï¿½ï¿½Actorï¿½ï¿½Rotationï¿½İ’ï¿½Í‘ï¿½ï¿½ÌƒKï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Æˆá‚¢ï¿½Ü‚ï¿½ï¿½Aï¿½vï¿½ï¿½ï¿½Ó‚Å‚ï¿½ï¿½B
+				// (ï¿½ï¿½ï¿½Xï¿½ï¿½Pitchï¿½ï¿½ï¿½ï¿½]ï¿½ï¿½ï¿½ï¿½ÆAï¿½Iï¿½Cï¿½ï¿½ï¿½[ï¿½pï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×‚ÉAï¿½ï¿½ï¿½ï¿½ï¿½É‚È‚ï¿½ï¿½ï¿½)
 				mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, 0.f, _axisValue * guideLineTurnningScaleX)));
 			} // end if
 
@@ -785,14 +792,14 @@ void AStageCube_1::MoveMouseX(const float _axisValue)
 			// will affect roll, don't use
 			// mSpringArm->AddRelativeRotation(FRotator(0.f, _axisValue * mCameraTurnScaleX, 0.f));
 
-			// Camera‚ğ‰ñ“]
-			// MyCombineRotators‚ğg‚Á‚Ä’²®‚·‚é
+			// Cameraï¿½ï¿½ï¿½ï¿½]
+			// MyCombineRotatorsï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Ä’ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			FRotator tempR = MyCombineRotators(mSpringArm->GetRelativeRotation(), FRotator(0.f, _axisValue * mCameraTurnScaleX, 0.f));
 			tempR.Roll = 0.f;
 		
 			mCameraTurnScaleX = AdjustCameraTurnScale(tempR.Pitch);
 
-			// Pitch‚ª90“x‚È‚ç‚È‚¢‚æ‚¤‚É(ƒIƒCƒ‰[Šp‚Ì§ŒÀ)
+			// Pitchï¿½ï¿½90ï¿½xï¿½È‚ï¿½È‚ï¿½ï¿½æ‚¤ï¿½ï¿½(ï¿½Iï¿½Cï¿½ï¿½ï¿½[ï¿½pï¿½Ìï¿½ï¿½ï¿½)
 			if (tempR.Pitch > 85.f)
 				tempR.Pitch = 85.f;
 			else if (tempR.Pitch < -85.f)
@@ -800,7 +807,7 @@ void AStageCube_1::MoveMouseX(const float _axisValue)
 
 			mSpringArm->SetRelativeRotation(tempR);
 
-			// Cube‚ğ‰ñ“]
+			// Cubeï¿½ï¿½ï¿½ï¿½]
 			// mCubesRootComponent->AddRelativeRotation(FRotator(0.f, -_axisValue * mCameraTurnScaleX, 0.f));
 
 			// will affect roll, don't use
@@ -814,7 +821,7 @@ void AStageCube_1::MoveMouseX(const float _axisValue)
 
 void AStageCube_1::MoveMouseY(const float _axisValue)
 {
-	// MoveMouseX‚ªŒvZ‚µ‚Ä‚¢‚é‚Ì‚ÅA•‰‰×‚ğŒ¸‚é‚½‚ßƒRƒƒ“ƒg‚µ‚½
+	// MoveMouseXï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ì‚ÅAï¿½ï¿½ï¿½×‚ï¿½ï¿½ï¿½ï¿½é‚½ï¿½ßƒRï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½
 	// DecideGuideLineTurnningDirection();
 
 	if (isDraggingGuideLine && mCurrentSelectedGuideLine != NULL)
@@ -830,8 +837,8 @@ void AStageCube_1::MoveMouseY(const float _axisValue)
 		else if (mCurrentSelectedGuideLine == mGuideLineYaxis)
 		{
 			// =================  Caution  8/21  ================
-			// ƒKƒCƒhƒ‰ƒCƒ“ Y ‚ÌActor‚ÌRotationİ’è‚Í‘¼‚ÌƒKƒCƒhƒ‰ƒCƒ“‚Æˆá‚¢‚Ü‚·A—v’ˆÓ‚Å‚·B
-			// (Œ³X‚ÍPitch‚ğ‰ñ“]‚·‚é‚ÆAƒIƒCƒ‰[Šp‚Ì§ŒÀ‚ª‚ ‚Á‚½ˆ×‚ÉA‚±‚¤‚É‚È‚Á‚½)
+			// ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ Y ï¿½ï¿½Actorï¿½ï¿½Rotationï¿½İ’ï¿½Í‘ï¿½ï¿½ÌƒKï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Æˆá‚¢ï¿½Ü‚ï¿½ï¿½Aï¿½vï¿½ï¿½ï¿½Ó‚Å‚ï¿½ï¿½B
+			// (ï¿½ï¿½ï¿½Xï¿½ï¿½Pitchï¿½ï¿½ï¿½ï¿½]ï¿½ï¿½ï¿½ï¿½ÆAï¿½Iï¿½Cï¿½ï¿½ï¿½[ï¿½pï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×‚ÉAï¿½ï¿½ï¿½ï¿½ï¿½É‚È‚ï¿½ï¿½ï¿½)
 			mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, 0.f, _axisValue * guideLineTurnningScaleY)));
 		} // end if
 
@@ -841,14 +848,14 @@ void AStageCube_1::MoveMouseY(const float _axisValue)
 		// will affect roll, don't use
 		// mSpringArm->AddRelativeRotation(FRotator(_axisValue * mCameraTurnScaleY, 0.f, 0.f));
 
-		// Camera‚ğ‰ñ“]
-		// MyCombineRotators‚ğg‚Á‚Ä’²®‚·‚é
+		// Cameraï¿½ï¿½ï¿½ï¿½]
+		// MyCombineRotatorsï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Ä’ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		FRotator tempR = MyCombineRotators(mSpringArm->GetRelativeRotation(), FRotator(_axisValue * mCameraTurnScaleY, 0.f, 0.f));
 		tempR.Roll = 0.f;
 
 		mCameraTurnScaleY = AdjustCameraTurnScale(tempR.Pitch);
 
-		// Pitch‚ª90“x‚È‚ç‚È‚¢‚æ‚¤‚É(ƒIƒCƒ‰[Šp‚Ì§ŒÀ)
+		// Pitchï¿½ï¿½90ï¿½xï¿½È‚ï¿½È‚ï¿½ï¿½æ‚¤ï¿½ï¿½(ï¿½Iï¿½Cï¿½ï¿½ï¿½[ï¿½pï¿½Ìï¿½ï¿½ï¿½)
 		if (tempR.Pitch > 85.f)
 			tempR.Pitch = 85.f;
 		else if (tempR.Pitch < -85.f)
@@ -857,7 +864,7 @@ void AStageCube_1::MoveMouseY(const float _axisValue)
 		mSpringArm->SetRelativeRotation(tempR);
 
 
-		// Cube‚ğ‰ñ“]
+		// Cubeï¿½ï¿½ï¿½ï¿½]
 		//mCubesRootComponent->AddRelativeRotation(FRotator(-_axisValue * mCameraTurnScaleY, 0.f, 0.f));
 
 		// will affect roll, don't use
@@ -871,17 +878,17 @@ void AStageCube_1::MoveMouseY(const float _axisValue)
 
 void AStageCube_1::MouseLeftButtonPressed()
 {
-	// ƒJ[ƒ\ƒ‹‚ÌˆÊ’u‚ğ‹L˜^
+	// ï¿½Jï¿½[ï¿½\ï¿½ï¿½ï¿½ÌˆÊ’uï¿½ï¿½ï¿½Lï¿½^
 	Cast<APlayerController>(GetController())->GetMousePosition(mStartDraggingPosition.X, mStartDraggingPosition.Y);
 
 	if (isSelectingCube && isSelectingGuideLine)
 	{
 		if (isDraggingGuideLine == false)
 		{
-			// ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚Ì¢ŠEˆÊ’u‚ÅLine Trace‚·‚éA‚»‚ÌŒ‹‰Ê‚ğ“¾‚é
+			// ï¿½}ï¿½Eï¿½Xï¿½Jï¿½[ï¿½\ï¿½ï¿½ï¿½Ìï¿½ï¿½Eï¿½Ê’uï¿½ï¿½Line Traceï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ÌŒï¿½ï¿½Ê‚ğ“¾‚ï¿½
 			FHitResult MouseHitResult;
 
-			// ‘O‚Ì•û–@A¡‚Æ‚Ù‚Ú“¯‚¶
+			// ï¿½Oï¿½Ì•ï¿½ï¿½@ï¿½Aï¿½ï¿½ï¿½Æ‚Ù‚Ú“ï¿½ï¿½ï¿½
 			// Cast<APlayerController>(GetController())->GetHitResultUnderCursor(ECC_Visibility, false, MouseHitResult);
 
 			if (MouseLineTrace(MouseHitResult) && MouseHitResult.bBlockingHit)
@@ -902,24 +909,23 @@ void AStageCube_1::MouseLeftButtonPressed()
 								mStartRotateDegree = mCurrentSelectedGuideLine->GetActorRotation();
 								isDraggingGuideLine = true;
 								ChangeUnSelecetedGuideLineVisibility();
-								SetUnselectCubeUnitsCanChangeMat(false);
 							} // end if()
-							else isMovingCamera = true;
 						} // end if()
-						else isMovingCamera = true;
 					} // end if()
-					else isMovingCamera = true;
 				} // end if()
-				else isMovingCamera = true;
 				// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("is Hitting %s"), *MouseHitResult.Actor.Get()->GetFullName()));
 			} // end if()
-			else isMovingCamera = true;
 		} // end if()
+
+		if (isDraggingGuideLine == false)
+			isMovingCamera = true;
 	} // end if()
 	else
 	{
 		isMovingCamera = true;
 	} // end else
+
+	SetUnselectCubeUnitsCanChangeMat(false);
 
 	//  GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Orange, FString::Printf(TEXT("Left  Pressed!!")));
 
@@ -928,16 +934,16 @@ void AStageCube_1::MouseLeftButtonPressed()
 
 void AStageCube_1::MouseLeftButtonReleased()
 {
-	// ˆÚ“®Œã‚ÌƒJ[ƒ\ƒ‹‚ÌˆÊ’u‚ÆŠJnˆÊ’u‚ğŒvZ‚·‚é
+	// ï¿½Ú“ï¿½ï¿½ï¿½ÌƒJï¿½[ï¿½\ï¿½ï¿½ï¿½ÌˆÊ’uï¿½ÆŠJï¿½nï¿½Ê’uï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½
 	FVector2D curCursorPosition;
 	Cast<APlayerController>(GetController())->GetMousePosition(curCursorPosition.X, curCursorPosition.Y);
 	float distance = (curCursorPosition - mStartDraggingPosition).Size();
 	// GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Emerald, FString::SanitizeFloat(distance));
 
-	// ƒKƒCƒhƒ‰ƒCƒ“‚ğƒhƒ‰ƒbƒO‚µ‚Ä‚¢‚È‚¢
+	// ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½bï¿½Oï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½
 	if ( isDraggingGuideLine == false && distance < minimumCursorsDisplacement)
 	{
-		// ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚Ì¢ŠEˆÊ’u‚ÅLine Trace‚·‚éA‚»‚ÌŒ‹‰Ê‚ğ“¾‚é
+		// ï¿½}ï¿½Eï¿½Xï¿½Jï¿½[ï¿½\ï¿½ï¿½ï¿½Ìï¿½ï¿½Eï¿½Ê’uï¿½ï¿½Line Traceï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ÌŒï¿½ï¿½Ê‚ğ“¾‚ï¿½
 		FHitResult MouseHitResult;
 
 		// ========= For Debug =========
@@ -949,8 +955,8 @@ void AStageCube_1::MouseLeftButtonReleased()
 		DrawDebugLine(GetWorld(), Location, Location + Direction * 1000.0f, FColor::Red, true);
 		*/
 
-		// ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚Ì¢ŠEˆÊ’u‚ÅLine Trace‚·‚éA‚»‚ÌŒ‹‰Ê‚ğ“¾‚é
-		// ¬Œ÷‚È‚ç
+		// ï¿½}ï¿½Eï¿½Xï¿½Jï¿½[ï¿½\ï¿½ï¿½ï¿½Ìï¿½ï¿½Eï¿½Ê’uï¿½ï¿½Line Traceï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ÌŒï¿½ï¿½Ê‚ğ“¾‚ï¿½
+		// ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½
 		if (MouseLineTrace(MouseHitResult) && MouseHitResult.bBlockingHit)
 		{
 
@@ -960,20 +966,20 @@ void AStageCube_1::MouseLeftButtonReleased()
 			if (MouseHitResult.GetActor() != NULL)
 			{
 				// ======================================  is cube unit   ======================================
-				// ƒqƒbƒg‚µ‚½Actor‚Í’PˆÊCube‚È‚ç
+				// ï¿½qï¿½bï¿½gï¿½ï¿½ï¿½ï¿½Actorï¿½Í’Pï¿½ï¿½Cubeï¿½È‚ï¿½
 				if (MouseHitResult.GetActor()->IsA<ACubeUnit>())
 				{
 					ACubeUnit* hitCube = Cast<ACubeUnit>(MouseHitResult.GetActor());
 
 					if (hitCube != NULL)
 					{
-						// ‚±‚ÌCube¡‚Í–¢‘I‘ğ‚Ì
+						// ï¿½ï¿½ï¿½ï¿½Cubeï¿½ï¿½ï¿½Í–ï¿½ï¿½Iï¿½ï¿½ï¿½Ìï¿½
 						if (hitCube->mIsSelected == false)
 						{
 							hitCube->mIsSelected = true;
 							hitCube->ChangeMaterialFunc();
 
-							// Šù‚ÉCube‚ª‘I‘ğ‚µ‚Ä‚¢‚é
+							// ï¿½ï¿½ï¿½ï¿½Cubeï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é
 							if (mCurrentSelectedCube != NULL)
 							{
 								mCurrentSelectedCube->mIsSelected = false;
@@ -982,14 +988,14 @@ void AStageCube_1::MouseLeftButtonReleased()
 								if (mCurrentSelectedGuideLine != NULL)
 								{
 									DetachFromGuideLine();
-									SetSelectingGuideLine(false);
 									mCurrentSelectedGuideLine->mIsSelected = false;
 									mCurrentSelectedGuideLine->ChangeMaterialFunc();
 									mCurrentSelectedGuideLine = NULL;
+									SetSelectingGuideLine(false);
 								} // end if()
 
 							} // end if()
-							// Cube‚ª‘I‘ğ‚µ‚Ä‚¢‚È‚¢
+							// Cubeï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½
 							else ChangeAllGuideLinesVisibility(true);
 
 							mCurrentSelectedCube = hitCube;
@@ -999,7 +1005,7 @@ void AStageCube_1::MouseLeftButtonReleased()
 							// GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("%s   Unit is Clicked~!"), *hitCube->GetName()));
 
 						} // end if()
-						// ‚±‚ÌCube¡‚Í‘I‘ğ‚µ‚Ä‚¢‚é‚Ì
+						// ï¿½ï¿½ï¿½ï¿½Cubeï¿½ï¿½ï¿½Í‘Iï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ìï¿½
 						else
 						{
 							hitCube->mIsSelected = false;
@@ -1008,10 +1014,10 @@ void AStageCube_1::MouseLeftButtonReleased()
 							if (mCurrentSelectedGuideLine != NULL)
 							{
 								DetachFromGuideLine();
-								SetSelectingGuideLine(false);
 								mCurrentSelectedGuideLine->mIsSelected = false;
 								mCurrentSelectedGuideLine->ChangeMaterialFunc();
 								mCurrentSelectedGuideLine = NULL;
+								SetSelectingGuideLine(false);
 							} // end if()
 
 							mCurrentSelectedCube = NULL;
@@ -1024,31 +1030,30 @@ void AStageCube_1::MouseLeftButtonReleased()
 					} // end if()
 				} // end if()
 				// ======================================  is Guide line   ======================================
-				// ƒqƒbƒg‚µ‚½Actor‚ÍƒKƒCƒhƒ‰ƒCƒ“‚È‚ç
+				// ï¿½qï¿½bï¿½gï¿½ï¿½ï¿½ï¿½Actorï¿½ÍƒKï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½È‚ï¿½
 				else if (MouseHitResult.GetActor()->IsA<AGuideLineZ>())
 				{
 					AGuideLineZ* hitGuideLine = Cast<AGuideLineZ>(MouseHitResult.GetActor());
 
 					if (hitGuideLine != NULL)
 					{
-						// ¡‚Í–¢‘I‘ğ‚Ì
+						// ï¿½qï¿½bï¿½gï¿½ï¿½ï¿½ï¿½Actorï¿½ï¿½ï¿½Í–ï¿½ï¿½Iï¿½ï¿½ï¿½Ìï¿½
 						if (hitGuideLine->mIsSelected == false)
 						{
 							hitGuideLine->mIsSelected = true;
 							hitGuideLine->ChangeMaterialFunc();
 
-								// ‘I‘ğ‚µ‚Ä‚¢‚éƒKƒCƒhƒ‰ƒCƒ“‰ğœ
+								// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 								if (mCurrentSelectedGuideLine != NULL)
 								{
+									DetachFromGuideLine();
 									mCurrentSelectedGuideLine->mIsSelected = false;
 									mCurrentSelectedGuideLine->ChangeMaterialFunc();
-
-									DetachFromGuideLine();
 								} // end if()
 
 								mCurrentSelectedGuideLine = hitGuideLine;
 
-								// ƒKƒCƒhƒ‰ƒCƒ“‚ÉƒAƒ^ƒbƒ`
+								// ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ÉƒAï¿½^ï¿½bï¿½`
 								// mode 0 = XY-Plane(Z-axis),  1 = YZ-Plane(X-axis),  2 = XZ-Plane(Y-axis)
 								AttachToGuideLine(hitGuideLine->mode);
 								SetSelectingGuideLine(true);
@@ -1056,16 +1061,17 @@ void AStageCube_1::MouseLeftButtonReleased()
 							// GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("%s   Line is Clicked"), *hitGuideLine->GetName()));
 
 						} // end if()
-						// ‘I‘ğ‚µ‚Ä‚¢‚é‚Ì
+						// ï¿½qï¿½bï¿½gï¿½ï¿½ï¿½ï¿½Actorï¿½ï¿½ï¿½Í‘Iï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ìï¿½
 						else
 						{
-							hitGuideLine->mIsSelected = false;
-							hitGuideLine->ChangeMaterialFunc();
-
-							DetachFromGuideLine();
-							SetSelectingGuideLine(false);
-
-							mCurrentSelectedGuideLine = NULL;
+							if (mCurrentSelectedGuideLine != NULL)
+							{
+								DetachFromGuideLine();
+								mCurrentSelectedGuideLine->mIsSelected = false;
+								mCurrentSelectedGuideLine->ChangeMaterialFunc();
+								mCurrentSelectedGuideLine = NULL;
+								SetSelectingGuideLine(false);
+							} // end if()
 
 							// GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("%s   Line is Unclicked"), *hitGuideLine->GetName()));
 
@@ -1078,21 +1084,20 @@ void AStageCube_1::MouseLeftButtonReleased()
 			// GEngine->AddOnScreenDebugMessage(-1, 1.1f, FColor::Red, FString::Printf(TEXT("is Hitting %s"), *MouseHitResult.Actor.Get()->GetFullName()));
 		} // end if()
 	} // end if()
-	// ƒKƒCƒhƒ‰ƒCƒ“‚ğƒhƒ‰ƒbƒO‚µ‚Ä‚¢‚é
+	// ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½bï¿½Oï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 	else
 	{
-		// ƒKƒCƒhƒ‰ƒCƒ“‚ğ‘I‘ğ‚µ‚Ä‚¢‚é‚ÆƒKƒCƒhƒ‰ƒCƒ“‚ğƒhƒ‰ƒbƒO‚µ‚Ä‚¢‚é
+		// ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ÆƒKï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½bï¿½Oï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 		if (isDraggingGuideLine && mCurrentSelectedGuideLine != NULL)
 		{
 			NormalizeGuideRotation();
 			isDraggingGuideLine = false;
 			ChangeUnSelecetedGuideLineVisibility();
-			SetUnselectCubeUnitsCanChangeMat(true);
 
-			// ƒJ[ƒ\ƒ‹‚ÌˆÚ“®‹——£‚ª10ˆÈ‰º‚È‚çA‘I‘ğ‚ğ‰ğœ
+			// ï¿½Jï¿½[ï¿½\ï¿½ï¿½ï¿½ÌˆÚ“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½minimumCursorsDisplacement(3)ï¿½È‰ï¿½ï¿½È‚ï¿½Aï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			if (distance < minimumCursorsDisplacement)
 			{
-				// ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚Ì¢ŠEˆÊ’u‚ÅLine Trace‚·‚éA‚»‚ÌŒ‹‰Ê‚ğ“¾‚é
+				// ï¿½}ï¿½Eï¿½Xï¿½Jï¿½[ï¿½\ï¿½ï¿½ï¿½Ìï¿½ï¿½Eï¿½Ê’uï¿½ï¿½Line Traceï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ÌŒï¿½ï¿½Ê‚ğ“¾‚ï¿½
 				FHitResult MouseHitResult;
 				// Cast<APlayerController>(GetController())->GetHitResultUnderCursor(ECC_Visibility, false, MouseHitResult);
 
@@ -1102,7 +1107,7 @@ void AStageCube_1::MouseLeftButtonReleased()
 
 					if (MouseHitResult.GetActor() != NULL)
 					{
-						// ƒqƒbƒg‚µ‚½Actor‚ÍƒKƒCƒhƒ‰ƒCƒ“‚È‚ç
+						// ï¿½qï¿½bï¿½gï¿½ï¿½ï¿½ï¿½Actorï¿½ÍƒKï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½È‚ï¿½
 						if (MouseHitResult.GetActor()->IsA<AGuideLineZ>())
 						{
 							AGuideLineZ* hitGuideLine = Cast<AGuideLineZ>(MouseHitResult.GetActor());
@@ -1111,13 +1116,14 @@ void AStageCube_1::MouseLeftButtonReleased()
 							{
 								if (hitGuideLine == mCurrentSelectedGuideLine)
 								{
-									hitGuideLine->mIsSelected = false;
-									hitGuideLine->ChangeMaterialFunc();
-
-									DetachFromGuideLine();
-									SetSelectingGuideLine(false);
-
-									mCurrentSelectedGuideLine = NULL;
+									if (mCurrentSelectedGuideLine != NULL)
+									{
+										DetachFromGuideLine();
+										mCurrentSelectedGuideLine->mIsSelected = false;
+										mCurrentSelectedGuideLine->ChangeMaterialFunc();
+										mCurrentSelectedGuideLine = NULL;
+										SetSelectingGuideLine(false);
+									} // end if()
 
 									// GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("%s   Line is Unclicked"), *hitGuideLine->GetName()));
 								} // end if()
@@ -1137,6 +1143,7 @@ void AStageCube_1::MouseLeftButtonReleased()
 
 	isMovingCamera = false;
 	isDraggingGuideLine = false;
+	SetUnselectCubeUnitsCanChangeMat(true);
 
 	// GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Orange, FString::Printf(TEXT("Left released")));
 
@@ -1154,8 +1161,8 @@ void AStageCube_1::SwapCoordinate(ACubeUnit* _A, ACubeUnit* _B)
 
 }
 
-// ƒJƒƒ‰‰ñ“]ƒXƒP[ƒ‹‚ğ’²®‚·‚é
-// 50“x‚©‚ç85“xA3~0.2”{
+// ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½]ï¿½Xï¿½Pï¿½[ï¿½ï¿½ï¿½ğ’²ï¿½ï¿½ï¿½ï¿½ï¿½
+// 50ï¿½xï¿½ï¿½ï¿½ï¿½85ï¿½xï¿½A3~0.2ï¿½{
 float AStageCube_1::AdjustCameraTurnScale(const float _inPitch)
 {
 	float ratio = 3.f;
@@ -1169,7 +1176,7 @@ float AStageCube_1::AdjustCameraTurnScale(const float _inPitch)
 
 } // float AdjustCameraTurnScale()
 
-// For Debug (Debug—p + Editor‚ÅŒ©‚¦‚é)‚½‚ßA‰ñ“]Œã‚ÌêŠ‚ğO‚Â‚ÌArrayÄ”z’u
+// For Debug (Debugï¿½p + Editorï¿½ÅŒï¿½ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½ßAï¿½ï¿½]ï¿½ï¿½ÌêŠï¿½ï¿½ï¿½Oï¿½Â‚ï¿½Arrayï¿½Ä”zï¿½u
 void AStageCube_1::Replace3Array()
 {
 
@@ -1194,7 +1201,7 @@ void AStageCube_1::Replace3Array()
 
 } // void Replace3Array()
 
-// ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚©‚ç‚Ìƒ‰ƒCƒ“ƒgƒŒ[ƒX
+// ï¿½}ï¿½Eï¿½Xï¿½Jï¿½[ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìƒï¿½ï¿½Cï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½X
 bool AStageCube_1::MouseLineTrace(FHitResult& MouseHitResult)
 {
 	FVector mouseWorldLocation, mouseWorldDirection, traceEndPoint;
@@ -1215,11 +1222,11 @@ void AStageCube_1::AttachToGuideLine( const int mode)
 {
 	FAttachmentTransformRules AttachRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, false);
 
-	// ”z—ñ‚Ìindex
+	// ï¿½zï¿½ï¿½ï¿½index
 
 	if (mCurrentSelectedCube != NULL)
 	{
-		// ”z—ñ‚Ìindex
+		// ï¿½zï¿½ï¿½ï¿½index
 		// i j k  will be Z X Y of the array
 		// can get the position where line to move and who to attach
 		int i = mCurrentSelectedCube->mZCoordinate;
@@ -1295,16 +1302,17 @@ void AStageCube_1::AttachToGuideLine( const int mode)
 	} // end if()
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("AttachToGuideLine's Seleted Cube is NULL")));
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("AttachToGuideLine's Selected Cube is NULL")));
 	} // end else
 
 } // void AttachToGuideLine()
 
+// ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fï¿½^ï¿½bï¿½`ï¿½ï¿½ï¿½ï¿½
 void AStageCube_1::DetachFromGuideLine()
 {
 	FAttachmentTransformRules AttachRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, false);
 
-	if (mCurrentSelectedCube != NULL)
+	if (mCurrentSelectedGuideLine != NULL)
 	{
 		// i j k  will be Z X Y of the array
 		// can get the position where line to move and who to attach
@@ -1312,7 +1320,8 @@ void AStageCube_1::DetachFromGuideLine()
 		// ===== guide Z =====
 		if (mCurrentSelectedGuideLine == mGuideLineZaxis)
 		{
-			int i = mCurrentSelectedCube->mZCoordinate;
+			// ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½æ“¾
+			int i = mCurrentSelectedGuideLine->mCoordinate;
 
 			for (int x = 0; x < 3; ++x)
 			{
@@ -1331,7 +1340,8 @@ void AStageCube_1::DetachFromGuideLine()
 		// ===== guide X =====
 		else if (mCurrentSelectedGuideLine == mGuideLineXaxis)
 		{
-			int j = mCurrentSelectedCube->mXCoordinate;
+			// ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½æ“¾
+			int j = mCurrentSelectedGuideLine->mCoordinate;
 
 			for (int z = 0; z < 3; ++z)
 			{
@@ -1349,7 +1359,8 @@ void AStageCube_1::DetachFromGuideLine()
 		// ===== guide Y =====
 		else if (mCurrentSelectedGuideLine == mGuideLineYaxis)
 		{
-			int k = mCurrentSelectedCube->mYCoordinate;
+			// ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½æ“¾
+			int k = mCurrentSelectedGuideLine->mCoordinate;
 
 			for (int z = 0; z < 3; ++z)
 			{
@@ -1368,7 +1379,8 @@ void AStageCube_1::DetachFromGuideLine()
 	} // end if()
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("DetachFromGuideLine's Seleted Cube is NULL")));
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("DetachFromGuideLine's Selected GuideLine is NULL")));
+		CheckAllGuideLinesGetDetached();
 	} // end else
 
 } // void DetachFromGuideLine()
@@ -1380,14 +1392,20 @@ void AStageCube_1::SetGuideLinePosition()
 		FVector tempRelativeLocation = mCurrentSelectedCube->GetActorLocation() - this->GetActorLocation() ;
 
 		if (mGuideLineZaxis != NULL)
+		{
 			mGuideLineZaxis->SetActorRelativeLocation(FVector(0.f, 0.f, tempRelativeLocation.Z));
-
+			mGuideLineZaxis->mCoordinate = mCurrentSelectedCube->mZCoordinate ;
+		} // end if()
 		if (mGuideLineXaxis != NULL)
+		{
 			mGuideLineXaxis->SetActorRelativeLocation(FVector(tempRelativeLocation.X, 0.f, 0.f));
-
+			mGuideLineXaxis->mCoordinate = mCurrentSelectedCube->mXCoordinate;
+		} // end if()
 		if (mGuideLineYaxis != NULL)
+		{
 			mGuideLineYaxis->SetActorRelativeLocation(FVector(0.f, tempRelativeLocation.Y, 0.f));
-
+			mGuideLineYaxis->mCoordinate = mCurrentSelectedCube->mYCoordinate;
+		} // end if()
 	} // end if
 
 } // void SetGuideLinePosition()
@@ -1440,6 +1458,18 @@ void AStageCube_1::ChangeUnSelecetedGuideLineVisibility()
 
 void AStageCube_1::DeSelectCubeAndGuide(bool deSelectCube, bool deSelectGuide)
 {
+	if (deSelectGuide == true)
+	{
+		if (mCurrentSelectedGuideLine != NULL)
+		{
+			DetachFromGuideLine();
+			mCurrentSelectedGuideLine->mIsSelected = false;
+			mCurrentSelectedGuideLine->ChangeMaterialFunc();
+			mCurrentSelectedGuideLine = NULL;
+			SetSelectingGuideLine(false);
+		} // end if()
+	} // end if
+
 	if (deSelectCube == true)
 	{
 		if (mCurrentSelectedCube != NULL)
@@ -1451,19 +1481,6 @@ void AStageCube_1::DeSelectCubeAndGuide(bool deSelectCube, bool deSelectGuide)
 		} // end if
 	} // end if
 
-
-	if (deSelectGuide == true)
-	{
-		if (mCurrentSelectedGuideLine != NULL)
-		{
-			DetachFromGuideLine();
-			SetSelectingGuideLine(false);
-			mCurrentSelectedGuideLine->mIsSelected = false;
-			mCurrentSelectedGuideLine->ChangeMaterialFunc();
-			mCurrentSelectedGuideLine = NULL;
-
-		} // end if
-	} // end if
 
 	ChangeAllGuideLinesVisibility(false);
 
@@ -1483,27 +1500,27 @@ void AStageCube_1::SetSelectingCube( const bool isSelect)
 
 void AStageCube_1::NormalizeGuideRotation()
 {
-	//@—LŒø‚È‰ñ“]‚Ìƒtƒ‰ƒO
+	//ï¿½@ï¿½Lï¿½ï¿½ï¿½È‰ï¿½]ï¿½Ìƒtï¿½ï¿½ï¿½O
 	bool isVaildRot = false;
 
-	// ===================================== ƒKƒCƒhƒ‰ƒCƒ“@Z =================================
+	// ===================================== ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½@Z =================================
 	if (mCurrentSelectedGuideLine == mGuideLineZaxis)
 	{
-		// ‰ñ“]ŠJn‚ÆŠ®—¹‚Ì·‚©‚çAŠî–{‰ñ“]‚·‚é‚ÌŠp“x‚ğŒˆ‚ß‚é
+		// ï¿½ï¿½]ï¿½Jï¿½nï¿½ÆŠï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½{ï¿½ï¿½]ï¿½ï¿½ï¿½ï¿½ÌŠpï¿½xï¿½ï¿½ï¿½ï¿½ï¿½ß‚ï¿½
 		float basicDegree = round((mCurrentSelectedGuideLine->GetActorRotation().Yaw - mStartRotateDegree.Yaw) / 90.f) * 90.f;
 
-		// —LŒø‚È‰ñ“]‚ÌŠm”F basic != 0 —LŒø‚È‰ñ“]
+		// ï¿½Lï¿½ï¿½ï¿½È‰ï¿½]ï¿½ÌŠmï¿½F basic != 0 ï¿½Lï¿½ï¿½ï¿½È‰ï¿½]
 		if (basicDegree != .0f)
 		{
 			isVaildRot = true;
 		}
 
-		// Šp“xŠm”F—p
+		// ï¿½pï¿½xï¿½mï¿½Fï¿½p
 		// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Turquoise, FString::SanitizeFloat(basicDegree));
 
 		mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(FRotator(0.f, mStartRotateDegree.Yaw + basicDegree, 0.f));
 		
-		// ”z—ñ‚Ì‰ñ“]
+		// ï¿½zï¿½ï¿½Ì‰ï¿½]
 		if (basicDegree == 90.f || basicDegree == -270.f)
 		{
 			RoatateTheCubesRight90(0);
@@ -1518,24 +1535,24 @@ void AStageCube_1::NormalizeGuideRotation()
 		} // end if
 
 	} // end if()
-	// ===================================== ƒKƒCƒhƒ‰ƒCƒ“@X =================================
+	// ===================================== ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½@X =================================
 	else if (mCurrentSelectedGuideLine == mGuideLineXaxis)
 	{
-		// ‰ñ“]ŠJn‚ÆŠ®—¹‚Ì·‚©‚çAŠî–{‰ñ“]‚·‚é‚ÌŠp“x‚ğŒˆ‚ß‚é
+		// ï¿½ï¿½]ï¿½Jï¿½nï¿½ÆŠï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½{ï¿½ï¿½]ï¿½ï¿½ï¿½ï¿½ÌŠpï¿½xï¿½ï¿½ï¿½ï¿½ï¿½ß‚ï¿½
 		float basicDegree = round((mCurrentSelectedGuideLine->GetActorRotation().Roll - mStartRotateDegree.Roll) / 90.f) * 90.f;
 
-		// —LŒø‚È‰ñ“]‚ÌŠm”F basic != 0 —LŒø‚È‰ñ“]
+		// ï¿½Lï¿½ï¿½ï¿½È‰ï¿½]ï¿½ÌŠmï¿½F basic != 0 ï¿½Lï¿½ï¿½ï¿½È‰ï¿½]
 		if (basicDegree != .0f)
 		{
 			isVaildRot = true;
 		}
 
-		// Šp“xŠm”F—p
+		// ï¿½pï¿½xï¿½mï¿½Fï¿½p
 		// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Turquoise, FString::SanitizeFloat(basicDegree));
 
 		mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(FRotator(0.f, 0.f, mStartRotateDegree.Roll + basicDegree));
 
-		// ”z—ñ‚Ì‰ñ“]
+		// ï¿½zï¿½ï¿½Ì‰ï¿½]
 		if (basicDegree == 90.f || basicDegree == -270.f)
 		{
 			RoatateTheCubesRight90(1);
@@ -1550,24 +1567,24 @@ void AStageCube_1::NormalizeGuideRotation()
 		} // end if
 
 	} // end if()
-	// ===================================== ƒKƒCƒhƒ‰ƒCƒ“@Y =================================
+	// ===================================== ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½@Y =================================
 	else if (mCurrentSelectedGuideLine == mGuideLineYaxis)
 	{
-		// ‰ñ“]ŠJn‚ÆŠ®—¹‚Ì·‚©‚çAŠî–{‰ñ“]‚·‚é‚ÌŠp“x‚ğŒˆ‚ß‚é
+		// ï¿½ï¿½]ï¿½Jï¿½nï¿½ÆŠï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½{ï¿½ï¿½]ï¿½ï¿½ï¿½ï¿½ÌŠpï¿½xï¿½ï¿½ï¿½ï¿½ï¿½ß‚ï¿½
 		float basicDegree = round((mCurrentSelectedGuideLine->GetActorRotation().Roll - mStartRotateDegree.Roll) / 90.f) * 90.f;
 
-		// —LŒø‚È‰ñ“]‚ÌŠm”F basic != 0 —LŒø‚È‰ñ“]
+		// ï¿½Lï¿½ï¿½ï¿½È‰ï¿½]ï¿½ÌŠmï¿½F basic != 0 ï¿½Lï¿½ï¿½ï¿½È‰ï¿½]
 		if (basicDegree != .0f)
 		{
 			isVaildRot = true;
 		}
 
-		// Šp“xŠm”F—p
+		// ï¿½pï¿½xï¿½mï¿½Fï¿½p
 		// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Turquoise, FString::SanitizeFloat(basicDegree));
 
 		mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(FRotator(0.f, 90.f, mStartRotateDegree.Roll + basicDegree));
 
-		// ”z—ñ‚Ì‰ñ“]
+		// ï¿½zï¿½ï¿½Ì‰ï¿½]
 		if (basicDegree == 90.f || basicDegree == -270.f)
 		{
 			RoatateTheCubesRight90(2);
@@ -1585,7 +1602,7 @@ void AStageCube_1::NormalizeGuideRotation()
 
 	SetGuideLinePosition();
 
-	// ‰ñ“]‚ª—LŒø‚¾‚Á‚½ê‡AƒJƒEƒ“ƒgˆ—‚ğŒÄ‚Ño‚·
+	// ï¿½ï¿½]ï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½Aï¿½Jï¿½Eï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚Ñoï¿½ï¿½
 	if(isVaildRot)
 	{
 		CountInc();
@@ -1610,7 +1627,7 @@ void AStageCube_1::DecideGuideLineTurnningDirection()
 	if (myPlayerController == NULL)
 		return;
 
-	// ‰æ–Êã‚ÌˆÊ’uAƒJ[ƒ\ƒ‹‚ÌˆÊ’u
+	// ï¿½ï¿½Êï¿½ÌˆÊ’uï¿½Aï¿½Jï¿½[ï¿½\ï¿½ï¿½ï¿½ÌˆÊ’u
 	FVector2D screenLocation, mouseLocation;
 
 	myPlayerController->ProjectWorldLocationToScreen(mGuideLineYaxis->GetTransform().GetLocation(), screenLocation);
@@ -1628,7 +1645,7 @@ void AStageCube_1::DecideGuideLineTurnningDirection()
 	// For Test
 	// GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Emerald, FString::SanitizeFloat(resultDegree));
 
-	// ‘æ1ÛŒÀ
+	// ï¿½ï¿½1ï¿½ÛŒï¿½
 	if (resultDegree < 0.f && resultDegree >= -90.f)
 	{
 		if (guideLineTurnningScaleX > 0.f)
@@ -1636,7 +1653,7 @@ void AStageCube_1::DecideGuideLineTurnningDirection()
 
 		guideLineTurnningScaleY = abs(guideLineTurnningScaleY);
 	} // end if()
-	// ‘æ2ÛŒÀ
+	// ï¿½ï¿½2ï¿½ÛŒï¿½
 	else if (resultDegree < -90.f && resultDegree >= -180.f)
 	{
 		if (guideLineTurnningScaleX > 0.f)
@@ -1644,7 +1661,7 @@ void AStageCube_1::DecideGuideLineTurnningDirection()
 		if (guideLineTurnningScaleY > 0.f)
 			guideLineTurnningScaleY *= -1.f;
 	} // end if()
-	// ‘æ3ÛŒÀ
+	// ï¿½ï¿½3ï¿½ÛŒï¿½
 	else if (resultDegree >= 90.f && resultDegree <= 180.f)
 	{
 		guideLineTurnningScaleX = abs(guideLineTurnningScaleX);
@@ -1652,29 +1669,29 @@ void AStageCube_1::DecideGuideLineTurnningDirection()
 		if (guideLineTurnningScaleY > 0.f)
 			guideLineTurnningScaleY *= -1.f;
 	} // end if()
-	// ‘æ4ÛŒÀ
+	// ï¿½ï¿½4ï¿½ÛŒï¿½
 	else if (resultDegree >= 0.f && resultDegree < 90.f)
 	{
 		guideLineTurnningScaleX = abs(guideLineTurnningScaleX);
 		guideLineTurnningScaleY = abs(guideLineTurnningScaleY);
 	} // end if()
 
-	// ŠOÏ‚É‚æ‚Á‚ÄAƒJƒƒ‰‚ÍƒKƒCƒhƒ‰ƒCƒ“‚Ì‚Ç‚¿•ûŒü
+	// ï¿½Oï¿½Ï‚É‚ï¿½ï¿½ï¿½ÄAï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ÍƒKï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Ì‚Ç‚ï¿½ï¿½ï¿½ï¿½ï¿½
 	 if (mGuideLineXaxis == mCurrentSelectedGuideLine)
 	 {
-		// ¡‚ÌƒJƒƒ‰¢ŠEˆÊ’u
+		// ï¿½ï¿½ï¿½ÌƒJï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Eï¿½Ê’u
 		FVector cameraPosition = mCamera->GetComponentLocation();
 		cameraPosition.Z = 0.f;
 
-		// ƒKƒCƒhƒ‰ƒCƒ“‚©‚çƒJƒƒ‰‚ÌƒxƒNƒgƒ‹
+		// ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½Ìƒxï¿½Nï¿½gï¿½ï¿½
 		FVector theDir = cameraPosition - mGuideLineXaxis->GetActorLocation();
 
 		FVector origV = mGuideLineXaxis->GetActorLocation();
 
-		// •W€ü
+		// ï¿½Wï¿½ï¿½ï¿½ï¿½
 		FVector rightV =  origV  + this->GetActorRightVector()*500.f ;
 
-		// ŠOÏ
+		// ï¿½Oï¿½ï¿½
 		float result = ((rightV.X - origV.X) * (cameraPosition.Y - origV.Y) - (rightV.Y - origV.Y) * (cameraPosition.X - origV.X));
 
 		// For Test
@@ -1689,19 +1706,19 @@ void AStageCube_1::DecideGuideLineTurnningDirection()
 	 } // end if()
 	 else if (mGuideLineYaxis == mCurrentSelectedGuideLine)
 	 {
-		// ¡‚ÌƒJƒƒ‰¢ŠEˆÊ’u
+		// ï¿½ï¿½ï¿½ÌƒJï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Eï¿½Ê’u
 		FVector cameraPosition = mCamera->GetComponentLocation();
 		cameraPosition.Z = 0.f;
 
-		// ƒKƒCƒhƒ‰ƒCƒ“‚©‚çƒJƒƒ‰‚ÌƒxƒNƒgƒ‹
+		// ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½Ìƒxï¿½Nï¿½gï¿½ï¿½
 		FVector theDir = cameraPosition - mGuideLineYaxis->GetActorLocation();
 
 		FVector origV = mGuideLineYaxis->GetActorLocation();
 
-		// •W€ü
+		// ï¿½Wï¿½ï¿½ï¿½ï¿½
 		FVector rightV = origV + this->GetActorForwardVector() * -500.f;
 
-		// ŠOÏ
+		// ï¿½Oï¿½ï¿½
 		float result = ((rightV.X - origV.X) * (cameraPosition.Y - origV.Y) - (rightV.Y - origV.Y) * (cameraPosition.X - origV.X));
 
 		// For Test
@@ -1733,11 +1750,72 @@ void AStageCube_1::SetUnselectCubeUnitsCanChangeMat(bool canCgange)
 		for (int j = 0; j < 3; ++j) {
 			for (int k = 0; k < 3; ++k) {
 				if (CubeArray3D[i][j][k] != mCurrentSelectedCube)
+				{
 					CubeArray3D[i][j][k]->canChangeMaterial = canCgange;
+
+					// ï¿½ï¿½ï¿½Ìƒ}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Íƒ}ï¿½Eï¿½Xï¿½ï¿½ï¿½ï¿½É‚ï¿½ï¿½éï¿½Ìƒ}ï¿½eï¿½ï¿½ï¿½Aï¿½ï¿½
+					// ï¿½fï¿½tï¿½Hï¿½ï¿½ï¿½gï¿½É•Ï‚ï¿½ï¿½Ü‚ï¿½
+					if ( CubeArray3D[i][j][k]->mCubeMesh->GetMaterial(0) == CubeArray3D[i][j][k]->mCubeMatInterface_3)
+						CubeArray3D[i][j][k]->ChangeToDefaultMaterial();
+
+				} // end if()
 			} // end for()
 		} // end for()
 	} // end for()
 } // void SetUnselectCubeUnitsCanChangeMat()
+
+
+// ï¿½ÛŒï¿½ï¿½p - ï¿½Kï¿½Cï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Ìƒfï¿½^ï¿½bï¿½`ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
+void AStageCube_1::CheckAllGuideLinesGetDetached()
+{
+
+	FAttachmentTransformRules AttachRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, false);
+	TArray<AActor*> CurrentAttachedActors;
+
+	if (mGuideLineZaxis != NULL)
+	{
+		// ï¿½ï¿½ï¿½İ‚ÌƒAï¿½^ï¿½bï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½Nï¿½^ï¿½[ï¿½ï¿½ï¿½æ“¾
+		mGuideLineZaxis->GetAttachedActors(CurrentAttachedActors);
+		if (CurrentAttachedActors.Num() > 0)
+		{
+			for (AActor* AttachedCube : CurrentAttachedActors)
+			{
+				AttachedCube->AttachToComponent(mCubesRootComponent, AttachRules);
+			} // end for()
+			CurrentAttachedActors.Empty();
+		} // end if()
+	} // end if()
+
+	if (mGuideLineXaxis != NULL)
+	{
+		// ï¿½ï¿½ï¿½İ‚ÌƒAï¿½^ï¿½bï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½Nï¿½^ï¿½[ï¿½ï¿½ï¿½æ“¾
+		mGuideLineXaxis->GetAttachedActors(CurrentAttachedActors);
+		if (CurrentAttachedActors.Num() > 0)
+		{
+			for (AActor* AttachedCube : CurrentAttachedActors)
+			{
+				AttachedCube->AttachToComponent(mCubesRootComponent, AttachRules);
+			} // end for()
+			CurrentAttachedActors.Empty();
+		} // end if()
+	} // end if()
+
+	if (mGuideLineYaxis != NULL)
+	{
+		// ï¿½ï¿½ï¿½İ‚ÌƒAï¿½^ï¿½bï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½Nï¿½^ï¿½[ï¿½ï¿½ï¿½æ“¾
+		mGuideLineYaxis->GetAttachedActors(CurrentAttachedActors);
+		if (CurrentAttachedActors.Num() > 0)
+		{
+			for (AActor* AttachedCube : CurrentAttachedActors)
+			{
+				AttachedCube->AttachToComponent(mCubesRootComponent, AttachRules);
+			} // end for()
+			CurrentAttachedActors.Empty();
+		} // end if()
+	} // end if()
+
+} // void CheckAllGuideLinesGetDetached()
+
 
 void AStageCube_1::SetAllCubeUnitsCanChangeMat(bool canCgange)
 {
@@ -1756,3 +1834,128 @@ void AStageCube_1::SetAllCubeUnitsCanChangeMat(bool canCgange)
 		} // end for()
 	} // end for()
 } // void SetAllCubeUnitsCanChangeMat()
+
+
+UStaticMesh* AStageCube_1::GetSpecificCubeMesh(int num)
+{
+	switch (num)
+	{
+	case 0:
+		if (mCubeMesh1 != nullptr)
+			return mCubeMesh1;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh1 is NULL"));
+	case 1:
+		if (mCubeMesh2 != nullptr)
+			return mCubeMesh2;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh2 is NULL"));
+	case 2:
+		if (mCubeMesh3 != nullptr)
+			return mCubeMesh3;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh3 is NULL"));
+	case 3:
+		if (mCubeMesh4 != nullptr)
+			return mCubeMesh4;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh4 is NULL"));
+	case 4:
+		if (mCubeMesh5 != nullptr)
+			return mCubeMesh5;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh5 is NULL"));
+	case 5:
+		if (mCubeMesh6 != nullptr)
+			return mCubeMesh6;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh6 is NULL"));
+	case 6:
+		if (mCubeMesh7 != nullptr)
+			return mCubeMesh7;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh7 is NULL"));
+	case 7:
+		if (mCubeMesh8 != nullptr)
+			return mCubeMesh8;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh8 is NULL"));
+	case 8:
+		if (mCubeMesh9 != nullptr)
+			return mCubeMesh9;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh9 is NULL"));
+	case 9:
+		if (mCubeMesh10 != nullptr)
+			return mCubeMesh10;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh10 is NULL"));
+	case 10:
+		if (mCubeMesh11 != nullptr)
+			return mCubeMesh11;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh11 is NULL"));
+	case 11:
+		if (mCubeMesh12 != nullptr)
+			return mCubeMesh12;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh12 is NULL"));
+	case 12:
+		if (mCubeMesh13 != nullptr)
+			return mCubeMesh13;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh13 is NULL"));
+	case 13:
+		if (mCubeMesh14 != nullptr)
+			return mCubeMesh14;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh14 is NULL"));
+	case 14:
+		if (mCubeMesh15 != nullptr)
+			return mCubeMesh15;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh15 is NULL"));
+	case 15:
+		if (mCubeMesh16 != nullptr)
+			return mCubeMesh16;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh16 is NULL"));
+	case 16:
+		if (mCubeMesh17 != nullptr)
+			return mCubeMesh17;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh17 is NULL"));
+	case 17:
+		if (mCubeMesh18 != nullptr)
+			return mCubeMesh18;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh18 is NULL"));
+	case 18:
+		if (mCubeMesh19 != nullptr)
+			return mCubeMesh19;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh19 is NULL"));
+	case 19:
+		if (mCubeMesh20 != nullptr)
+			return mCubeMesh20;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh20 is NULL"));
+	case 20:
+		if (mCubeMesh21 != nullptr)
+			return mCubeMesh21;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh21 is NULL"));
+	case 21:
+		if (mCubeMesh22 != nullptr)
+			return mCubeMesh22;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh22 is NULL"));
+	case 22:
+		if (mCubeMesh23 != nullptr)
+			return mCubeMesh23;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh23 is NULL"));
+	case 23:
+		if (mCubeMesh24 != nullptr)
+			return mCubeMesh24;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh24 is NULL"));
+	case 24:
+		if (mCubeMesh25 != nullptr)
+			return mCubeMesh25;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh25 is NULL"));
+	case 25:
+		if (mCubeMesh26 != nullptr)
+			return mCubeMesh26;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh26 is NULL"));
+	case 26:
+		if (mCubeMesh27 != nullptr)
+			return mCubeMesh27;
+		else UE_LOG(LogTemp, Log, TEXT("mCubeMesh27 is NULL"));
+
+
+	default:
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("GetSpecificCubeMesh Number: %d is error"), num));
+		return nullptr;
+
+
+	} // switch()
+
+	return nullptr;
+} // GetSpecificCubeMesh()

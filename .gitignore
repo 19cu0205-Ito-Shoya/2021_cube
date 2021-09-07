@@ -84,3 +84,4 @@ cube/Binaries/*
 cube/Saved/*
 cube/Intermediate/*
 cube/DerivedDataCache/*
+cube/Build/*

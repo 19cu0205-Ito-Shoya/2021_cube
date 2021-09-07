@@ -59,6 +59,10 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "GuideLineDetails")
 		int mode;
 
+	// 今の座標位置
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GuideLineDetails")
+		int mCoordinate;
+
 private:
 	// Default Material デフォルトマテリアル
 	UPROPERTY(EditAnywhere, Category = "GuideLineDetails|Mesh")
@@ -71,6 +75,20 @@ private:
 	// Cursor Over's Material マウスが上にいる時のマテリアル
 	UPROPERTY(EditAnywhere, Category = "GuideLineDetails|Mesh")
 		UMaterial* mLineMaterial_3;
+
+
+public:
+	// Default Material デフォルトマテリアル (MaterialInterface)
+	UPROPERTY(EditDefaultsOnly, Category = "GuideLineDetails|Mesh")
+		UMaterialInterface* mCubeMatInterface_1;
+
+	// Chosen Material 選択されたマテリアル
+	UPROPERTY(EditDefaultsOnly, Category = "GuideLineDetails|Mesh")
+		UMaterialInterface* mCubeMatInterface_2;
+
+	// Cursor Over's Material マウスが上にいる時のマテリアル
+	UPROPERTY(EditDefaultsOnly, Category = "GuideLineDetails|Mesh")
+		UMaterialInterface* mCubeMatInterface_3;
 
 
 private:

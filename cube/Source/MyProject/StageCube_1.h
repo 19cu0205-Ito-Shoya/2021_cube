@@ -19,6 +19,8 @@
 //				：2021/08/25		ガイドライン回転の時非選択のガイドラインを非表示
 //				：2021/08/26		ガイドラインの回転方向は、マウスカーソルの位置によって回転する
 //				：2021/08/27		単体Cubeがマテリアル変更できるかを追加、壁のCollision追加
+//				：2021/09/02		それぞれのCubeのメッシュとマテリアルを設定して生成することを追加
+//				：2021/09/03		マテリアルをマテリアルインターフェースに変更、ガイドラインのデタッチ失敗した時の検査を追加
 //---------------------------------------------------------------------------------
 
 #pragma once
@@ -124,8 +126,6 @@ public:
 	// 回転の角度を矯正する
 	void NormalizeGuideRotation();
 
-	void ManageGuideLineRotateResultToArray();
-
 	// ガイドラインの回転方向を設定
 	void DecideGuideLineTurnningDirection();
 
@@ -136,7 +136,11 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "CountHelper")
 	void CountInc();
 
+	// 保険用 - ガイドラインのデタッチ失敗した時、検査を入る。
+	void CheckAllGuideLinesGetDetached();
 
+	// 単体Cubeの num(番号) のメッシュを取得
+	UStaticMesh* GetSpecificCubeMesh(int num);
 
 public:
 	// Cubeとガイドラインの選択を解除
@@ -270,6 +274,7 @@ public:
 
 
 private:
+	// 単体Cubeのスケール
 	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
 		FVector mCubeUnitScale;
 
@@ -292,24 +297,55 @@ private:
 		UStaticMesh* mCubeMesh8;
 	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
 		UStaticMesh* mCubeMesh9;
-
-
 	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
-		TSubclassOf<ACubeUnit> mBpCube1;
+		UStaticMesh* mCubeMesh10;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh11;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh12;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh13;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh14;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh15;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh16;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh17;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh18;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh19;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh20;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh21;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh22;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh23;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh24;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh25;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh26;
+	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings", meta = (AllowPrivateAccess = "true"))
+		UStaticMesh* mCubeMesh27;
 
 
-
-	// Default Material デフォルトマテリアル
+	// Default Material デフォルトマテリアル (MaterialInterface)
 	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings")
-		UMaterial* mCubeMaterial_1;
+		UMaterialInterface* mCubeMatInterface_1;
 
 	// Chosen Material 選択されたマテリアル
 	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings")
-		UMaterial* mCubeMaterial_2;
+		UMaterialInterface* mCubeMatInterface_2;
 
 	// Cursor Over's Material マウスが上にいる時のマテリアル
 	UPROPERTY(EditDefaultsOnly, Category = "CubeUnitSettings")
-		UMaterial* mCubeMaterial_3;
+		UMaterialInterface* mCubeMatInterface_3;
 
 
 private:
