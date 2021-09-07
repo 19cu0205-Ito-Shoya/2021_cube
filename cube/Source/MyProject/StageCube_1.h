@@ -132,6 +132,10 @@ public:
 	// 選択してない単体Cubeがマテリアルを変更できるかを設定
 	void SetUnselectCubeUnitsCanChangeMat(bool canCgange);
 
+	// 有効な回転だった場合の処理(bp native event)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "CountHelper")
+	void CountInc();
+
 	// 保険用 - ガイドラインのデタッチ失敗した時、検査を入る。
 	void CheckAllGuideLinesGetDetached();
 
