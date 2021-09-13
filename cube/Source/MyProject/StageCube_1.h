@@ -13,7 +13,7 @@
 //				：2021/08/19		Camera回転の矯正、ガイドライン回転の矯正
 //				：2021/08/20		回転の修正、回転計算方法はQuaternionから計算に変更
 //				：2021/08/21		ガイドラインYの修正
-//				：2021/08/22		選択方法の修正
+//				：2021/08/22		マウスによる選択方法の修正
 //				：2021/08/23		マウスのインプットイベントをStageCubeにまとめる
 //				：2021/08/24		マウスのライントレース方法を変更
 //				：2021/08/25		ガイドライン回転の時非選択のガイドラインを非表示
@@ -21,6 +21,7 @@
 //				：2021/08/27		単体Cubeがマテリアル変更できるかを追加、壁のCollision追加
 //				：2021/09/02		それぞれのCubeのメッシュとマテリアルを設定して生成することを追加
 //				：2021/09/03		マテリアルをマテリアルインターフェースに変更、ガイドラインのデタッチ失敗した時の検査を追加
+//				：2021/09/11		ガイドラインが回転出来るかの判断と設定追加
 //---------------------------------------------------------------------------------
 
 #pragma once
@@ -115,7 +116,7 @@ public:
 	void ChangeAllGuideLinesVisibility(const bool isVisible);
 
 	// ガイドラインをドラッグする時、選択していないガイドラインのを非表示
-	void ChangeUnSelecetedGuideLineVisibility();
+	void ChangeUnSelecetedGuideLineVisibility(const bool isVisible);
 
 	// 今選択しているガイドラインをを設定
 	void SetSelectingGuideLine(const bool isSelect);
@@ -141,6 +142,12 @@ public:
 
 	// 単体Cubeの num(番号) のメッシュを取得
 	UStaticMesh* GetSpecificCubeMesh(int num);
+
+	// 全部のガイドラインが回転できるかを設定
+	void SetAllGuideLineCanBeRotate( const bool isRotatable);
+
+	// プレイヤーが載っている時、その関連座標のガイドラインが回転できないを設定
+	void SetTheGuideLineCanNotRotate();
 
 public:
 	// Cubeとガイドラインの選択を解除

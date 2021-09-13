@@ -9,6 +9,7 @@
 //				：2021/08/25		マウスカーソル重ねる時のマテリアル変更
 //				：2021/08/26		マテリアル変更できるか判断追加
 //				：2021/09/03		マテリアルをマテリアルインターフェースに変更
+//				：2021/09/10		プレイヤーが載っている時のフラグ追加
 //-------------------------------------------------------------------
 
 #include "CubeUnit.h"
@@ -28,6 +29,7 @@ ACubeUnit::ACubeUnit()
 	, mCubeMatInterface_1(NULL)
 	, mCubeMatInterface_2(NULL)
 	, mCubeMatInterface_3(NULL)
+	, isPlayerOnThisCubeUnit(false)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -42,6 +44,7 @@ ACubeUnit::ACubeUnit()
 	mCubeMatInterface_1 = CreateDefaultSubobject<UMaterialInterface>(TEXT("CubeMatInterface1"));
 	mCubeMatInterface_2 = CreateDefaultSubobject<UMaterialInterface>(TEXT("CubeMatInterface2"));
 	mCubeMatInterface_3 = CreateDefaultSubobject<UMaterialInterface>(TEXT("CubeMatInterface3"));
+
 
 	// マウスカーソルが重ねている時
 	mCubeMesh->OnBeginCursorOver.AddUniqueDynamic(this, &ACubeUnit::OnOver2);
@@ -62,8 +65,10 @@ void ACubeUnit::BeginPlay()
 	
 	if (mCubeMesh != NULL)
 	{
-		// static ConstructorHelpers::FObjectFinder<UMaterial> FoundMaterial(TEXT("/Game/Material/OutLine_V.OutLine_V'"));
+		// メッシュのコリジョンを設定
+		mCubeMesh->SetCollisionProfileName(TEXT("CubeObject"));
 
+		// static ConstructorHelpers::FObjectFinder<UMaterial> FoundMaterial(TEXT("/Game/Material/OutLine_V.OutLine_V'"));
 		// mCubeMesh->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 
 		if (mCubeMatInterface_1 != NULL)
