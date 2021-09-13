@@ -58,6 +58,9 @@ void AGuideLineZ::BeginPlay()
 	
 	if (mGuideLineMesh != NULL)
 	{
+		// メッシュのコリジョンを設定
+		mGuideLineMesh->SetCollisionProfileName(TEXT("CubeObject"));
+
 		if (mLineMaterial_1 != NULL)
 		{
 			mGuideLineMesh->SetMaterial(0, mLineMaterial_1);

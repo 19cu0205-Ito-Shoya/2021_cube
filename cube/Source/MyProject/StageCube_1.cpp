@@ -369,7 +369,7 @@ void AStageCube_1::BeginPlay()
 	mLeftWallCollision->SetRelativeLocation(FVector(0.f, -(1.5f * mCubeDistance + mBoxCollisionSize.Y), (2.5f * mCubeDistance)));
 
 	mRightWallCollision->SetBoxExtent(mBoxCollisionSize);
-	mRightWallCollision->SetRelativeLocation(FVector(0.f, (1.5f * mCubeDistance + mBoxCollisionSize.Y), (200.5f * mCubeDistance)));
+	mRightWallCollision->SetRelativeLocation(FVector(0.f, (1.5f * mCubeDistance + mBoxCollisionSize.Y), (2.5f * mCubeDistance)));
 
 
 
@@ -2070,21 +2070,14 @@ void AStageCube_1::SetTheGuideLineCanNotRotate()
 					if (mGuideLineXaxis != NULL )
 					{
 						if (mGuideLineXaxis->mCoordinate == CubeArray3D[0][x][y]->mXCoordinate)
-						{
 							isOnX = true;
-
-							GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT("Onit:%d"), CubeArray3D[0][x][y]->mXCoordinate));
-
-						} // end if()
 					} // end if()
 					else GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("[CanNotRotate] mGuideLineXaxis is NULL")));
 
 					if (mGuideLineYaxis != NULL)
 					{
 						if (mGuideLineYaxis->mCoordinate == CubeArray3D[0][x][y]->mYCoordinate)
-						{
 							isOnY = true;
-						} // end if()
 					} // end if()
 					else GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("[CanNotRotate] mGuideLineYaxis is NULL")));
 
