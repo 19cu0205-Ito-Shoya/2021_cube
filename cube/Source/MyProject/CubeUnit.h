@@ -9,6 +9,7 @@
 //				：2021/08/25		マウスカーソル重ねる時のマテリアル変更
 //				：2021/08/26		マテリアル変更できるか判断追加
 //				：2021/09/03		マテリアルをマテリアルインターフェースに変更
+//				：2021/09/10		プレイヤーが載っている時のフラグ追加
 //-------------------------------------------------------------------
 
 #pragma once
@@ -63,8 +64,13 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails|Variables")
 		int mYCoordinate;
 
+	// マテリアル変更できるか
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails|Variables")
 		bool canChangeMaterial;
+
+	// プレイヤーはこのキューブに乗っているか
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails|Variables")
+		bool isPlayerOnThisCubeUnit;
 
 
 	// マテリアルを変える
@@ -73,6 +79,10 @@ public:
 
 	UFUNCTION()
 		void ChangeToDefaultMaterial();
+
+	// 全部の単体Cubeがマテリアルを変更できるかを設定
+	UFUNCTION(BlueprintCallable)
+		void SetPlayerIsOnCubeUnit(const bool isOnTop) { isPlayerOnThisCubeUnit = isOnTop; };
 
 public:
 	// 本体のメッシュ

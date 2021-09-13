@@ -6,6 +6,7 @@
 // 更新日		：2021/08/13		選択機能実装、マテリアル変えれる
 //				：2021/08/14		所属軸情報追加、表示非表示追加
 //				：2021/08/23		選択機能のインプットイベントをStageCubeに移動した
+//				：2021/09/10		ガイドラインが回転出来るかのフラグ追加
 //-------------------------------------------------------------------
 
 #include "GuideLineZ.h"
@@ -26,6 +27,7 @@ AGuideLineZ::AGuideLineZ()
 	, mCubeMatInterface_2(NULL)
 	, mCubeMatInterface_3(NULL)
 	, mCoordinate(0)
+	, mIsRotatable(true)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;

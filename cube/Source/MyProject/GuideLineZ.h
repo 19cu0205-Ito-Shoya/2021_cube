@@ -6,6 +6,7 @@
 // 更新日		：2021/08/13		選択機能実装、マテリアル変えれる
 //				：2021/08/14		所属軸情報追加、表示非表示追加
 //				：2021/08/23		選択機能のインプットイベントをStageCubeに移動した
+//				：2021/09/10		ガイドラインが回転出来るかのフラグ追加
 //-------------------------------------------------------------------
 
 #pragma once
@@ -62,6 +63,10 @@ public:
 	// 今の座標位置
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GuideLineDetails")
 		int mCoordinate;
+
+	// 回転出来るか
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GuideLineDetails")
+		bool mIsRotatable;
 
 private:
 	// Default Material デフォルトマテリアル

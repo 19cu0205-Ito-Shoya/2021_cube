@@ -13,7 +13,7 @@
 //				：2021/08/19		Camera回転の矯正、ガイドライン回転の矯正
 //				：2021/08/20		回転の修正、回転計算方法はQuaternionから計算に変更
 //				：2021/08/21		ガイドラインYの修正
-//				：2021/08/22		選択方法の修正
+//				：2021/08/22		マウスによる選択方法の修正
 //				：2021/08/23		マウスのインプットイベントをStageCubeにまとめる
 //				：2021/08/24		マウスのライントレース方法を変更
 //				：2021/08/25		ガイドライン回転の時非選択のガイドラインを非表示
@@ -21,6 +21,7 @@
 //				：2021/08/27		単体Cubeがマテリアル変更できるかを追加、壁のCollision追加
 //				：2021/09/02		それぞれのCubeのメッシュとマテリアルを設定して生成することを追加
 //				：2021/09/03		マテリアルをマテリアルインターフェースに変更、ガイドラインのデタッチ失敗した時の検査を追加
+//				：2021/09/11		ガイドラインが回転出来るかの判断と設定追加
 //---------------------------------------------------------------------------------
 
 #include "StageCube_1.h"
@@ -176,6 +177,8 @@ void AStageCube_1::BeginPlay()
 
 				// 単体Cubeのメッシュを設定
 				cubeGen->mCubeMesh->SetStaticMesh(GetSpecificCubeMesh(i));
+
+				// cubeGen->mCubeMesh->SetCollisionProfileName(TEXT("CubeObject"));
 
 				// 単体Cubeのマテリアルを設定
 				if (mCubeMatInterface_1 != NULL)
@@ -366,7 +369,7 @@ void AStageCube_1::BeginPlay()
 	mLeftWallCollision->SetRelativeLocation(FVector(0.f, -(1.5f * mCubeDistance + mBoxCollisionSize.Y), (2.5f * mCubeDistance)));
 
 	mRightWallCollision->SetBoxExtent(mBoxCollisionSize);
-	mRightWallCollision->SetRelativeLocation(FVector(0.f, (1.5f * mCubeDistance + mBoxCollisionSize.Y), (2.5f * mCubeDistance)));
+	mRightWallCollision->SetRelativeLocation(FVector(0.f, (1.5f * mCubeDistance + mBoxCollisionSize.Y), (200.5f * mCubeDistance)));
 
 
 
@@ -908,7 +911,7 @@ void AStageCube_1::MouseLeftButtonPressed()
 							{
 								mStartRotateDegree = mCurrentSelectedGuideLine->GetActorRotation();
 								isDraggingGuideLine = true;
-								ChangeUnSelecetedGuideLineVisibility();
+								ChangeUnSelecetedGuideLineVisibility(false);
 							} // end if()
 						} // end if()
 					} // end if()
@@ -979,7 +982,7 @@ void AStageCube_1::MouseLeftButtonReleased()
 							hitCube->mIsSelected = true;
 							hitCube->ChangeMaterialFunc();
 
-							// 既にCubeが選択している時
+							// 既に他のCubeが選択している時、そのCubeの選択解除する
 							if (mCurrentSelectedCube != NULL)
 							{
 								mCurrentSelectedCube->mIsSelected = false;
@@ -995,8 +998,9 @@ void AStageCube_1::MouseLeftButtonReleased()
 								} // end if()
 
 							} // end if()
-							// Cubeが選択していない時
+							// 他のCubeが選択していない時
 							else ChangeAllGuideLinesVisibility(true);
+
 
 							mCurrentSelectedCube = hitCube;
 							SetGuideLinePosition();
@@ -1005,7 +1009,7 @@ void AStageCube_1::MouseLeftButtonReleased()
 							// GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("%s   Unit is Clicked~!"), *hitCube->GetName()));
 
 						} // end if()
-						// このCube今は選択しているの時
+						// このCubeは今が選択しているの時、選択解除する
 						else
 						{
 							hitCube->mIsSelected = false;
@@ -1092,7 +1096,7 @@ void AStageCube_1::MouseLeftButtonReleased()
 		{
 			NormalizeGuideRotation();
 			isDraggingGuideLine = false;
-			ChangeUnSelecetedGuideLineVisibility();
+			ChangeUnSelecetedGuideLineVisibility(true);
 
 			// カーソルの移動距離がminimumCursorsDisplacement(3)以下なら、選択を解除
 			if (distance < minimumCursorsDisplacement)
@@ -1158,7 +1162,6 @@ void AStageCube_1::SwapCoordinate(ACubeUnit* _A, ACubeUnit* _B)
 	Swap(_A->mXCoordinate, _B->mXCoordinate);
 	Swap(_A->mYCoordinate, _B->mYCoordinate);
 	Swap(_A->mZCoordinate, _B->mZCoordinate);
-
 }
 
 // カメラ回転スケールを調整する
@@ -1408,52 +1411,126 @@ void AStageCube_1::SetGuideLinePosition()
 		} // end if()
 	} // end if
 
+	SetTheGuideLineCanNotRotate();
+
 } // void SetGuideLinePosition()
 
 void AStageCube_1::ChangeAllGuideLinesVisibility(const bool isVisible)
 {
-	if (mGuideLineXaxis != NULL)
-	{
-		mGuideLineXaxis->mIsVisible = isVisible;
-		mGuideLineXaxis->ChangeVisibilityFunc();
-	} // end if()
 
-	if (mGuideLineYaxis != NULL)
+	if (isVisible)
 	{
-		mGuideLineYaxis->mIsVisible = isVisible;
-		mGuideLineYaxis->ChangeVisibilityFunc();
-	} // end if()
+		if (mGuideLineXaxis != NULL)
+		{
+			if ( mGuideLineXaxis->mIsRotatable) 
+			{
+				mGuideLineXaxis->mIsVisible = isVisible;
+				mGuideLineXaxis->ChangeVisibilityFunc();
+			} // end if()
+		} // end if()
 
-	if (mGuideLineZaxis != NULL)
+		if (mGuideLineYaxis != NULL)
+		{
+			if (mGuideLineYaxis->mIsRotatable)
+			{
+				mGuideLineYaxis->mIsVisible = isVisible;
+				mGuideLineYaxis->ChangeVisibilityFunc();
+			} // end if()
+		} // end if()
+
+		if (mGuideLineZaxis != NULL)
+		{
+			if (mGuideLineZaxis->mIsRotatable)
+			{
+				mGuideLineZaxis->mIsVisible = isVisible;
+				mGuideLineZaxis->ChangeVisibilityFunc();
+			} // end if()
+		} // end if()
+	} // end if()
+	// 全部解除、デフォルトに戻る
+	else if (isVisible == false)
 	{
-		mGuideLineZaxis->mIsVisible = isVisible;
-		mGuideLineZaxis->ChangeVisibilityFunc();
+		if (mGuideLineXaxis != NULL)
+		{
+			mGuideLineXaxis->mIsRotatable = true;
+			mGuideLineXaxis->mIsVisible = isVisible;
+			mGuideLineXaxis->ChangeVisibilityFunc();
+		} // end if()
+
+		if (mGuideLineYaxis != NULL)
+		{
+			mGuideLineYaxis->mIsRotatable = true;
+			mGuideLineYaxis->mIsVisible = isVisible;
+			mGuideLineYaxis->ChangeVisibilityFunc();
+		} // end if()
+
+		if (mGuideLineZaxis != NULL)
+		{
+			mGuideLineZaxis->mIsRotatable = true;
+			mGuideLineZaxis->mIsVisible = isVisible;
+			mGuideLineZaxis->ChangeVisibilityFunc();
+		} // end if()
 	} // end if()
 
 } // void ChangeAllGuideLinesVisibility()
 
-void AStageCube_1::ChangeUnSelecetedGuideLineVisibility()
+void AStageCube_1::ChangeUnSelecetedGuideLineVisibility(const bool isVisible)
 {
 	if (mCurrentSelectedGuideLine == NULL)
 		return;
 
-	if (mGuideLineXaxis != mCurrentSelectedGuideLine)
+	// 選択しているガイドライン、かつ、回転出来るを表示
+	if (isVisible)
 	{
-		mGuideLineXaxis->mIsVisible = !mGuideLineXaxis->mIsVisible;
-		mGuideLineXaxis->ChangeVisibilityFunc();
+		if (mGuideLineXaxis != NULL)
+		{
+			if (mGuideLineXaxis->mIsRotatable && mGuideLineXaxis != mCurrentSelectedGuideLine)
+			{
+				mGuideLineXaxis->mIsVisible = isVisible;
+				mGuideLineXaxis->ChangeVisibilityFunc();
+			} // end if()
+		} // end if()
+
+		if (mGuideLineYaxis != NULL)
+		{
+			if (mGuideLineYaxis->mIsRotatable && mGuideLineYaxis != mCurrentSelectedGuideLine)
+			{
+				mGuideLineYaxis->mIsVisible = isVisible;
+				mGuideLineYaxis->ChangeVisibilityFunc();
+			} // end if()
+		} // end if()
+
+		if (mGuideLineZaxis != NULL)
+		{
+			if (mGuideLineZaxis->mIsRotatable && mGuideLineZaxis != mCurrentSelectedGuideLine)
+			{
+				mGuideLineZaxis->mIsVisible = isVisible;
+				mGuideLineZaxis->ChangeVisibilityFunc();
+			} // end if()
+		} // end if()
+	} // end if()
+	// 選択していないガイドラインを非表示
+	else if (isVisible == false)
+	{
+		if (mGuideLineXaxis != mCurrentSelectedGuideLine)
+		{
+			mGuideLineXaxis->mIsVisible = isVisible;
+			mGuideLineXaxis->ChangeVisibilityFunc();
+		} // end if()
+
+		if (mGuideLineYaxis != mCurrentSelectedGuideLine)
+		{
+			mGuideLineYaxis->mIsVisible = isVisible;
+			mGuideLineYaxis->ChangeVisibilityFunc();
+		} // end if()
+
+		if (mGuideLineZaxis != mCurrentSelectedGuideLine)
+		{
+			mGuideLineZaxis->mIsVisible = isVisible;
+			mGuideLineZaxis->ChangeVisibilityFunc();
+		} // end if()
 	} // end if()
 
-	if (mGuideLineYaxis != mCurrentSelectedGuideLine)
-	{
-		mGuideLineYaxis->mIsVisible = !mGuideLineYaxis->mIsVisible;
-		mGuideLineYaxis->ChangeVisibilityFunc();
-	} // end if()
-
-	if (mGuideLineZaxis != mCurrentSelectedGuideLine)
-	{
-		mGuideLineZaxis->mIsVisible = !mGuideLineZaxis->mIsVisible;
-		mGuideLineZaxis->ChangeVisibilityFunc();
-	} // end if()
 } // void ChangeUnSelecetedGuideLineVisibility()
 
 void AStageCube_1::DeSelectCubeAndGuide(bool deSelectCube, bool deSelectGuide)
@@ -1955,3 +2032,100 @@ UStaticMesh* AStageCube_1::GetSpecificCubeMesh(int num)
 
 	return nullptr;
 } // GetSpecificCubeMesh()
+
+void AStageCube_1::SetAllGuideLineCanBeRotate(const bool isRotatable)
+{
+	if (mGuideLineXaxis != NULL)
+	{
+		mGuideLineXaxis->mIsRotatable = isRotatable;
+	} // end if()
+
+	if (mGuideLineYaxis != NULL)
+	{
+		mGuideLineYaxis->mIsRotatable = isRotatable;
+	} // end if()
+
+	if (mGuideLineZaxis != NULL)
+	{
+		mGuideLineZaxis->mIsRotatable = isRotatable;
+	} // end if()
+
+} // void SetAllGuideLineCanBeRotate()
+
+void AStageCube_1::SetTheGuideLineCanNotRotate()
+{
+	// プレーヤーが回転軸載っているか
+	bool isOnX = false;	
+	bool isOnY = false;	
+
+	for (int x = 0; x < 3; ++x)
+	{
+		for (int y = 0; y < 3; ++y)
+		{
+			if (CubeArray3D[0][x][y] != NULL)
+			{
+				// プレイヤーがこのキューブに載っている時
+				if (CubeArray3D[0][x][y]->isPlayerOnThisCubeUnit)
+				{
+					if (mGuideLineXaxis != NULL )
+					{
+						if (mGuideLineXaxis->mCoordinate == CubeArray3D[0][x][y]->mXCoordinate)
+						{
+							isOnX = true;
+
+							GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT("Onit:%d"), CubeArray3D[0][x][y]->mXCoordinate));
+
+						} // end if()
+					} // end if()
+					else GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("[CanNotRotate] mGuideLineXaxis is NULL")));
+
+					if (mGuideLineYaxis != NULL)
+					{
+						if (mGuideLineYaxis->mCoordinate == CubeArray3D[0][x][y]->mYCoordinate)
+						{
+							isOnY = true;
+						} // end if()
+					} // end if()
+					else GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::Printf(TEXT("[CanNotRotate] mGuideLineYaxis is NULL")));
+
+				} // end if()
+			} // end if()
+		} // end for
+	} // end for
+	
+
+	// ガイドライン X 回転出来るか、表示するのかを設定
+	if (mGuideLineXaxis != NULL)
+	{
+		if (isOnX)
+		{
+			mGuideLineXaxis->mIsRotatable = false;
+			mGuideLineXaxis->mIsVisible = false;
+			mGuideLineXaxis->ChangeVisibilityFunc();
+		} // end if()
+		else
+		{
+			mGuideLineXaxis->mIsRotatable = true;
+			mGuideLineXaxis->mIsVisible = true;
+			mGuideLineXaxis->ChangeVisibilityFunc();
+		} // end else
+	} // end if
+
+	// ガイドライン Y 回転出来るか、表示するのかを設定
+	if (mGuideLineYaxis != NULL)
+	{
+		if (isOnY)
+		{
+			mGuideLineYaxis->mIsRotatable = false;
+			mGuideLineYaxis->mIsVisible = false;
+			mGuideLineYaxis->ChangeVisibilityFunc();
+		} // end if()
+		else
+		{
+			mGuideLineYaxis->mIsRotatable = true;
+			mGuideLineYaxis->mIsVisible = true;
+			mGuideLineYaxis->ChangeVisibilityFunc();
+		} // end else
+	} // end if
+
+} // void SetTheGuideLineCantRotate()
