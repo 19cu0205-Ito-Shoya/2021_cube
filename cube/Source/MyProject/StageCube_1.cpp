@@ -22,6 +22,7 @@
 //				：2021/09/02		それぞれのCubeのメッシュとマテリアルを設定して生成することを追加
 //				：2021/09/03		マテリアルをマテリアルインターフェースに変更、ガイドラインのデタッチ失敗した時の検査を追加
 //				：2021/09/11		ガイドラインが回転出来るかの判断と設定追加
+//				：2021/09/15		壁のCollisionをカスタマイズ設定できる
 //---------------------------------------------------------------------------------
 
 #include "StageCube_1.h"
@@ -57,6 +58,7 @@ AStageCube_1::AStageCube_1()
 	, mDrawDebugType(EDrawDebugTrace::None)
 	, mCubeUnitScale(FVector(1.0f))
 	, mCubeDistance(100.f)
+	, mWallDistance(100.f)
 	, mBoxCollisionSize(FVector(170.f, 10.f, 150.f))
 	, mFrontWallCollision(NULL)
 	, mBackWallCollision(NULL)
@@ -359,17 +361,17 @@ void AStageCube_1::BeginPlay()
 	// 前後左右の壁のCollisionのサイズ、位置を設定
 	mFrontWallCollision->SetBoxExtent(mBoxCollisionSize);
 	mFrontWallCollision->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
-	mFrontWallCollision->SetRelativeLocation(FVector((1.5f * mCubeDistance + mBoxCollisionSize.Y), 0.f, (2.5f * mCubeDistance)));
+	mFrontWallCollision->SetRelativeLocation(FVector((1.5f * mWallDistance + mBoxCollisionSize.Y), 0.f, 50.f));
 
 	mBackWallCollision->SetBoxExtent(mBoxCollisionSize);
 	mBackWallCollision->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
-	mBackWallCollision->SetRelativeLocation(FVector(-(1.5f * mCubeDistance + mBoxCollisionSize.Y), 0.f, (2.5f * mCubeDistance)));
+	mBackWallCollision->SetRelativeLocation(FVector(-(1.5f * mWallDistance + mBoxCollisionSize.Y), 0.f, 50.f));
 
 	mLeftWallCollision->SetBoxExtent(mBoxCollisionSize);
-	mLeftWallCollision->SetRelativeLocation(FVector(0.f, -(1.5f * mCubeDistance + mBoxCollisionSize.Y), (2.5f * mCubeDistance)));
+	mLeftWallCollision->SetRelativeLocation(FVector(0.f, -(1.5f * mWallDistance + mBoxCollisionSize.Y), 50.f));
 
 	mRightWallCollision->SetBoxExtent(mBoxCollisionSize);
-	mRightWallCollision->SetRelativeLocation(FVector(0.f, (1.5f * mCubeDistance + mBoxCollisionSize.Y), (2.5f * mCubeDistance)));
+	mRightWallCollision->SetRelativeLocation(FVector(0.f, (1.5f * mWallDistance + mBoxCollisionSize.Y), 50.f));
 
 
 

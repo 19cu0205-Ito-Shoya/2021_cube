@@ -22,6 +22,7 @@
 //				：2021/09/02		それぞれのCubeのメッシュとマテリアルを設定して生成することを追加
 //				：2021/09/03		マテリアルをマテリアルインターフェースに変更、ガイドラインのデタッチ失敗した時の検査を追加
 //				：2021/09/11		ガイドラインが回転出来るかの判断と設定追加
+//				：2021/09/15		壁のCollisionをカスタマイズ設定できる
 //---------------------------------------------------------------------------------
 
 #pragma once
@@ -239,7 +240,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
 		float mCubeDistance;
 
-	// need to change to EditDefaultsOnly
+	// 壁の距離、原点からエッジまでの距離
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
+		float mWallDistance;
+
+	// 壁のサイズ
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))
 		FVector mBoxCollisionSize;
 
