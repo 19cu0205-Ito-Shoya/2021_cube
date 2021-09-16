@@ -23,6 +23,7 @@
 //				：2021/09/03		マテリアルをマテリアルインターフェースに変更、ガイドラインのデタッチ失敗した時の検査を追加
 //				：2021/09/11		ガイドラインが回転出来るかの判断と設定追加
 //				：2021/09/15		壁のCollisionをカスタマイズ設定できる
+//				：2021/09/16		ゴールのActorをアタッチのBP関数を追加
 //---------------------------------------------------------------------------------
 
 #pragma once
@@ -159,7 +160,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void SetAllCubeUnitsCanChangeMat(bool canCgange);
 
-
+	// ゴールのActorを設定
+	UFUNCTION(BlueprintCallable)
+		void SetGoalActorAttach(const int number, AActor* _goalActor);
 
 private:
 	// Rootシーンコンポーネント
@@ -373,7 +376,6 @@ private:
 	// Z軸のガイドライン
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GuideLine", meta = (AllowPrivateAccess = "true"))
 		AGuideLineZ* mGuideLineZaxis;
-
 
 	// Editorでチェックするため (Debug用)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CubeDetails", meta = (AllowPrivateAccess = "true"))

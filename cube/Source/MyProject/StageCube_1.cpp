@@ -23,6 +23,7 @@
 //				：2021/09/03		マテリアルをマテリアルインターフェースに変更、ガイドラインのデタッチ失敗した時の検査を追加
 //				：2021/09/11		ガイドラインが回転出来るかの判断と設定追加
 //				：2021/09/15		壁のCollisionをカスタマイズ設定できる
+//				：2021/09/16		ゴールのActorをアタッチのBP関数を追加
 //---------------------------------------------------------------------------------
 
 #include "StageCube_1.h"
@@ -1908,6 +1909,31 @@ void AStageCube_1::SetAllCubeUnitsCanChangeMat(bool canCgange)
 		} // end for()
 	} // end for()
 } // void SetAllCubeUnitsCanChangeMat()
+
+
+void AStageCube_1::SetGoalActorAttach(const int number, AActor* _goalActor)
+{
+
+	if (_goalActor != NULL)
+	{
+		FAttachmentTransformRules AttachRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, false);
+
+		// 配列のindex
+		// i j k  will be Z X Y of the array
+		// can get the position where line to move and who to attach
+		int i = number / 9 ;
+		int j = (number % 9) / 3;
+		int k = (number % 9) % 3;
+
+		if (CubeArray3D[i][j][k] != NULL)
+		{
+			_goalActor->AttachToActor(CubeArray3D[i][j][k], AttachRules);
+		} // end if()
+
+	} // end if()
+
+
+} // void SetGoalActorAttach()
 
 
 UStaticMesh* AStageCube_1::GetSpecificCubeMesh(int num)
