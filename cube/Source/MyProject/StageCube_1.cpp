@@ -1676,15 +1676,14 @@ void AStageCube_1::NormalizeGuideRotation()
 		{
 			RoatateTheCubesLeft90(2);
 		} // end if
-
 	} // end if()
 
-	SetGuideLinePosition();
-
+	
 	// 回転が有効だった場合、カウント処理を呼び出す		by朱 21-0907
 	if (isVaildRot)
 	{
 		CountInc();
+		SetGuideLinePosition();		// by林　外からの移動
 	}
 
 } // void NormalizeGuideRotation()
