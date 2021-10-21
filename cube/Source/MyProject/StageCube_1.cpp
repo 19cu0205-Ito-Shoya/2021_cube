@@ -1914,7 +1914,7 @@ void AStageCube_1::SetAllCubeUnitsCanChangeMat(bool canCgange)
 void AStageCube_1::SetGoalActorAttach(const int number, AActor* _goalActor)
 {
 
-	if (_goalActor != NULL)
+	if (_goalActor != NULL && number > 0)
 	{
 		FAttachmentTransformRules AttachRules(EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, EAttachmentRule::KeepWorld, false);
 
