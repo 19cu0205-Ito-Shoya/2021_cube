@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------
 // ファイル		：StageCube_1.h
-// 概要			：総体Cubeの処理
+// 概要			：総体Cubeの処理と操作
 // 作成者		：19CU0236 林雲暉 
 // 作成日		：2021/08/11		総体Cubeの基本構成制作
 // 更新日		：2021/08/12		単体Cube生成と配列入り、選択機能
@@ -52,26 +52,24 @@ public:
 	~AStageCube_1();
 
 protected:
-	// Called when the game starts or when spawned
+	// 実行時に一度呼ばれる
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
+	// 毎フレーム呼ばれる
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
+	// 各入力関係メソッドとのバインド処理
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 
 private:
 
-	// 右回転90度
+	// Cube配列を右回転90度
 	void RoatateTheCubesRight90( const int mode);
 
-	// 左回転90度(=右回転270度)
+	// Cube配列を左回転90度(=右回転270度)
 	void RoatateTheCubesLeft90( const int mode);
 
-	// 回転180度
+	// Cube配列を180度回転
 	void RoatateTheCubes180( const int mode);
 
 	// マウスのX軸移動
@@ -129,7 +127,7 @@ public:
 	// 回転の角度を矯正する
 	void NormalizeGuideRotation();
 
-	// ガイドラインの回転方向を設定
+	// ガイドラインの回転方向を計算して設定する
 	void DecideGuideLineTurnningDirection();
 
 	// 選択してない単体Cubeがマテリアルを変更できるかを設定

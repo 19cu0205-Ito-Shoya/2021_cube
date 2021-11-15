@@ -120,7 +120,7 @@ void ACubeUnit::SetMeshAndMaterialOnBegin(UStaticMesh* newMesh, UMaterial* newMa
 
 }  // void SetMeshAndMaterialOnBegin
 
-
+// マウスカーソルが重ねている時
 void ACubeUnit::OnOver2(UPrimitiveComponent* Target)
 {
 	// マテリアル変更できない状態なら戻る
@@ -143,7 +143,7 @@ void ACubeUnit::OnOver2(UPrimitiveComponent* Target)
 	} // end if()
 } // void OnOver()
 
-
+// マウスカーソルがこのCubeから離れた時
 void ACubeUnit::EndOver2(UPrimitiveComponent* Target)
 {
 	// マテリアル変更できない状態なら戻る
@@ -167,7 +167,7 @@ void ACubeUnit::EndOver2(UPrimitiveComponent* Target)
 
 } // void EndOver2
 
-
+// マテリアルを変える
 void ACubeUnit::ChangeMaterialFunc()
 {
 	if (mCubeMesh != NULL)
@@ -201,6 +201,7 @@ void ACubeUnit::ChangeMaterialFunc()
 
 } // void ChangeMaterialFunc()
 
+// 初期マテリアルに変える
 void ACubeUnit::ChangeToDefaultMaterial()
 {
 	if (mCubeMesh != NULL)

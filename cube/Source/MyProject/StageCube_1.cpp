@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------
 // ファイル		：StageCube_1.cpp
-// 概要			：総体Cubeの処理
+// 概要			：総体Cubeの処理と操作
 // 作成者		：19CU0236 林雲暉 
 // 作成日		：2021/08/11		総体Cubeの基本構成制作
 // 更新日		：2021/08/12		単体Cube生成と配列入り、選択機能
@@ -75,9 +75,11 @@ AStageCube_1::AStageCube_1()
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Rootシーンコンポーネントを生成
 	mRootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("MyRootSceneComponent"));
 	RootComponent = mRootComponent;
 
+	// Cube's シーンコンポーネントを生成
 	mCubesRootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("MyCubesRootSceneComponent"));
 	mCubesRootComponent->SetupAttachment(RootComponent);
 
@@ -121,11 +123,6 @@ AStageCube_1::AStageCube_1()
 
 }
 
-// デストラクタ
-AStageCube_1::~AStageCube_1()
-{
-}
-
 // 実行時に一度呼ばれる
 void AStageCube_1::BeginPlay()
 {
@@ -133,7 +130,6 @@ void AStageCube_1::BeginPlay()
 
 	mSpringArm->SetRelativeRotation(FRotator(-45.f, 0.f, 0.f));
 
-	// FAttachmentTransformRules AttachRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
 	FAttachmentTransformRules AttachRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
 
 	// ================================ Cube の生成  ================================
@@ -175,13 +171,11 @@ void AStageCube_1::BeginPlay()
 			cubeGen = Cast<ACubeUnit>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, bp_CubeUnit, SpawnTransform));
 			if (cubeGen != nullptr)
 			{
-				// Flow
+				// Actor Spawn Flow Memo
 				// Spawn -> SpawnedActor's Construct -> do something -> FinishSpawningActor -> SpawnedActor's BeginPlay
 
 				// 単体Cubeのメッシュを設定
 				cubeGen->mCubeMesh->SetStaticMesh(GetSpecificCubeMesh(i));
-
-				// cubeGen->mCubeMesh->SetCollisionProfileName(TEXT("CubeObject"));
 
 				// 単体Cubeのマテリアルを設定
 				if (mCubeMatInterface_1 != NULL)
@@ -202,8 +196,7 @@ void AStageCube_1::BeginPlay()
 			} // end if()
 			else GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("cubeGen error!")));
 
-
-			// (21-09-02) old one, for all cube is same mesh.
+			// (21-09-02) 初期のやつ、全部同じメッシュの時
 			// cubeGen = GetWorld()->SpawnActor<ACubeUnit>(bp_CubeUnit);				// スポーンCube Actor
 
 			// 配列の位置計算
@@ -230,7 +223,7 @@ void AStageCube_1::BeginPlay()
 				tempArray1D.Add(cubeGen);
 			} // end if()
 
-			// ===================  Debug用 + Editorで見える  =======================
+			// ===================  Debug用 + Editorで観察用  =======================
 			if (counter < 10)
 			{
 				d1Cube.Add(cubeGen);
@@ -281,21 +274,21 @@ void AStageCube_1::BeginPlay()
 			++tempSerialNum;
 		} // end for()
 
-		// test
+		// For Number Test
 		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("===== %s"), *CubeArray3D[0][0][2]->GetName()));
 		// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("===== %s"), *CubeArray3D[1][0][2]->GetName()));
 
 	} // end if()
-
 
 	// ==========================  Guide Line の生成  ==========================
 
 	FString pathGL = "Blueprint'/Game/BP/BP_GuideLineZ.BP_GuideLineZ_C'";
 	TSubclassOf<class AActor> bp_GuideLineZ = TSoftClassPtr<AActor>(FSoftObjectPath(*pathGL)).LoadSynchronous();	// pathにあるBPを取得
 
-	// Z Axis
+	// Z Axisのガイドライン
 	if (bp_GuideLineZ != nullptr)
 	{
+		// ガイドライン Z を生成
 		mGuideLineZaxis = GetWorld()->SpawnActor<AGuideLineZ>(bp_GuideLineZ);
 
 		if (mGuideLineZaxis != NULL)
@@ -306,15 +299,17 @@ void AStageCube_1::BeginPlay()
 			mGuideLineZaxis->mGuideLineMesh->SetRelativeRotation(FRotator(0.f, 0.f, 90.f));
 			mGuideLineZaxis->SetOwner(this);
 
+			// 選択の時判断用
 			// mode 0 = XY-Plane(Z-axis),  1 = YZ-Plane(X-axis),  2 = XZ-Plane(Y-axis)
 			mGuideLineZaxis->mode = 0;
 		} // end if()
 
 	} // end if()
 
-	// X Axis
+	// X Axisのガイドライン
 	if (bp_GuideLineZ != nullptr)
 	{
+		// ガイドライン X を生成
 		mGuideLineXaxis = GetWorld()->SpawnActor<AGuideLineZ>(bp_GuideLineZ);
 
 		if (mGuideLineXaxis != NULL)
@@ -325,16 +320,19 @@ void AStageCube_1::BeginPlay()
 			mGuideLineXaxis->mGuideLineMesh->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
 			mGuideLineXaxis->SetOwner(this);
 
+			// 選択の時判断用
+			// mode 0 = XY-Plane(Z-axis),  1 = YZ-Plane(X-axis),  2 = XZ-Plane(Y-axis)
 			mGuideLineXaxis->mode = 1;
 		} // end if()
 	} // end if()
 
-	// Y Axis
+	// Y Axisのガイドライン
 	// =================  Caution  8/21  ================
 	// ガイドライン Y のActorのRotation設定は他のガイドラインと違います、要注意です。
 	// (元々はPitchを回転すると、オイラー角の制限があった為に、こうになった)
 	if (bp_GuideLineZ != nullptr)
 	{
+		// ガイドライン Y を生成
 		mGuideLineYaxis = GetWorld()->SpawnActor<AGuideLineZ>(bp_GuideLineZ);
 
 		if (mGuideLineYaxis != NULL)
@@ -346,6 +344,8 @@ void AStageCube_1::BeginPlay()
 			mGuideLineYaxis->SetActorRelativeRotation(FRotator(0.f, 90.f, 0.f));
 			mGuideLineYaxis->SetOwner(this);
 
+			// 選択の時判断用
+			// mode 0 = XY-Plane(Z-axis),  1 = YZ-Plane(X-axis),  2 = XZ-Plane(Y-axis)
 			mGuideLineYaxis->mode = 2;
 		} // end if()
 	} // end if()
@@ -375,19 +375,12 @@ void AStageCube_1::BeginPlay()
 	mRightWallCollision->SetRelativeLocation(FVector(0.f, (1.5f * mWallDistance + mBoxCollisionSize.Y), 50.f));
 
 
-
 	// ==========================  マウスのクリックイベント用  ==========================
 	APlayerController* myPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
 	myPlayerController->bShowMouseCursor = true;
 	myPlayerController->bEnableMouseOverEvents = true;
 	myPlayerController->bEnableClickEvents = true;
-
-
-	// for test
-	// RoatateTheCubesRight90( 1);
-	// Replace3Array();
-	// RoatateTheCubesLeft90(0);
 
 } // BeginPlay()
 
@@ -404,18 +397,14 @@ void AStageCube_1::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-
-	// enable 'Show Mouse Cursor', you stop sending input events to the actors and return focus to the user.
+	// Memo:
+	// Enable 'Show Mouse Cursor', you stop sending input events to the actors and return focus to the user.
 	// It works only when you click(press) on mouse button
 	InputComponent->BindAxis("MoveMouseX", this, &AStageCube_1::MoveMouseX);
 	InputComponent->BindAxis("MoveMouseY", this, &AStageCube_1::MoveMouseY);
 
 	InputComponent->BindAction("MouseLeftClick", IE_Pressed, this, &AStageCube_1::MouseLeftButtonPressed);
 	InputComponent->BindAction("MouseLeftClick", IE_Released, this, &AStageCube_1::MouseLeftButtonReleased);
-
-	// MoveMouseXY
-	// MouseLeftClick
-	// MouseLeftButtonPressed
 
 } // SetupPlayerInputComponent
 
@@ -426,7 +415,6 @@ void AStageCube_1::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 // 3D Array [Z][X][Y]
 //         Dep Row Col
 // 
-// 180 degree need another function
 void AStageCube_1::RoatateTheCubesRight90(int mode)
 {
 	int totalCol = 3;
@@ -563,7 +551,6 @@ if test, need to delete else return;
 //         Dep Row Col
 void AStageCube_1::RoatateTheCubesLeft90(const int mode)
 {
-	// CubeArray3D
 	int totalCol = 3;
 
 	if (mode == 0)
@@ -668,7 +655,6 @@ void AStageCube_1::RoatateTheCubesLeft90(const int mode)
 // 
 void AStageCube_1::RoatateTheCubes180(const int mode)
 {
-	// CubeArray3D
 	int totalCol = 3;
 
 	if (mode == 0)
@@ -768,8 +754,10 @@ void AStageCube_1::RoatateTheCubes180(const int mode)
 
 void AStageCube_1::MoveMouseX(const float _axisValue)
 {
+	// ガイドラインの回転方向を計算して設定する
 	DecideGuideLineTurnningDirection();
 
+	// Debug用
 	// GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Emerald, FString::SanitizeFloat(_axisValue));
 
 	if (_axisValue != 0.f)
@@ -795,7 +783,7 @@ void AStageCube_1::MoveMouseX(const float _axisValue)
 		} // end if
 		else if (isMovingCamera)
 		{
-			// will affect roll, don't use
+			// Addの方法はrollの軸に影響する、使わないて
 			// mSpringArm->AddRelativeRotation(FRotator(0.f, _axisValue * mCameraTurnScaleX, 0.f));
 
 			// Cameraを回転
@@ -813,10 +801,8 @@ void AStageCube_1::MoveMouseX(const float _axisValue)
 
 			mSpringArm->SetRelativeRotation(tempR);
 
-			// Cubeを回転
+			// Addの方法はrollの軸に影響する、使わないて
 			// mCubesRootComponent->AddRelativeRotation(FRotator(0.f, -_axisValue * mCameraTurnScaleX, 0.f));
-
-			// will affect roll, don't use
 			// mCubesRootComponent->AddLocalRotation(FRotator(0.f, -_axisValue * 3.f, 0.f));
 
 		} // end if
@@ -851,7 +837,7 @@ void AStageCube_1::MoveMouseY(const float _axisValue)
 	} // end if
 	else if (isMovingCamera)
 	{
-		// will affect roll, don't use
+		// Addの方法はrollの軸に影響する、使わないて
 		// mSpringArm->AddRelativeRotation(FRotator(_axisValue * mCameraTurnScaleY, 0.f, 0.f));
 
 		// Cameraを回転
@@ -870,10 +856,8 @@ void AStageCube_1::MoveMouseY(const float _axisValue)
 		mSpringArm->SetRelativeRotation(tempR);
 
 
-		// Cubeを回転
-		//mCubesRootComponent->AddRelativeRotation(FRotator(-_axisValue * mCameraTurnScaleY, 0.f, 0.f));
-
-		// will affect roll, don't use
+		// Addの方法はrollの軸に影響する、使わないて
+		//　mCubesRootComponent->AddRelativeRotation(FRotator(-_axisValue * mCameraTurnScaleY, 0.f, 0.f));
 		// mCubesRootComponent->AddLocalRotation(FRotator(-_axisValue * 3.f, 0.f, 0.f));
 
 	} // end if
@@ -891,12 +875,14 @@ void AStageCube_1::MouseLeftButtonPressed()
 	{
 		if (isDraggingGuideLine == false)
 		{
-			// マウスカーソルの世界位置でLine Traceする、その結果を得る
+			// Line Traceの結果保存用
 			FHitResult MouseHitResult;
 
 			// 前の方法、今とほぼ同じ
 			// Cast<APlayerController>(GetController())->GetHitResultUnderCursor(ECC_Visibility, false, MouseHitResult);
 
+			// マウスカーソルの世界位置でLine Traceする、その結果を得る
+			// 成功なら
 			if (MouseLineTrace(MouseHitResult) && MouseHitResult.bBlockingHit)
 			{
 				// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("is Hitting %s"), *MouseHitResult.GetActor()->GetClass()->GetName()));
@@ -949,17 +935,16 @@ void AStageCube_1::MouseLeftButtonReleased()
 	// ガイドラインをドラッグしていない
 	if (isDraggingGuideLine == false && distance < minimumCursorsDisplacement)
 	{
-		// マウスカーソルの世界位置でLine Traceする、その結果を得る
+		// Line Traceの結果保存用
 		FHitResult MouseHitResult;
 
-		// ========= For Debug =========
+		// ========= For Debug, LineTraceの位置を確認 =========
 		// Cast<APlayerController>(GetController())->GetHitResultUnderCursor(ECC_Visibility, false, MouseHitResult);
 		// TEST mouse Direction
-		/*
-		FVector Location, Direction;
-		Cast<APlayerController>(GetController())->DeprojectMousePositionToWorld(Location, Direction);
-		DrawDebugLine(GetWorld(), Location, Location + Direction * 1000.0f, FColor::Red, true);
-		*/
+		// FVector Location, Direction;
+		// Cast<APlayerController>(GetController())->DeprojectMousePositionToWorld(Location, Direction);
+		// DrawDebugLine(GetWorld(), Location, Location + Direction * 1000.0f, FColor::Red, true);
+		
 
 		// マウスカーソルの世界位置でLine Traceする、その結果を得る
 		// 成功なら
@@ -971,7 +956,7 @@ void AStageCube_1::MouseLeftButtonReleased()
 
 			if (MouseHitResult.GetActor() != NULL)
 			{
-				// ======================================  is cube unit   ======================================
+				// ======================================  cube unit なら  ======================================
 				// ヒットしたActorは単位Cubeなら
 				if (MouseHitResult.GetActor()->IsA<ACubeUnit>())
 				{
@@ -1036,7 +1021,7 @@ void AStageCube_1::MouseLeftButtonReleased()
 						} // end else
 					} // end if()
 				} // end if()
-				// ======================================  is Guide line   ======================================
+				// ======================================  Guide line なら  ======================================
 				// ヒットしたActorはガイドラインなら
 				else if (MouseHitResult.GetActor()->IsA<AGuideLineZ>())
 				{
@@ -1391,6 +1376,7 @@ void AStageCube_1::DetachFromGuideLine()
 
 } // void DetachFromGuideLine()
 
+// ガイドラインの位置を設定
 void AStageCube_1::SetGuideLinePosition()
 {
 	if (mCurrentSelectedCube != NULL)
@@ -1418,9 +1404,9 @@ void AStageCube_1::SetGuideLinePosition()
 
 } // void SetGuideLinePosition()
 
+// ガイドラインの可視性を変更
 void AStageCube_1::ChangeAllGuideLinesVisibility(const bool isVisible)
 {
-
 	if (isVisible)
 	{
 		if (mGuideLineXaxis != NULL)
@@ -1477,6 +1463,7 @@ void AStageCube_1::ChangeAllGuideLinesVisibility(const bool isVisible)
 
 } // void ChangeAllGuideLinesVisibility()
 
+// ガイドラインをドラッグする時、選択していないガイドラインのを非表示
 void AStageCube_1::ChangeUnSelecetedGuideLineVisibility(const bool isVisible)
 {
 	if (mCurrentSelectedGuideLine == NULL)
@@ -1536,6 +1523,7 @@ void AStageCube_1::ChangeUnSelecetedGuideLineVisibility(const bool isVisible)
 
 } // void ChangeUnSelecetedGuideLineVisibility()
 
+// Cubeとガイドラインの選択を解除
 void AStageCube_1::DeSelectCubeAndGuide(bool deSelectCube, bool deSelectGuide)
 {
 	if (deSelectGuide == true)
@@ -1578,6 +1566,7 @@ void AStageCube_1::SetSelectingCube(const bool isSelect)
 
 } // void SetSelectingCube()
 
+// 回転の角度を矯正する
 void AStageCube_1::NormalizeGuideRotation()
 {
 	//　有効な回転のフラグ   by朱 21-0907
@@ -1689,10 +1678,10 @@ void AStageCube_1::NormalizeGuideRotation()
 
 } // void NormalizeGuideRotation()
 
-// 
-// by朱 21-0907
+// BP関数 by朱 21-0907
 void AStageCube_1::CountInc_Implementation() {}
 
+// ガイドラインの回転方向を計算して設定する
 void AStageCube_1::DecideGuideLineTurnningDirection()
 {
 	if (mCurrentSelectedGuideLine == NULL)
@@ -1708,46 +1697,46 @@ void AStageCube_1::DecideGuideLineTurnningDirection()
 	myPlayerController->ProjectWorldLocationToScreen(mGuideLineYaxis->GetTransform().GetLocation(), screenLocation);
 	myPlayerController->GetMousePosition(mouseLocation.X, mouseLocation.Y);
 
-
 	float resultDegree;
 
 	FVector2D dirVector = mouseLocation - screenLocation;
 	dirVector.Normalize();
 
-	resultDegree = (float)atan2((double)(dirVector.X * 0.f + dirVector.Y * 1.f), (double)dirVector.DotProduct(dirVector, FVector2D(1, 0)));
+	// スクリーン上ガイドラインの中心点からカーソルの位置のベクトルとX軸の角度を求める
+	resultDegree = (float)atan2((double)(dirVector.X * 0.f - dirVector.Y * 1.f), (double)dirVector.DotProduct(dirVector, FVector2D(1, 0)));
 	resultDegree = resultDegree * 180 / PI;
 
 	// For Test
 	// GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Emerald, FString::SanitizeFloat(resultDegree));
 
-	// 第1象限
+	// 第4エリア
 	if (resultDegree < 0.f && resultDegree >= -90.f)
 	{
-		if (guideLineTurnningScaleX > 0.f)
-			guideLineTurnningScaleX *= -1.f;
-
+		guideLineTurnningScaleX = abs(guideLineTurnningScaleX);
 		guideLineTurnningScaleY = abs(guideLineTurnningScaleY);
 	} // end if()
-	// 第2象限
+	// 第3エリア
 	else if (resultDegree < -90.f && resultDegree >= -180.f)
-	{
-		if (guideLineTurnningScaleX > 0.f)
-			guideLineTurnningScaleX *= -1.f;
-		if (guideLineTurnningScaleY > 0.f)
-			guideLineTurnningScaleY *= -1.f;
-	} // end if()
-	// 第3象限
-	else if (resultDegree >= 90.f && resultDegree <= 180.f)
 	{
 		guideLineTurnningScaleX = abs(guideLineTurnningScaleX);
 
 		if (guideLineTurnningScaleY > 0.f)
 			guideLineTurnningScaleY *= -1.f;
 	} // end if()
-	// 第4象限
+	// 第2エリア
+	else if (resultDegree >= 90.f && resultDegree <= 180.f)
+	{
+		if (guideLineTurnningScaleY > 0.f)
+			guideLineTurnningScaleY *= -1.f;
+		if (guideLineTurnningScaleY > 0.f)
+			guideLineTurnningScaleY *= -1.f;
+	} // end if()
+	// 第1エリア
 	else if (resultDegree >= 0.f && resultDegree < 90.f)
 	{
-		guideLineTurnningScaleX = abs(guideLineTurnningScaleX);
+		if (guideLineTurnningScaleX > 0.f)
+			guideLineTurnningScaleX *= -1.f;
+
 		guideLineTurnningScaleY = abs(guideLineTurnningScaleY);
 	} // end if()
 
@@ -1760,7 +1749,7 @@ void AStageCube_1::DecideGuideLineTurnningDirection()
 
 		// ガイドラインからカメラのベクトル
 		FVector theDir = cameraPosition - mGuideLineXaxis->GetActorLocation();
-
+		// ガイドラインの位置
 		FVector origV = mGuideLineXaxis->GetActorLocation();
 
 		// 標準線
@@ -1819,6 +1808,7 @@ void AStageCube_1::DecideGuideLineTurnningDirection()
 
 }  // void DecideGuideLineTurnningDirection2()
 
+// 選択してない単体Cubeがマテリアルを変更できるかを設定
 void AStageCube_1::SetUnselectCubeUnitsCanChangeMat(bool canCgange)
 {
 	for (int i = 0; i < 3; ++i) {
@@ -1838,7 +1828,6 @@ void AStageCube_1::SetUnselectCubeUnitsCanChangeMat(bool canCgange)
 		} // end for()
 	} // end for()
 } // void SetUnselectCubeUnitsCanChangeMat()
-
 
 // 保険用 - ガイドラインのデタッチ失敗した時、検査を入る。
 void AStageCube_1::CheckAllGuideLinesGetDetached()
@@ -1891,7 +1880,7 @@ void AStageCube_1::CheckAllGuideLinesGetDetached()
 
 } // void CheckAllGuideLinesGetDetached()
 
-
+// 全部の単体Cubeがマテリアルを変更できるかを設定
 void AStageCube_1::SetAllCubeUnitsCanChangeMat(bool canCgange)
 {
 	for (int i = 0; i < 3; ++i) {
@@ -1910,7 +1899,7 @@ void AStageCube_1::SetAllCubeUnitsCanChangeMat(bool canCgange)
 	} // end for()
 } // void SetAllCubeUnitsCanChangeMat()
 
-
+// ゴールのActorを設定
 void AStageCube_1::SetGoalActorAttach(const int number, AActor* _goalActor)
 {
 
@@ -1935,7 +1924,7 @@ void AStageCube_1::SetGoalActorAttach(const int number, AActor* _goalActor)
 
 } // void SetGoalActorAttach()
 
-
+// 単体Cubeの num(番号) のメッシュを取得
 UStaticMesh* AStageCube_1::GetSpecificCubeMesh(int num)
 {
 	switch (num)
@@ -2060,6 +2049,7 @@ UStaticMesh* AStageCube_1::GetSpecificCubeMesh(int num)
 	return nullptr;
 } // GetSpecificCubeMesh()
 
+// 全部のガイドラインが回転できるかを設定
 void AStageCube_1::SetAllGuideLineCanBeRotate(const bool isRotatable)
 {
 	if (mGuideLineXaxis != NULL)
@@ -2079,6 +2069,7 @@ void AStageCube_1::SetAllGuideLineCanBeRotate(const bool isRotatable)
 
 } // void SetAllGuideLineCanBeRotate()
 
+// プレイヤーが載っている時、その関連座標のガイドラインが回転できないを設定
 void AStageCube_1::SetTheGuideLineCanNotRotate()
 {
 	// プレーヤーが回転軸載っているか
@@ -2149,3 +2140,8 @@ void AStageCube_1::SetTheGuideLineCanNotRotate()
 	} // end if
 
 } // void SetTheGuideLineCantRotate()
+
+// デストラクタ
+AStageCube_1::~AStageCube_1()
+{
+}

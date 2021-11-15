@@ -77,6 +77,7 @@ public:
 	UFUNCTION()
 		void ChangeMaterialFunc();
 
+	// ‰Šúƒ}ƒeƒŠƒAƒ‹‚É•Ï‚¦‚é
 	UFUNCTION()
 		void ChangeToDefaultMaterial();
 
@@ -105,15 +106,6 @@ public:
 public:
 	UFUNCTION()
 		void SetMeshAndMaterialOnBegin(UStaticMesh* newMesh, UMaterial* newMaterial_1, UMaterial* newMaterial_2, UMaterial* newMaterial_3);
-
-private:
-
-	// UFUNCTION()
-	//	void ChangeMaterialMode(int index, UMaterial* newMaterial);
-
-	//UFUNCTION()
-	//	void OnSelected(AActor* Target, FKey ButtonPressed);
-
 
 public:
 
