@@ -51,9 +51,9 @@ AStageCube_1::AStageCube_1()
 	, mCameraTurnScaleY(3.f)
 	, mMouseXvalue(0.f)
 	, mMouseYvalue(0.f)
-	, guideLineTurnningScale(5.f)
-	, guideLineTurnningScaleX(5.f)
-	, guideLineTurnningScaleY(5.f)
+	, guideLineTurnningScale(3.f)
+	, guideLineTurnningScaleX(3.f)
+	, guideLineTurnningScaleY(3.f)
 	, mStartRotateDegree(0.f, 0.f, 0.f)
 	, mouseTraceDistance(1000.f)
 	, mDrawDebugType(EDrawDebugTrace::None)
@@ -778,7 +778,7 @@ void AStageCube_1::MoveMouseX(const float _axisValue)
 		{
 			if (mCurrentSelectedGuideLine == mGuideLineZaxis)
 			{
-				mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, _axisValue * guideLineTurnningScaleX, 0.f)));
+				mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, (_axisValue * (guideLineTurnningScaleX*0.5f)), 0.f)));
 			} // end if
 			else if (mCurrentSelectedGuideLine == mGuideLineXaxis)
 			{
@@ -834,7 +834,7 @@ void AStageCube_1::MoveMouseY(const float _axisValue)
 	{
 		if (mCurrentSelectedGuideLine == mGuideLineZaxis)
 		{
-			mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, _axisValue * guideLineTurnningScaleY, 0.f)));
+			mCurrentSelectedGuideLine->mRootComponent->SetRelativeRotation(MyCombineRotators(mCurrentSelectedGuideLine->mRootComponent->GetRelativeRotation(), FRotator(0.f, (_axisValue * (guideLineTurnningScaleY * 0.5f)), 0.f)));
 		} // end if
 		else if (mCurrentSelectedGuideLine == mGuideLineXaxis)
 		{
